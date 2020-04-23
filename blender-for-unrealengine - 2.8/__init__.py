@@ -266,8 +266,8 @@ class BFU_AP_AddonPreferences(bpy.types.AddonPreferences):
 		updateButton.scale_y = 2.0
 		updateButton.operator("object.new_release_info", icon= "TIME")
 
-	
-	
+
+
 class BFU_PT_BlenderForUnreal(bpy.types.Panel):
 	#Unreal engine export panel
 
@@ -333,7 +333,7 @@ class BFU_PT_BlenderForUnreal(bpy.types.Panel):
 							'obj.exportGlobalScale',
 							'obj.exportAxisForward',
 							'obj.exportAxisUp',
-							'obj.exportPrimaryBaneAxis',
+							'obj.exportPrimaryBoneAxis',
 							'obj.exporSecondaryBoneAxis',
 							'obj.MoveToCenterForExport',
 							'obj.RotateToZeroForExport',
@@ -1101,7 +1101,7 @@ class BFU_PT_AvancedObjectProperties(bpy.types.Panel):
 		default='Y',
 		)
 		
-	bpy.types.Object.exportPrimaryBaneAxis = EnumProperty(
+	bpy.types.Object.exportPrimaryBoneAxis = EnumProperty(
 		name="Primary Axis Bone",
 		items=[
 			('X', "X", ""),
@@ -1174,7 +1174,7 @@ class BFU_PT_AvancedObjectProperties(bpy.types.Panel):
 				AxisProperty.prop(obj, 'exportAxisUp')		
 				if GetAssetType(obj) == "SkeletalMesh":
 					BoneAxisProperty = layout.column()
-					BoneAxisProperty.prop(obj, 'exportPrimaryBaneAxis')
+					BoneAxisProperty.prop(obj, 'exportPrimaryBoneAxis')
 					BoneAxisProperty.prop(obj, 'exporSecondaryBoneAxis')
 		else:
 			layout.label(text='(No properties to show.)')
