@@ -720,7 +720,7 @@ def ExportSingleFbxCamera(originalScene, dirpath, filename, obj):
 	
 	filename = ValidFilename(filename)
 	if obj.type != 'CAMERA':
-		return;
+		return
 	curr_time = time.perf_counter()
 	if	bpy.ops.object.mode_set.poll():
 		bpy.ops.object.mode_set(mode = 'OBJECT')
