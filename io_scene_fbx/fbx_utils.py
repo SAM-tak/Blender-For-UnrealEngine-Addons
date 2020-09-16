@@ -1123,7 +1123,6 @@ class ObjectWrapper(metaclass=MetaObjectWrapper):
                 matrix = matrix @ scene_data.settings.symmetry_rightside_bone_correction_matrix
             elif scene_data.settings.bone_correction_matrix:
                 matrix = matrix @ scene_data.settings.bone_correction_matrix
-
         elif self.bdata.type == 'LIGHT':
             matrix = matrix @ MAT_CONVERT_LIGHT
         elif self.bdata.type == 'CAMERA':

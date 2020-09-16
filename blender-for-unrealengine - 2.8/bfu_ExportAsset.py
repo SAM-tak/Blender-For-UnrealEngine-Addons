@@ -196,10 +196,10 @@ def PrepareAndSaveDataForExport():
 				assetList.append(Asset.obj)
 	
 	ExportAllAssetByList(
-	originalScene = scene,
-	targetobjects = assetList,
-	targetActionName = baseActionName,
-	targetcollection = baseCollectionName,
+		originalScene = scene,
+		targetobjects = assetList,
+		targetActionName = baseActionName,
+		targetcollection = baseCollectionName,
 	)
 	
 	bpy.context.window.scene = scene
