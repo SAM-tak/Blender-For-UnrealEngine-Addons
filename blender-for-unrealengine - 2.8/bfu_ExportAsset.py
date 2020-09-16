@@ -38,7 +38,7 @@ importlib.reload(bfu_ExportAssetsByType)
 from .bfu_ExportAssetsByType import *
 
 
-def ExportAllAssetByList(originalScene, targetobjects, targetActionName, targetcollection):
+def ExportAllAssetByList(op, originalScene, targetobjects, targetActionName, targetcollection):
 	#Export all objects that need to be exported from a list
 	
 	
@@ -46,7 +46,7 @@ def ExportAllAssetByList(originalScene, targetobjects, targetActionName, targetc
 		return
 
 	scene = bpy.context.scene
-	addon_prefs = bpy.context.preferences.addons["blender-for-unrealengine"].preferences
+	addon_prefs = bpy.context.preferences.addons[__package__].preferences
 	wm = bpy.context.window_manager
 	wm.progress_begin(0, len(GetFinalAssetToExport()))
 	
@@ -59,7 +59,7 @@ def ExportAllAssetByList(originalScene, targetobjects, targetActionName, targetc
 		for col in GetCollectionToExport(originalScene):
 			if col in targetcollection:
 				#StaticMesh collection
-				ExportSingleStaticMeshCollection(originalScene, GetCollectionExportDir(), GetCollectionExportFileName(col), col)
+				ExportSingleStaticMeshCollection(op, originalScene, GetCollectionExportDir(), GetCollectionExportFileName(col), col)
 					#if scene.text_AdditionalData == True and addon_prefs.useGeneratedScripts == True:
 						#ExportSingleAdditionalParameterMesh(GetCollectionExportDir(), GetCollectionExportFileName(col,"_AdditionalParameter.ini"), col)
 				UpdateProgress()
@@ -72,7 +72,7 @@ def ExportAllAssetByList(originalScene, targetobjects, targetActionName, targetc
 			if GetAssetType(obj) == "Camera" and scene.camera_export:
 				UserStartFrame = scene.frame_start #Save current start frame
 				UserEndFrame = scene.frame_end #Save current end frame
-				ExportSingleFbxCamera(originalScene, GetObjExportDir(obj), GetObjExportFileName(obj), obj)
+				ExportSingleFbxCamera(op, originalScene, GetObjExportDir(obj), GetObjExportFileName(obj), obj)
 				if obj.ExportAsLod == False:
 					if scene.text_AdditionalData == True and addon_prefs.useGeneratedScripts == True:
 						ExportSingleAdditionalTrackCamera(GetObjExportDir(obj), GetObjExportFileName(obj,"_AdditionalTrack.ini"), obj)
@@ -82,7 +82,7 @@ def ExportAllAssetByList(originalScene, targetobjects, targetActionName, targetc
 
 			#StaticMesh
 			if GetAssetType(obj) == "StaticMesh" and scene.static_export:
-				ExportSingleStaticMesh(originalScene, GetObjExportDir(obj), GetObjExportFileName(obj), obj)
+				ExportSingleStaticMesh(op, originalScene, GetObjExportDir(obj), GetObjExportFileName(obj), obj)
 				if obj.ExportAsLod == False:
 					if scene.text_AdditionalData == True and addon_prefs.useGeneratedScripts == True:
 						ExportSingleAdditionalParameterMesh(GetObjExportDir(obj), GetObjExportFileName(obj,"_AdditionalParameter.ini"), obj)
@@ -90,7 +90,7 @@ def ExportAllAssetByList(originalScene, targetobjects, targetActionName, targetc
 			
 			#SkeletalMesh
 			if GetAssetType(obj) == "SkeletalMesh" and scene.skeletal_export:
-				ExportSingleSkeletalMesh(originalScene, GetObjExportDir(obj), GetObjExportFileName(obj), obj)
+				ExportSingleSkeletalMesh(op, originalScene, GetObjExportDir(obj), GetObjExportFileName(obj), obj)
 				if scene.text_AdditionalData == True and addon_prefs.useGeneratedScripts == True:
 					ExportSingleAdditionalParameterMesh(GetObjExportDir(obj), GetObjExportFileName(obj,"_AdditionalParameter.ini"), obj)
 				UpdateProgress()
@@ -98,7 +98,7 @@ def ExportAllAssetByList(originalScene, targetobjects, targetActionName, targetc
 
 			#Alembic
 			if GetAssetType(obj) == "Alembic" and scene.alembic_export:
-				ExportSingleAlembicAnimation(originalScene, GetObjExportDir(obj), GetObjExportFileName(obj, ".abc"), obj)
+				ExportSingleAlembicAnimation(op, originalScene, GetObjExportDir(obj), GetObjExportFileName(obj, ".abc"), obj)
 				UpdateProgress()
 			
 			#Action animation
@@ -112,7 +112,7 @@ def ExportAllAssetByList(originalScene, targetobjects, targetActionName, targetc
 						if animType == "Action" and bpy.context.scene.anin_export == True:
 							UserStartFrame = scene.frame_start #Save current start frame
 							UserEndFrame = scene.frame_end #Save current end frame
-							ExportSingleFbxAction(originalScene, animExportDir, GetActionExportFileName(obj, action), obj, action, "Action")
+							ExportSingleFbxAction(op, originalScene, animExportDir, GetActionExportFileName(obj, action), obj, action, "Action")
 							scene.frame_start = UserStartFrame #Resets previous start frame
 							scene.frame_end = UserEndFrame #Resets previous end frame
 							UpdateProgress()
@@ -121,7 +121,7 @@ def ExportAllAssetByList(originalScene, targetobjects, targetActionName, targetc
 						if animType == "Pose" and bpy.context.scene.anin_export == True:
 							UserStartFrame = scene.frame_start #Save current start frame
 							UserEndFrame = scene.frame_end #Save current end frame
-							ExportSingleFbxAction(originalScene, animExportDir, GetActionExportFileName(obj, action), obj, action, "Pose")
+							ExportSingleFbxAction(op, originalScene, animExportDir, GetActionExportFileName(obj, action), obj, action, "Pose")
 							scene.frame_start = UserStartFrame #Resets previous start frame
 							scene.frame_end = UserEndFrame #Resets previous end frame
 							UpdateProgress()
@@ -130,17 +130,17 @@ def ExportAllAssetByList(originalScene, targetobjects, targetActionName, targetc
 				if bpy.context.scene.anin_export == True:
 					if obj.ExportNLA == True:
 						scene.frame_end +=1
-						ExportSingleFbxNLAAnim(originalScene, animExportDir, GetNLAExportFileName(obj), obj)
+						ExportSingleFbxNLAAnim(op, originalScene, animExportDir, GetNLAExportFileName(obj), obj)
 						scene.frame_end -=1
 
 
 	wm.progress_end()
 
 
-def PrepareAndSaveDataForExport():
+def PrepareAndSaveDataForExport(op):
 	
 	scene = bpy.context.scene
-	addon_prefs = bpy.context.preferences.addons["blender-for-unrealengine"].preferences
+	addon_prefs = bpy.context.preferences.addons[__package__].preferences
 
 	#Move to global view
 	for area in bpy.context.screen.areas:
@@ -196,6 +196,7 @@ def PrepareAndSaveDataForExport():
 				assetList.append(Asset.obj)
 	
 	ExportAllAssetByList(
+		op=op,
 		originalScene = scene,
 		targetobjects = assetList,
 		targetActionName = baseActionName,
@@ -222,5 +223,5 @@ def PrepareAndSaveDataForExport():
 			print("/!\ "+object[0]+" not found in bpy.data.objects")
 		
 
-def ExportForUnrealEngine():
-	PrepareAndSaveDataForExport()
+def ExportForUnrealEngine(op):
+	PrepareAndSaveDataForExport(op)

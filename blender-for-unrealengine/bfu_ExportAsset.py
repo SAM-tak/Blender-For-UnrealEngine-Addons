@@ -38,7 +38,7 @@ def ExportSingleFbxAction(dirpath, filename, obj, targetAction, actionType):
 
 
 	scene = bpy.context.scene
-	addon_prefs = bpy.context.user_preferences.addons["blender-for-unrealengine"].preferences
+	addon_prefs = bpy.context.user_preferences.addons[__package__].preferences
 	
 	filename = ValidFilenameForUnreal(filename)
 	curr_time = time.process_time()
@@ -118,7 +118,7 @@ def ExportSingleFbxNLAAnim(dirpath, filename, obj):
 
 
 	scene = bpy.context.scene
-	addon_prefs = bpy.context.user_preferences.addons["blender-for-unrealengine"].preferences
+	addon_prefs = bpy.context.user_preferences.addons[__package__].preferences
 	
 	filename = ValidFilenameForUnreal(filename)
 	curr_time = time.process_time()
@@ -223,7 +223,7 @@ def ExportSingleFbxMesh(dirpath, filename, obj):
 	#Export a single Mesh
 
 	scene = bpy.context.scene
-	addon_prefs = bpy.context.user_preferences.addons["blender-for-unrealengine"].preferences
+	addon_prefs = bpy.context.user_preferences.addons[__package__].preferences
 	
 	filename = ValidFilenameForUnreal(filename)
 	curr_time = time.process_time()
@@ -294,7 +294,7 @@ def ExportSingleFbxCamera(dirpath, filename, obj):
 	#Export single camera
 
 	scene = bpy.context.scene
-	addon_prefs = bpy.context.user_preferences.addons["blender-for-unrealengine"].preferences
+	addon_prefs = bpy.context.user_preferences.addons[__package__].preferences
 	
 	filename = ValidFilename(filename)
 	if obj.type != 'CAMERA':
@@ -456,7 +456,7 @@ def ExportAllAssetByList(targetobjects):
 def PrepareAndSaveDataForExport():
 
 	scene = bpy.context.scene
-	addon_prefs = bpy.context.user_preferences.addons["blender-for-unrealengine"].preferences
+	addon_prefs = bpy.context.user_preferences.addons[__package__].preferences
 	#----------------------------------------Save data
 	UserObjHide = []
 	UserObjHideSelect = []

@@ -436,7 +436,7 @@ class BFU_PT_ObjectProperties(bpy.types.Panel):
 
 		layout = self.layout
 		obj = context.object
-		addon_prefs = bpy.context.preferences.addons["blender-for-unrealengine"].preferences
+		addon_prefs = bpy.context.preferences.addons[__package__].preferences
 
 		if obj is not None:
 
@@ -626,7 +626,7 @@ class BFU_PT_ObjectImportProperties(bpy.types.Panel):
 
 		layout = self.layout
 		obj = context.object
-		addon_prefs = bpy.context.preferences.addons["blender-for-unrealengine"].preferences
+		addon_prefs = bpy.context.preferences.addons[__package__].preferences
 
 		if addon_prefs.useGeneratedScripts == True:
 			if obj is not None:
@@ -1274,7 +1274,7 @@ class BFU_PT_CollisionsAndSockets(bpy.types.Panel):
 
 	def draw(self, context):
 
-		addon_prefs = bpy.context.preferences.addons["blender-for-unrealengine"].preferences
+		addon_prefs = bpy.context.preferences.addons[__package__].preferences
 
 		def ActiveModeIs(targetMode): #Return True is active mode ==
 			obj = bpy.context.active_object
@@ -1484,7 +1484,7 @@ class BFU_PT_Nomenclature(bpy.types.Panel):
 
 	def draw(self, context):
 		scn = context.scene
-		addon_prefs = bpy.context.preferences.addons["blender-for-unrealengine"].preferences
+		addon_prefs = bpy.context.preferences.addons[__package__].preferences
 
 		#Presets
 		row = self.layout.row(align=True)
@@ -1557,7 +1557,7 @@ class BFU_PT_ImportScript(bpy.types.Panel):
 
 	def draw(self, context):
 		scn = context.scene
-		addon_prefs = bpy.context.preferences.addons["blender-for-unrealengine"].preferences
+		addon_prefs = bpy.context.preferences.addons[__package__].preferences
 
 		#Sub folder
 		if addon_prefs.useGeneratedScripts == True:
@@ -1756,12 +1756,6 @@ class BFU_PT_Export(bpy.types.Panel):
 
 		def execute(self, context):
 			scene = bpy.context.scene
-			
-			def CheckIfFbxPluginIsActivated():
-				is_enabled, is_loaded = addon_utils.check("io_scene_fbx")
-				if is_enabled == True and is_enabled == True:
-					return True					
-				return False
 
 			
 			def GetIfOneTypeCheck():
@@ -1774,19 +1768,15 @@ class BFU_PT_Export(bpy.types.Panel):
 					return True
 				else:
 					return False
-					
 
-			if CheckIfFbxPluginIsActivated() == False:
-				self.report({'WARNING'}, 'Add-on FBX format is not activated! Edit > Preferences > Add-ons > And check "FBX format"')
-				return {'FINISHED'}	
-			
+
 			if GetIfOneTypeCheck():
 				#Primary check	if file is saved to avoid windows PermissionError
 				if bpy.data.is_saved:
 					scene.UnrealExportedAssetsList.clear()
 					start_time = time.perf_counter()
 					UpdateNameHierarchy()
-					bfu_ExportAsset.ExportForUnrealEngine()
+					bfu_ExportAsset.ExportForUnrealEngine(self)
 					bfu_WriteText.WriteAllTextFiles()
 
 					if len(scene.UnrealExportedAssetsList) > 0:
@@ -1880,7 +1870,7 @@ class BFU_PT_Export(bpy.types.Panel):
 
 	def draw(self, context):
 		scn = context.scene
-		addon_prefs = bpy.context.preferences.addons["blender-for-unrealengine"].preferences
+		addon_prefs = bpy.context.preferences.addons[__package__].preferences
 
 		#Categories :
 		layout = self.layout
@@ -1964,7 +1954,7 @@ class BFU_PT_Clipboard(bpy.types.Panel):
 	def draw(self, context):
 		scn = context.scene
 		layout = self.layout
-		addon_prefs = bpy.context.preferences.addons["blender-for-unrealengine"].preferences
+		addon_prefs = bpy.context.preferences.addons[__package__].preferences
 
 		if addon_prefs.useGeneratedScripts == True:
 			layout.label(text="Click on one of the buttons to copy the import command.", icon='INFO')

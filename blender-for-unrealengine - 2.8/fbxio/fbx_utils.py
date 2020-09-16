@@ -23,6 +23,7 @@
 
 import math
 import time
+import re
 
 from collections import namedtuple
 from collections.abc import Iterable
@@ -1067,6 +1068,18 @@ class ObjectWrapper(metaclass=MetaObjectWrapper):
             return True
         return False
 
+    SYMMETRY_RIGHTSIDE_NAME_PATTERN = re.compile(r'(.+[_\.])(r|R)(\.\d+)?$')
+
+    def is_rightside_bone(self, objects):
+        match = self.SYMMETRY_RIGHTSIDE_NAME_PATTERN.match(self.name)
+        if match:
+            counterpartname = match.group(1) + ('l' if match.group(2) == 'r' else 'L') + (match.group(3) if match.group(3) else '')
+            for i in objects:
+                if i != self and i._tag == 'BO' and i.name == counterpartname:
+                    #print(self.name, counterpartname)
+                    return True
+        return False
+
     def use_bake_space_transform(self, scene_data):
         # NOTE: Only applies to object types supporting this!!! Currently, only meshes and the like...
         # TODO: Check whether this can work for bones too...
@@ -1100,10 +1113,15 @@ class ObjectWrapper(metaclass=MetaObjectWrapper):
         # Bones, lamps and cameras need to be rotated (in local space!).
         if self._tag == 'BO':
             # If we have a bone parent we need to undo the parent correction.
-            if not is_global and scene_data.settings.bone_correction_matrix_inv and parent and parent.is_bone:
-                matrix = scene_data.settings.bone_correction_matrix_inv @ matrix
+            if not is_global and parent and parent.is_bone:
+                if scene_data.settings.symmetry_rightside_bone_correction_matrix_inv and parent.is_rightside_bone(scene_data.objects):
+                    matrix = scene_data.settings.symmetry_rightside_bone_correction_matrix_inv @ matrix
+                elif scene_data.settings.bone_correction_matrix_inv:
+                    matrix = scene_data.settings.bone_correction_matrix_inv @ matrix
             # Apply the bone correction.
-            if scene_data.settings.bone_correction_matrix:
+            if scene_data.settings.symmetry_rightside_bone_correction_matrix and self.is_rightside_bone(scene_data.objects):
+                matrix = matrix @ scene_data.settings.symmetry_rightside_bone_correction_matrix
+            elif scene_data.settings.bone_correction_matrix:
                 matrix = matrix @ scene_data.settings.bone_correction_matrix
         elif self.bdata.type == 'LIGHT':
             matrix = matrix @ MAT_CONVERT_LIGHT
@@ -1227,6 +1245,7 @@ FBXExportSettings = namedtuple("FBXExportSettings", (
     "mesh_smooth_type", "use_subsurf", "use_mesh_edges", "use_tspace",
     "armature_nodetype", "use_armature_deform_only", "add_leaf_bones",
     "bone_correction_matrix", "bone_correction_matrix_inv",
+    "symmetry_rightside_bone_correction_matrix", "symmetry_rightside_bone_correction_matrix_inv",
     "bake_anim", "bake_anim_use_all_bones", "bake_anim_use_nla_strips", "bake_anim_use_all_actions",
     "bake_anim_step", "bake_anim_simplify_factor", "bake_anim_force_startend_keying",
     "use_metadata", "media_settings", "use_custom_props",
@@ -1258,5 +1277,6 @@ FBXImportSettings = namedtuple("FBXImportSettings", (
     "use_custom_props", "use_custom_props_enum_as_string",
     "nodal_material_wrap_map", "image_cache",
     "ignore_leaf_bones", "force_connect_children", "automatic_bone_orientation", "bone_correction_matrix",
+    "symmetry_rightside_bone_correction_matrix",
     "use_prepost_rot",
 ))

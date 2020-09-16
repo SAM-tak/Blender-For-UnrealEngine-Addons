@@ -21,6 +21,9 @@ import bpy
 import time
 import math
 
+from mathutils import Matrix
+from bpy_extras.io_utils import axis_conversion
+
 import importlib
 from . import bfu_WriteText
 importlib.reload(bfu_WriteText)
@@ -32,6 +35,9 @@ from .bfu_Basics import *
 from . import bfu_Utils
 importlib.reload(bfu_Utils)
 from .bfu_Utils import *
+
+from .fbxio import export_fbx_bin
+importlib.reload(export_fbx_bin)
 
 def ApplyProxyData(obj):
 	
@@ -135,7 +141,7 @@ def DuplicateSelect():
 def SetSocketsExportTransform(obj):
 	#Set socket scale for Unreal
 	
-	addon_prefs = bpy.context.preferences.addons["blender-for-unrealengine"].preferences
+	addon_prefs = bpy.context.preferences.addons[__package__].preferences
 	for socket in GetSocketDesiredChild(obj):
 		if GetShouldRescaleSocket() == True:
 			socket.delta_scale *= GetRescaleSocketFactor()
@@ -171,7 +177,7 @@ def RemoveSocketsTempName(obj):
 def GetShouldRescaleRig():
 	#This will return if the rig should be rescale.
 	
-	addon_prefs = bpy.context.preferences.addons["blender-for-unrealengine"].preferences
+	addon_prefs = bpy.context.preferences.addons[__package__].preferences
 	if addon_prefs.rescaleFullRigAtExport == "auto":
 		if math.isclose(bpy.context.scene.unit_settings.scale_length, 0.01, rel_tol=1e-5):
 
@@ -187,7 +193,7 @@ def GetShouldRescaleRig():
 def GetRescaleRigFactor():
 	#This will return the rescale factor.
 	
-	addon_prefs = bpy.context.preferences.addons["blender-for-unrealengine"].preferences
+	addon_prefs = bpy.context.preferences.addons[__package__].preferences
 	if addon_prefs.rescaleFullRigAtExport == "auto":
 		return 100 * bpy.context.scene.unit_settings.scale_length
 	else:
@@ -197,7 +203,7 @@ def GetRescaleRigFactor():
 def GetShouldRescaleSocket():
 	#This will return if the socket should be rescale.
 	
-	addon_prefs = bpy.context.preferences.addons["blender-for-unrealengine"].preferences
+	addon_prefs = bpy.context.preferences.addons[__package__].preferences
 	if addon_prefs.rescaleSocketsAtExport == "auto":
 		if bpy.context.scene.unit_settings.scale_length == 0.01:
 			return False #False because that useless to rescale at 1 :v
@@ -212,13 +218,13 @@ def GetShouldRescaleSocket():
 def GetRescaleSocketFactor():
 	#This will return the rescale factor.
 	
-	addon_prefs = bpy.context.preferences.addons["blender-for-unrealengine"].preferences
+	addon_prefs = bpy.context.preferences.addons[__package__].preferences
 	if addon_prefs.rescaleSocketsAtExport == "auto":
 		return 1/(100*bpy.context.scene.unit_settings.scale_length)
 	else:
 		return addon_prefs.staticSocketsImportedSize #socketRescaleFactor
 
-def ExportSingleFbxAction(originalScene, dirpath, filename, obj, targetAction, actionType):
+def ExportSingleFbxAction(op, originalScene, dirpath, filename, obj, targetAction, actionType):
 	'''
 	#####################################################
 			#SKELETAL ACTION
@@ -227,7 +233,7 @@ def ExportSingleFbxAction(originalScene, dirpath, filename, obj, targetAction, a
 	#Export a single action like a animation or pose
 	
 	scene = bpy.context.scene
-	addon_prefs = bpy.context.preferences.addons["blender-for-unrealengine"].preferences
+	addon_prefs = bpy.context.preferences.addons[__package__].preferences
 	
 	filename = ValidFilenameForUnreal(filename)
 	curr_time = time.perf_counter()
@@ -293,10 +299,15 @@ def ExportSingleFbxAction(originalScene, dirpath, filename, obj, targetAction, a
 
 	#Set rename temporarily the Armature as "Armature"
 	oldArmatureName = RenameArmatureAsExportName(active)
-	bpy.ops.export_scene.fbx(
+
+	export_fbx_bin.save(
+		op,
+		bpy.context,
 		filepath=fullpath,
 		check_existing=False,
 		use_selection=True,
+        global_matrix=axis_conversion(to_forward='-Z', to_up='Y').to_4x4(),
+		apply_unit_scale=True,
 		global_scale=GetObjExportScale(active),
 		object_types={'ARMATURE', 'EMPTY', 'MESH'},
 		use_custom_props=addon_prefs.exportWithCustomProps,
@@ -350,7 +361,7 @@ def ExportSingleFbxAction(originalScene, dirpath, filename, obj, targetAction, a
 	MyAsset.object = obj
 	return MyAsset
 
-def ExportSingleFbxNLAAnim(originalScene, dirpath, filename, obj):
+def ExportSingleFbxNLAAnim(op, originalScene, dirpath, filename, obj):
 	'''
 	#####################################################
 			#NLA ANIMATION
@@ -359,7 +370,7 @@ def ExportSingleFbxNLAAnim(originalScene, dirpath, filename, obj):
 	#Export a single NLA Animation
 
 	scene = bpy.context.scene
-	addon_prefs = bpy.context.preferences.addons["blender-for-unrealengine"].preferences
+	addon_prefs = bpy.context.preferences.addons[__package__].preferences
 	
 	filename = ValidFilenameForUnreal(filename)
 	curr_time = time.perf_counter()
@@ -402,10 +413,14 @@ def ExportSingleFbxNLAAnim(originalScene, dirpath, filename, obj):
 	#Set rename temporarily the Armature as "Armature"
 	oldArmatureName = RenameArmatureAsExportName(active)
 
-	bpy.ops.export_scene.fbx(
+	export_fbx_bin.save(
+		op,
+		bpy.context,
 		filepath=fullpath,
 		check_existing=False,
 		use_selection=True,
+        global_matrix=axis_conversion(to_forward='-Z', to_up='Y').to_4x4(),
+		apply_unit_scale=True,
 		global_scale=GetObjExportScale(active),
 		object_types={'ARMATURE', 'EMPTY', 'MESH'},
 		use_custom_props=addon_prefs.exportWithCustomProps,
@@ -457,7 +472,7 @@ def ExportSingleFbxNLAAnim(originalScene, dirpath, filename, obj):
 
 
 
-def ExportSingleAlembicAnimation(originalScene, dirpath, filename, obj):
+def ExportSingleAlembicAnimation(op, originalScene, dirpath, filename, obj):
 	'''
 	#####################################################
 			#ALEMBIC ANIMATION
@@ -483,6 +498,7 @@ def ExportSingleAlembicAnimation(originalScene, dirpath, filename, obj):
 	bpy.ops.wm.alembic_export(
 		filepath=fullpath,
 		check_existing=False,
+		apply_unit_scale=True,
 		selected=True,
 		triangulate=False,
 		)
@@ -500,7 +516,7 @@ def ExportSingleAlembicAnimation(originalScene, dirpath, filename, obj):
 	return MyAsset
 
 
-def ExportSingleStaticMeshCollection(originalScene, dirpath, filename, collectionName):
+def ExportSingleStaticMeshCollection(op, originalScene, dirpath, filename, collectionName):
 	'''
 	#####################################################
 			#COLLECTION
@@ -511,14 +527,14 @@ def ExportSingleStaticMeshCollection(originalScene, dirpath, filename, collectio
 	bpy.context.scene.collection.objects.link( obj )
 	obj.instance_type = 'COLLECTION'
 	obj.instance_collection = bpy.data.collections[collectionName]
-	ExportSingleStaticMesh(originalScene, dirpath, filename, obj)
+	ExportSingleStaticMesh(op, originalScene, dirpath, filename, obj)
 	
 	#Remove the created collection
 	SelectSpecificObject(obj)
 	bpy.ops.object.delete()	 
-	
-	
-def ExportSingleStaticMesh(originalScene, dirpath, filename, obj):
+
+
+def ExportSingleStaticMesh(op, originalScene, dirpath, filename, obj):
 	'''
 	#####################################################
 			#STATIC MESH
@@ -527,7 +543,7 @@ def ExportSingleStaticMesh(originalScene, dirpath, filename, obj):
 	#Export a single Mesh
 
 	scene = bpy.context.scene
-	addon_prefs = bpy.context.preferences.addons["blender-for-unrealengine"].preferences
+	addon_prefs = bpy.context.preferences.addons[__package__].preferences
 	
 	filename = ValidFilenameForUnreal(filename)
 	curr_time = time.perf_counter()
@@ -562,11 +578,14 @@ def ExportSingleStaticMesh(originalScene, dirpath, filename, obj):
 	
 	RemoveDuplicatedSocketsTempName(active)
 			
-
-	bpy.ops.export_scene.fbx(
+	export_fbx_bin.save(
+		op,
+		bpy.context,
 		filepath=fullpath,
 		check_existing=False,
 		use_selection=True,
+        global_matrix=axis_conversion(to_forward='-Z', to_up='Y').to_4x4(),
+		apply_unit_scale=True,
 		global_scale=GetObjExportScale(active),
 		object_types={'EMPTY', 'CAMERA', 'LIGHT', 'MESH', 'OTHER'},
 		use_custom_props=addon_prefs.exportWithCustomProps,
@@ -598,8 +617,9 @@ def ExportSingleStaticMesh(originalScene, dirpath, filename, obj):
 	MyAsset.exportTime = exportTime
 	MyAsset.object = obj
 	return MyAsset
-	
-def ExportSingleSkeletalMesh(originalScene, dirpath, filename, obj):
+
+
+def ExportSingleSkeletalMesh(op, originalScene, dirpath, filename, obj):
 	'''
 	#####################################################
 			#SKELETAL MESH
@@ -608,7 +628,7 @@ def ExportSingleSkeletalMesh(originalScene, dirpath, filename, obj):
 	#Export a single Mesh
 
 	scene = bpy.context.scene
-	addon_prefs = bpy.context.preferences.addons["blender-for-unrealengine"].preferences
+	addon_prefs = bpy.context.preferences.addons[__package__].preferences
 	
 	filename = ValidFilenameForUnreal(filename)
 	curr_time = time.perf_counter()
@@ -665,10 +685,14 @@ def ExportSingleSkeletalMesh(originalScene, dirpath, filename, obj):
 	RemoveAllConsraints(active)
 	bpy.context.object.data.pose_position = 'REST'
 	
-	bpy.ops.export_scene.fbx(
+	export_fbx_bin.save(
+		op,
+		bpy.context,
 		filepath=fullpath,
 		check_existing=False,
 		use_selection=True,
+        global_matrix=axis_conversion(to_forward='-Z', to_up='Y').to_4x4(),
+		apply_unit_scale=True,
 		global_scale=GetObjExportScale(active),
 		object_types={'ARMATURE', 'EMPTY', 'CAMERA', 'LIGHT', 'MESH', 'OTHER'},
 		use_custom_props=addon_prefs.exportWithCustomProps,
@@ -707,7 +731,7 @@ def ExportSingleSkeletalMesh(originalScene, dirpath, filename, obj):
 	return MyAsset
 
 
-def ExportSingleFbxCamera(originalScene, dirpath, filename, obj):
+def ExportSingleFbxCamera(op, originalScene, dirpath, filename, obj):
 	'''
 	#####################################################
 			#CAMERA
@@ -716,7 +740,7 @@ def ExportSingleFbxCamera(originalScene, dirpath, filename, obj):
 	#Export single camera
 
 	scene = bpy.context.scene
-	addon_prefs = bpy.context.preferences.addons["blender-for-unrealengine"].preferences
+	addon_prefs = bpy.context.preferences.addons[__package__].preferences
 	
 	filename = ValidFilename(filename)
 	if obj.type != 'CAMERA':
@@ -740,10 +764,14 @@ def ExportSingleFbxCamera(originalScene, dirpath, filename, obj):
 	VerifiDirs(absdirpath)
 	fullpath = os.path.join( absdirpath , filename )
 
-	bpy.ops.export_scene.fbx(
+	export_fbx_bin.save(
+		op,
+		bpy.context,
 		filepath=fullpath,
 		check_existing=False,
 		use_selection=True,
+        global_matrix=axis_conversion(to_forward='-Z', to_up='Y').to_4x4(),
+		apply_unit_scale=True,
 		global_scale=GetObjExportScale(obj),
 		object_types={'CAMERA'},
 		use_custom_props=addon_prefs.exportWithCustomProps,

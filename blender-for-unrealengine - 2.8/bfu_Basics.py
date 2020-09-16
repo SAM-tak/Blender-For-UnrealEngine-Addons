@@ -29,8 +29,8 @@ from mathutils import Vector
 from mathutils import Quaternion
 
 def GetCurrentAddonRelase():
-	#addon_ = bpy.context.preferences.addons["blender-for-unrealengine"]
-	mod = sys.modules["blender-for-unrealengine"]
+	#addon_ = bpy.context.preferences.addons[__package__]
+	mod = sys.modules[__package__]
 	v = mod.bl_info.get('version')
 	letter = ""
 	if len(v) > 3:

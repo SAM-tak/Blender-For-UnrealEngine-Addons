@@ -315,7 +315,7 @@ def GetImportAssetScriptCommand():
 	fileName = scene.file_import_asset_script_name
 	absdirpath = bpy.path.abspath(scene.export_other_file_path)
 	fullpath = os.path.join( absdirpath , fileName )
-	addon_prefs = bpy.context.user_preferences.addons["blender-for-unrealengine"].preferences
+	addon_prefs = bpy.context.user_preferences.addons[__package__].preferences
 	if addon_prefs.Use20TabScript == True:
 		return 'unreal_engine.py_exec(r"'+fullpath+'")' #20tab
 	else:
@@ -327,7 +327,7 @@ def GetImportSequencerScriptCommand():
 	absdirpath = bpy.path.abspath(scene.export_other_file_path)
 	fullpath = os.path.join( absdirpath , fileName )
 
-	addon_prefs = bpy.context.user_preferences.addons["blender-for-unrealengine"].preferences
+	addon_prefs = bpy.context.user_preferences.addons[__package__].preferences
 	if addon_prefs.Use20TabScript == True:
 		return 'unreal_engine.py_exec(r"'+fullpath+'")' #20tab
 	else:
@@ -342,7 +342,7 @@ def GetObjExportScale(obj):
 	'''
 	#Exported root bone with "Armature" name are removed in Unreal so scale *100 d'ont work...
 	if GetAssetType(obj) == "SkeletalMesh":
-		addon_prefs = bpy.context.user_preferences.addons["blender-for-unrealengine"].preferences
+		addon_prefs = bpy.context.user_preferences.addons[__package__].preferences
 		if addon_prefs.skeletonRootBoneName == "Armature":
 			return obj.exportGlobalScale * 100
 	'''
@@ -352,7 +352,7 @@ def GetObjExportScale(obj):
 def RenameArmatureAsExportName(obj):
 	#Rename temporarily the Armature as DefaultArmature
 
-	addon_prefs = bpy.context.user_preferences.addons["blender-for-unrealengine"].preferences
+	addon_prefs = bpy.context.user_preferences.addons[__package__].preferences
 	scene = bpy.context.scene
 	oldArmatureName = None
 	if obj.name != addon_prefs.skeletonRootBoneName:
@@ -366,7 +366,7 @@ def RenameArmatureAsExportName(obj):
 def ResetArmatureName(obj, oldArmatureName):
 	#Reset armature name
 
-	addon_prefs = bpy.context.user_preferences.addons["blender-for-unrealengine"].preferences
+	addon_prefs = bpy.context.user_preferences.addons[__package__].preferences
 	scene = bpy.context.scene
 	if oldArmatureName is not None:
 		obj.name = oldArmatureName

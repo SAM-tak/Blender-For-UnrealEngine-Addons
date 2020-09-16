@@ -649,7 +649,7 @@ def GetImportAssetScriptCommand():
 	fileName = scene.file_import_asset_script_name
 	absdirpath = bpy.path.abspath(scene.export_other_file_path)
 	fullpath = os.path.join( absdirpath , fileName )
-	addon_prefs = bpy.context.preferences.addons["blender-for-unrealengine"].preferences
+	addon_prefs = bpy.context.preferences.addons[__package__].preferences
 	if addon_prefs.use20TabScript == True:
 		return 'unreal_engine.py_exec(r"'+fullpath+'")' #20tab
 	else:
@@ -661,7 +661,7 @@ def GetImportSequencerScriptCommand():
 	absdirpath = bpy.path.abspath(scene.export_other_file_path)
 	fullpath = os.path.join( absdirpath , fileName )
 
-	addon_prefs = bpy.context.preferences.addons["blender-for-unrealengine"].preferences
+	addon_prefs = bpy.context.preferences.addons[__package__].preferences
 	if addon_prefs.use20TabScript == True:
 		return 'unreal_engine.py_exec(r"'+fullpath+'")' #20tab
 	else:
@@ -673,7 +673,7 @@ def GetAnimSample(obj):
 	return obj.SampleAnimForExport
 
 def GetDesiredExportArmatureName():
-	addon_prefs = bpy.context.preferences.addons["blender-for-unrealengine"].preferences
+	addon_prefs = bpy.context.preferences.addons[__package__].preferences
 	if addon_prefs.removeSkeletonRootBone == True:
 		return "Armature"
 	return addon_prefs.skeletonRootBoneName

@@ -411,7 +411,7 @@ def WriteSingleMeshAdditionalParameter(obj):
 
 		config.add_section('Sockets')
 		config.set('Sockets', '; SocketName, BoneName, Location, Rotation, Scale')
-		addon_prefs = bpy.context.preferences.addons["blender-for-unrealengine"].preferences
+		addon_prefs = bpy.context.preferences.addons[__package__].preferences
 
 		for i, socket in enumerate(sockets):
 			SocketName = socket.name[7:] if socket.name.startswith("SOCKET_") else socket.name
@@ -453,14 +453,14 @@ def WriteAllTextFiles():
 
 	#Import script
 	if scene.text_ImportAssetScript:
-		addon_prefs = bpy.context.preferences.addons["blender-for-unrealengine"].preferences
+		addon_prefs = bpy.context.preferences.addons[__package__].preferences
 		Text = bfu_WriteImportAssetScript.WriteImportAssetScript(addon_prefs.use20TabScript)
 		if Text is not None:
 			Filename = scene.file_import_asset_script_name
 			ExportSingleText(Text, scene.export_other_file_path, Filename)
 
 	if scene.text_ImportSequenceScript:
-		addon_prefs = bpy.context.preferences.addons["blender-for-unrealengine"].preferences
+		addon_prefs = bpy.context.preferences.addons[__package__].preferences
 		Text = bfu_WriteImportSequencerScript.WriteImportSequencerScript(addon_prefs.use20TabScript)
 		if Text is not None:
 			Filename = scene.file_import_sequencer_script_name

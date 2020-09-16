@@ -29,6 +29,8 @@ import time
 
 from itertools import zip_longest, chain
 
+from .. import __package__ as parent_package
+
 if "bpy" in locals():
     import importlib
     if "encode_bin" in locals():
@@ -2693,12 +2695,12 @@ def fbx_header_elements(root, scene_data, time=None):
     time is expected to be a datetime.datetime object, or None (using now() in this case).
     """
     app_vendor = "Blender Foundation"
-    app_name = "Blender (stable FBX IO)"
+    app_name = "Blender (Blender for UnrealEngine specialized FBX IO)"
     app_ver = bpy.app.version_string
 
     import addon_utils
     import sys
-    addon_ver = addon_utils.module_bl_info(sys.modules[__package__])['version']
+    addon_ver = addon_utils.module_bl_info(sys.modules[parent_package])['version']
 
     # ##### Start of FBXHeaderExtension element.
     header_ext = elem_empty(root, b"FBXHeaderExtension")
@@ -2722,8 +2724,7 @@ def fbx_header_elements(root, scene_data, time=None):
     elem_data_single_int32(elem, b"Second", time.second)
     elem_data_single_int32(elem, b"Millisecond", time.microsecond // 1000)
 
-    elem_data_single_string_unicode(header_ext, b"Creator", "%s - %s - %d.%d.%d"
-                                                % (app_name, app_ver, addon_ver[0], addon_ver[1], addon_ver[2]))
+    elem_data_single_string_unicode(header_ext, b"Creator", f"{app_name} - {app_ver} - {addon_ver[0]}.{addon_ver[1]}.{addon_ver[2]}.{addon_ver[3]}")
 
     # 'SceneInfo' seems mandatory to get a valid FBX file...
     # TODO use real values!
@@ -2767,8 +2768,7 @@ def fbx_header_elements(root, scene_data, time=None):
                                     "".format(time.year, time.month, time.day, time.hour, time.minute, time.second,
                                               time.microsecond * 1000))
 
-    elem_data_single_string_unicode(root, b"Creator", "%s - %s - %d.%d.%d"
-                                          % (app_name, app_ver, addon_ver[0], addon_ver[1], addon_ver[2]))
+    elem_data_single_string_unicode(root, b"Creator", f"{app_name} - {app_ver} - {addon_ver[0]}.{addon_ver[1]}.{addon_ver[2]}.{addon_ver[3]}")
 
     # ##### Start of GlobalSettings element.
     global_settings = elem_empty(root, b"GlobalSettings")
@@ -2992,6 +2992,7 @@ def save_single(operator, scene, depsgraph, filepath="",
                 add_leaf_bones=False,
                 primary_bone_axis='Y',
                 secondary_bone_axis='X',
+                reverse_symmetry_rightside_bone_forwarding=False,
                 use_metadata=True,
                 path_mode='AUTO',
                 use_mesh_edges=True,
@@ -3045,6 +3046,14 @@ def save_single(operator, scene, depsgraph, filepath="",
                                                  to_up='Y',
                                                  ).to_4x4()
         bone_correction_matrix_inv = bone_correction_matrix.inverted()
+    
+    symmetry_rightside_bone_correction_matrix = None
+    symmetry_rightside_bone_correction_matrix_inv = None
+    if reverse_symmetry_rightside_bone_forwarding:
+        symmetry_rightside_bone_correction_matrix = Matrix.Rotation(-math.pi if secondary_bone_axis[0] == '-' else math.pi, 4, secondary_bone_axis[-1])
+        if bone_correction_matrix:
+            symmetry_rightside_bone_correction_matrix = bone_correction_matrix @ symmetry_rightside_bone_correction_matrix
+        symmetry_rightside_bone_correction_matrix_inv = symmetry_rightside_bone_correction_matrix.inverted()
 
 
     media_settings = FBXExportSettingsMedia(
@@ -3065,6 +3074,7 @@ def save_single(operator, scene, depsgraph, filepath="",
         mesh_smooth_type, use_subsurf, use_mesh_edges, use_tspace,
         armature_nodetype, use_armature_deform_only,
         add_leaf_bones, bone_correction_matrix, bone_correction_matrix_inv,
+        symmetry_rightside_bone_correction_matrix, symmetry_rightside_bone_correction_matrix_inv,
         bake_anim, bake_anim_use_all_bones, bake_anim_use_nla_strips, bake_anim_use_all_actions,
         bake_anim_step, bake_anim_simplify_factor, bake_anim_force_startend_keying,
         False, media_settings, use_custom_props,
