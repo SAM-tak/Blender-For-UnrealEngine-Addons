@@ -22,11 +22,7 @@ import time
 import math
 
 from mathutils import Matrix
-from bpy_extras.io_utils import (
-        orientation_helper,
-        path_reference_mode,
-        axis_conversion,
-        )
+from bpy_extras.io_utils import axis_conversion
 
 import importlib
 from . import bfu_WriteText
@@ -658,8 +654,8 @@ def ExportSingleSkeletalMesh(op, originalScene, dirpath, filename, obj):
 	
 	SelectParentAndDesiredChilds(obj)
 	AddSocketsTempName(obj)
-	DuplicateSelect()	
-		
+	DuplicateSelect()
+	
 	ApplyNeededModifierToSelect()
 	
 	if addon_prefs.correctExtremUVScale == True:

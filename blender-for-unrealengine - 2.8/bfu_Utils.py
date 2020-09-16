@@ -928,7 +928,7 @@ def UpdateUnrealPotentialError():
 			if Asset.obj not in objToCheck:
 				objToCheck.append(Asset.obj)
 			for child in GetExportDesiredChilds(Asset.obj):
-				if child not in objToCheck:
+				if child not in objToCheck and not (Asset.obj.type == 'ARMATURE' and child.hide):
 					objToCheck.append(child)
 
 	MeshTypeToCheck = []
@@ -1034,7 +1034,7 @@ def UpdateUnrealPotentialError():
 		for obj in MeshTypeToCheck:
 			ArmatureModifiers = 0
 			for modif in obj.modifiers:
-				if modif.type == "ARMATURE" :
+				if modif.type == "ARMATURE":
 					ArmatureModifiers = ArmatureModifiers + 1
 			if ArmatureModifiers > 1:
 				MyError = PotentialErrors.add()
@@ -1047,8 +1047,8 @@ def UpdateUnrealPotentialError():
 		#check the parameter of Modifier ARMATURE
 		for obj in MeshTypeToCheck:
 			for modif in obj.modifiers:
-				if modif.type == "ARMATURE" :
-					if modif.use_deform_preserve_volume == True:
+				if modif.type == "ARMATURE":
+					if modif.use_deform_preserve_volume:
 						MyError = PotentialErrors.add()
 						MyError.name = obj.name
 						MyError.type = 2
@@ -1063,25 +1063,26 @@ def UpdateUnrealPotentialError():
 		for obj in objToCheck:
 			if GetAssetType(obj) == "SkeletalMesh":
 				for bone in obj.data.bones:
-					if bone.bbone_segments > 1:
-						MyError = PotentialErrors.add()
-						MyError.name = obj.name
-						MyError.type = 2
-						MyError.text = 'In object3 "'+obj.name+'" the bone named "'+bone.name+'". The parameter Bendy Bones / Segments must be set to 1.'
-						MyError.object = obj
-						MyError.itemName = bone.name
-						MyError.correctRef = "BoneSegments"
-						MyError.correctlabel = 'Set Bone Segments to 1'
+					if not obj.exportDeformOnly or bone.use_deform:
+						if bone.bbone_segments > 1:
+							MyError = PotentialErrors.add()
+							MyError.name = obj.name
+							MyError.type = 2
+							MyError.text = 'In object "'+obj.name+'" the bone named "'+bone.name+'". The parameter Bendy Bones / Segments must be set to 1.'
+							MyError.object = obj
+							MyError.itemName = bone.name
+							MyError.correctRef = "BoneSegments"
+							MyError.correctlabel = 'Set Bone Segments to 1'
 
-					if bone.use_inherit_scale == False:
-						MyError = PotentialErrors.add()
-						MyError.name = obj.name
-						MyError.type = 2
-						MyError.text = 'In object2 "'+obj.name+'" the bone named "'+bone.name+'". The parameter Inherit Scale must be set to True.'
-						MyError.object = obj
-						MyError.itemName = bone.name
-						MyError.correctRef = "InheritScale"
-						MyError.correctlabel = 'Set Inherit Scale to True'
+						if bone.use_inherit_scale == False:
+							MyError = PotentialErrors.add()
+							MyError.name = obj.name
+							MyError.type = 2
+							MyError.text = 'In object "'+obj.name+'" the bone named "'+bone.name+'". The parameter Inherit Scale must be set to True.'
+							MyError.object = obj
+							MyError.itemName = bone.name
+							MyError.correctRef = "InheritScale"
+							MyError.correctlabel = 'Set Inherit Scale to True'
 
 	def CheckArmatureValidChild():
 		#Check that skeleton also has a mesh to export
@@ -1106,26 +1107,20 @@ def UpdateUnrealPotentialError():
 		#Check that skeleton have multiples roots
 		for obj in objToCheck:
 			if GetAssetType(obj) == "SkeletalMesh":
-			
 				rootBones = []
-				if obj.exportDeformOnly == False:	
-					for bone in obj.data.bones:
-						if bone.parent == None:
-							rootBones.append(bone)
-				
-				
-				if obj.exportDeformOnly == True:	
+				if obj.exportDeformOnly:
 					for bone in obj.data.bones:
 						if bone.use_deform == True:
 							rootBone = getRootBoneParent(bone)
-							if rootBone not in rootBones:
+							if not rootBone:
 								rootBones.append(bone)
-
-
-
-							
-							
-							
+							elif rootBone not in rootBones:
+								rootBones.append(rootBone)
+				else:
+					for bone in obj.data.bones:
+						if not bone.parent:
+							rootBones.append(bone)
+				
 				if len(rootBones) > 1:
 					MyError = PotentialErrors.add()
 					MyError.name = obj.name
@@ -1140,9 +1135,9 @@ def UpdateUnrealPotentialError():
 		#Check that skeleton have at less one deform bone
 		for obj in objToCheck:
 			if GetAssetType(obj) == "SkeletalMesh":
-				if obj.exportDeformOnly == True:
+				if obj.exportDeformOnly:
 					for bone in obj.data.bones:
-						if bone.use_deform == True:
+						if bone.use_deform:
 							return
 					MyError = PotentialErrors.add()
 					MyError.name = obj.name
