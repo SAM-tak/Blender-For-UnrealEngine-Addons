@@ -735,14 +735,21 @@ class AnimationCurveNodeWrapper:
         'LCL_SCALING': ("Lcl Scaling", "S", ("X", "Y", "Z")),
         'SHAPE_KEY': ("DeformPercent", "DeformPercent", ("DeformPercent",)),
         'CAMERA_FOCAL': ("FocalLength", "FocalLength", ("FocalLength",)),
+        'CUSTOM': ("Value", "Value", ("Value",)),
     }
 
     def __init__(self, elem_key, kind, force_keying, force_startend_keying, default_values=...):
         self.elem_keys = [elem_key]
         assert(kind in self.kinds)
-        self.fbx_group = [self.kinds[kind][0]]
-        self.fbx_gname = [self.kinds[kind][1]]
-        self.fbx_props = [self.kinds[kind][2]]
+        if kind == 'CUSTOM':
+            self.fbx_group = [default_values[0]]
+            self.fbx_gname = [default_values[0]]
+            self.fbx_props = [(default_values[0],)]
+            default_values = (0.0,)
+        else:
+            self.fbx_group = [self.kinds[kind][0]]
+            self.fbx_gname = [self.kinds[kind][1]]
+            self.fbx_props = [self.kinds[kind][2]]
         self.force_keying = force_keying
         self.force_startend_keying = force_startend_keying
         self._keys = []  # (frame, values, write_flags)

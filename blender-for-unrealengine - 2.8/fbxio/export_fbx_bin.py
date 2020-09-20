@@ -573,7 +573,12 @@ def fbx_data_empty_elements(root, empty, scene_data):
     null = elem_data_single_int64(root, b"NodeAttribute", get_fbx_uuid_from_key(empty_key))
     null.add_string(fbx_name_class(empty.name.encode(), b"NodeAttribute"))
     val = empty.bdata.get('fbx_type', None)
-    null.add_string(val.encode() if val and isinstance(val, str) else b"Null")
+	
+	#empty groups = LODS
+    if empty.parent is None and empty.name.startswith("LOD"):
+        null.add_string(b"LodGroup")
+    else:
+        null.add_string(val.encode() if val and isinstance(val, str) else b"Null")
 
     elem_data_single_string(null, b"TypeFlags", b"Null")
 
@@ -1968,6 +1973,16 @@ def fbx_animations_do(scene_data, ref_id, f_start, f_end, start_zero, objects=No
                                ACNW(ob_obj.key, 'LCL_SCALING', force_key, force_sek, scale))
         p_rots[ob_obj] = rot
 
+    # Loop through the data empties to get the root object to associate the custom values
+    custom_curves = {}
+    for root_obj, root_key in scene_data.data_empties.items():
+        ACNW = AnimationCurveNodeWrapper
+        for curve_name in bpy.data.objects[root_obj.name].keys():
+            value = bpy.data.objects[root_obj.name][curve_name]
+            if isinstance(value, float):
+                custom_curves[curve_name]=(ACNW(root_obj.key, 'CUSTOM', force_key, force_sek, (curve_name,)), root_obj.name)
+                print("!##CUSTOM", root_obj.name, root_obj.key, curve_name)
+
     force_key = (simplify_fac == 0.0)
     animdata_shapes = {}
 
@@ -2006,6 +2021,9 @@ def fbx_animations_do(scene_data, ref_id, f_start, f_end, start_zero, objects=No
             anim_shape.add_keyframe(real_currframe, (shape.value * 100.0,))
         for anim_camera, camera in animdata_cameras.values():
             anim_camera.add_keyframe(real_currframe, (camera.lens,))
+        for custom_curve_name, (custom_curve, custom_curve_key) in custom_curves.items():
+            # add custom animation curve for UnrealEngine
+            custom_curve.add_keyframe(real_currframe, (bpy.data.objects[custom_curve_key][custom_curve_name],))
         currframe += bake_step
 
     scene.frame_set(back_currframe, subframe=0.0)
@@ -2040,6 +2058,18 @@ def fbx_animations_do(scene_data, ref_id, f_start, f_end, start_zero, objects=No
         if not anim_camera:
             continue
         for elem_key, group_key, group, fbx_group, fbx_gname in anim_camera.get_final_data(scene, ref_id, force_keep):
+            anim_data = animations.setdefault(elem_key, ("dummy_unused_key", {}))
+            anim_data[1][fbx_group] = (group_key, group, fbx_gname)
+
+    # And UE4 Custom Values
+    for custom_curve_name, (custom_curve, custom_curve_key) in custom_curves.items():
+        final_keys = {}
+        custom_curve.simplify(simplify_fac, bake_step, force_keep)
+        if not custom_curve:
+            continue
+        print('UE4 Custom Values', custom_curve_name)
+        finaldata = custom_curve.get_final_data(scene, ref_id, force_keep)
+        for elem_key, group_key, group, fbx_group, fbx_gname in finaldata:
             anim_data = animations.setdefault(elem_key, ("dummy_unused_key", {}))
             anim_data[1][fbx_group] = (group_key, group, fbx_gname)
 
