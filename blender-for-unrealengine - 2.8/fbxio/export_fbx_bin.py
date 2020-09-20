@@ -2310,7 +2310,7 @@ def fbx_data_from_scene(scene, depsgraph, settings):
                 data_meshes[ob_obj] = (get_blenderID_key(tmp_me), tmp_me, True)
             # Change armatures back.
             for armature, pose_position in backup_pose_positions:
-                print((armature, pose_position))
+                #print((armature, pose_position))
                 armature.pose_position = pose_position
                 # Update now, so we don't leave modified state after last object was exported.
             # Re-enable temporary disabled modifiers.

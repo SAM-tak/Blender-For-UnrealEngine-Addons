@@ -100,31 +100,30 @@ def RescaleRigConsraints(obj, scale):
 				c.distance *= scale
 				
 def RescaleShapeKeysCurve(obj, scale):
-	print("A")
+	#print("A")
 	if obj.data.shape_keys is None: #Optimisation
 		return
-	print("B")
+	#print("B")
 	if obj.data.shape_keys.animation_data is None:
 		return
-	print("C")
+	#print("C")
 	if obj.data.shape_keys.animation_data.drivers is None:
 		return
-	print("D")
-	
+	#print("D")
 		
 	for driver in obj.data.shape_keys.animation_data.drivers:
-		print("E")
+		#print("E")
 		for key in driver.keyframe_points:
 			key.co[1] *= scale
 			key.handle_left[1] *=scale
 			key.handle_right[1] *=scale
 		
 		for mod in driver.modifiers:
-			print("F")
+			#print("F")
 			if mod.type == "GENERATOR":
 				mod.coefficients[0] *=scale #coef: +
 				mod.coefficients[1] *=scale #coef: x
-				print("scale")
+				#print("scale")
 
 def GetAllCollisionObj():
 	#Get any object that can be understood as a collision or a socket by unreal
