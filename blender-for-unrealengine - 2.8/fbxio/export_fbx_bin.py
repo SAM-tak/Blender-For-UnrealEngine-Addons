@@ -555,6 +555,7 @@ def fbx_data_element_custom_properties(props, bid):
             elem_props_set(props, "p_integer", k.encode(), v, custom=True)
         elif isinstance(v, float):
             elem_props_set(props, "p_double", k.encode(), v, custom=True)
+            print('p_double', k.encode(), v)
         elif list_val:
             if len(list_val) == 3:
                 elem_props_set(props, "p_vector", k.encode(), list_val, custom=True)
@@ -1960,6 +1961,7 @@ def fbx_animations_do(scene_data, ref_id, f_start, f_end, start_zero, objects=No
     back_currframe = scene.frame_current
     animdata_ob = {}
     p_rots = {}
+    custom_curves = {}
 
     for ob_obj in objects:
         if ob_obj.parented_to_armature:
@@ -1972,16 +1974,30 @@ def fbx_animations_do(scene_data, ref_id, f_start, f_end, start_zero, objects=No
                                ACNW(ob_obj.key, 'LCL_ROTATION', force_key, force_sek, rot_deg),
                                ACNW(ob_obj.key, 'LCL_SCALING', force_key, force_sek, scale))
         p_rots[ob_obj] = rot
+        if scene_data.settings.use_custom_props and ob_obj.is_bone:
+            bid = ob_obj.bdata_pose_bone
+            rna_properties = {prop.identifier for prop in bid.bl_rna.properties if prop.is_runtime}
+            for curve_name in bid.keys():
+                if curve_name == '_RNA_UI' or curve_name in rna_properties:
+                    continue
+                value = ob_obj.bdata_pose_bone[curve_name]
+                if isinstance(value, float):
+                    custom_curves[curve_name]=(ACNW(ob_obj.key, 'CUSTOM', force_key, force_sek, (curve_name,)), ob_obj.bdata_pose_bone)
+                    #print("!##BONE CUSTOM", ob_obj.bdata_pose_bone.name, ob_obj.key, curve_name)
 
     # Loop through the data empties to get the root object to associate the custom values
-    custom_curves = {}
-    for root_obj, root_key in scene_data.data_empties.items():
-        ACNW = AnimationCurveNodeWrapper
-        for curve_name in bpy.data.objects[root_obj.name].keys():
-            value = bpy.data.objects[root_obj.name][curve_name]
-            if isinstance(value, float):
-                custom_curves[curve_name]=(ACNW(root_obj.key, 'CUSTOM', force_key, force_sek, (curve_name,)), root_obj.name)
-                print("!##CUSTOM", root_obj.name, root_obj.key, curve_name)
+    if scene_data.settings.use_custom_props:
+        for root_obj, root_key in scene_data.data_empties.items():
+            ACNW = AnimationCurveNodeWrapper
+            bid = bpy.data.objects[root_obj.name]
+            rna_properties = {prop.identifier for prop in bid.bl_rna.properties if prop.is_runtime}
+            for curve_name in bid.keys():
+                if curve_name == '_RNA_UI' or curve_name in rna_properties:
+                    continue
+                value = bid[curve_name]
+                if isinstance(value, float):
+                    custom_curves[curve_name]=(ACNW(root_obj.key, 'CUSTOM', force_key, force_sek, (curve_name,)), bid)
+                    #print("!##CUSTOM", bid.name, root_obj.key, curve_name)
 
     force_key = (simplify_fac == 0.0)
     animdata_shapes = {}
@@ -2021,9 +2037,9 @@ def fbx_animations_do(scene_data, ref_id, f_start, f_end, start_zero, objects=No
             anim_shape.add_keyframe(real_currframe, (shape.value * 100.0,))
         for anim_camera, camera in animdata_cameras.values():
             anim_camera.add_keyframe(real_currframe, (camera.lens,))
-        for custom_curve_name, (custom_curve, custom_curve_key) in custom_curves.items():
+        for custom_curve_name, (custom_curve, custom_curve_holder) in custom_curves.items():
             # add custom animation curve for UnrealEngine
-            custom_curve.add_keyframe(real_currframe, (bpy.data.objects[custom_curve_key][custom_curve_name],))
+            custom_curve.add_keyframe(real_currframe, (custom_curve_holder[custom_curve_name],))
         currframe += bake_step
 
     scene.frame_set(back_currframe, subframe=0.0)
@@ -2067,7 +2083,6 @@ def fbx_animations_do(scene_data, ref_id, f_start, f_end, start_zero, objects=No
         custom_curve.simplify(simplify_fac, bake_step, force_keep)
         if not custom_curve:
             continue
-        print('UE4 Custom Values', custom_curve_name)
         finaldata = custom_curve.get_final_data(scene, ref_id, force_keep)
         for elem_key, group_key, group, fbx_group, fbx_gname in finaldata:
             anim_data = animations.setdefault(elem_key, ("dummy_unused_key", {}))
