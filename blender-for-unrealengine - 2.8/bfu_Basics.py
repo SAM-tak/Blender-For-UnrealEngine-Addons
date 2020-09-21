@@ -180,7 +180,7 @@ def ResetArmaturePose(obj):
 		b.location = Vector((0,0,0))
 
 def GetIfActionIsAssociated(action, boneNames):
-	print(boneNames)
+	#print(boneNames)
 	for group in action.groups:
 		for fcurve in group.channels:
 			s=fcurve.data_path
@@ -188,8 +188,8 @@ def GetIfActionIsAssociated(action, boneNames):
 			end = s.rfind('"]')
 			if start>0 and end>0:
 				substring = s[start+2:end]
-				print(s)
-				print(substring)
+				#print(s)
+				#print(substring)
 				if substring in boneNames:
 					return True
 	return False
