@@ -927,7 +927,7 @@ def UpdateUnrealPotentialError():
 			if Asset.obj not in objToCheck:
 				objToCheck.append(Asset.obj)
 			for child in GetExportDesiredChilds(Asset.obj):
-				if child not in objToCheck and not (Asset.obj.type == 'ARMATURE' and child.hide):
+				if child not in objToCheck and not (Asset.obj.type == 'ARMATURE' and not child.hide_viewport):
 					objToCheck.append(child)
 
 	MeshTypeToCheck = []
