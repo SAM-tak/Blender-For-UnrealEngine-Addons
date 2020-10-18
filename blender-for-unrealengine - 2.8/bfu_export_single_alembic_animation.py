@@ -73,6 +73,7 @@ def ExportSingleAlembicAnimation(
     bpy.ops.wm.alembic_export(
         filepath=fullpath,
         check_existing=False,
+        apply_unit_scale=True,
         selected=True,
         triangulate=False,
         )

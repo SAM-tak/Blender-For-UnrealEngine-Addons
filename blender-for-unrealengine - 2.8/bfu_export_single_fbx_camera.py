@@ -21,6 +21,9 @@ import bpy
 import time
 import math
 
+from mathutils import Matrix
+from bpy_extras.io_utils import axis_conversion
+
 if "bpy" in locals():
     import importlib
     if "bfu_write_text" in locals():
@@ -39,6 +42,9 @@ from . import bfu_utils
 from .bfu_utils import *
 from . import bfu_export_utils
 from .bfu_export_utils import *
+
+from .fbxio import export_fbx_bin
+importlib.reload(export_fbx_bin)
 
 
 def ExportSingleFbxCamera(
@@ -80,10 +86,14 @@ def ExportSingleFbxCamera(
     VerifiDirs(absdirpath)
     fullpath = os.path.join(absdirpath, filename)
 
-    bpy.ops.export_scene.fbx(
+    export_fbx_bin.save(
+        op,
+        bpy.context,
         filepath=fullpath,
         check_existing=False,
         use_selection=True,
+        global_matrix=axis_conversion(to_forward='-Z', to_up='Y').to_4x4(),
+        apply_unit_scale=True,
         global_scale=GetObjExportScale(obj),
         object_types={'CAMERA'},
         use_custom_props=addon_prefs.exportWithCustomProps,

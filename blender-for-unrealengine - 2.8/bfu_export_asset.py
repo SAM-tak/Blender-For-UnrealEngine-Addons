@@ -72,6 +72,7 @@ from .bfu_export_single_static_mesh_collection import *
 
 
 def ExportAllAssetByList(
+    op,
     originalScene,
     targetobjects,
     targetActionName,
@@ -102,6 +103,7 @@ def ExportAllAssetByList(
             if col in targetcollection:
                 # StaticMesh collection
                 ExportSingleStaticMeshCollection(
+                    op,
                     originalScene,
                     GetCollectionExportDir(),
                     GetCollectionExportFileName(col),
@@ -119,6 +121,7 @@ def ExportAllAssetByList(
                 UserStartFrame = scene.frame_start
                 UserEndFrame = scene.frame_end
                 ExportSingleFbxCamera(
+                        op,
                         originalScene,
                         GetObjExportDir(obj),
                         GetObjExportFileName(obj),
@@ -140,6 +143,7 @@ def ExportAllAssetByList(
             # StaticMesh
             if GetAssetType(obj) == "StaticMesh" and scene.static_export:
                 ExportSingleStaticMesh(
+                    op,
                     originalScene,
                     GetObjExportDir(obj),
                     GetObjExportFileName(obj),
@@ -161,6 +165,7 @@ def ExportAllAssetByList(
             # SkeletalMesh
             if GetAssetType(obj) == "SkeletalMesh" and scene.skeletal_export:
                 ExportSingleSkeletalMesh(
+                    op,
                     originalScene,
                     GetObjExportDir(obj),
                     GetObjExportFileName(obj),
@@ -203,6 +208,7 @@ def ExportAllAssetByList(
                             UserStartFrame = scene.frame_start
                             UserEndFrame = scene.frame_end
                             ExportSingleFbxAction(
+                                op,
                                 originalScene,
                                 animExportDir,
                                 GetActionExportFileName(obj, action),
@@ -221,6 +227,7 @@ def ExportAllAssetByList(
                             UserStartFrame = scene.frame_start
                             UserEndFrame = scene.frame_end
                             ExportSingleFbxAction(
+                                op,
                                 originalScene,
                                 animExportDir,
                                 GetActionExportFileName(obj, action),
@@ -238,6 +245,7 @@ def ExportAllAssetByList(
                     if obj.ExportNLA:
                         scene.frame_end += 1
                         ExportSingleFbxNLAAnim(
+                            op,
                             originalScene,
                             animExportDir,
                             GetNLAExportFileName(obj),
@@ -248,7 +256,7 @@ def ExportAllAssetByList(
     UpdateProgress(CounterEnd(s))
 
 
-def PrepareAndSaveDataForExport():
+def PrepareAndSaveDataForExport(op):
 
     scene = bpy.context.scene
     addon_prefs = bpy.context.preferences.addons[__package__].preferences
@@ -331,6 +339,7 @@ def PrepareAndSaveDataForExport():
                 assetList.append(Asset.obj)
 
     ExportAllAssetByList(
+        op=op,
         originalScene=scene,
         targetobjects=assetList,
         targetActionName=actionNames,
@@ -382,5 +391,5 @@ def PrepareAndSaveDataForExport():
             layer_col_children.hide_viewport = childCol[3]
 
 
-def ExportForUnrealEngine():
-    PrepareAndSaveDataForExport()
+def ExportForUnrealEngine(op):
+    PrepareAndSaveDataForExport(op)

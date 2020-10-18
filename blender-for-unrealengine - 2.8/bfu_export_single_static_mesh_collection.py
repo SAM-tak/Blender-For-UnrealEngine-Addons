@@ -46,6 +46,7 @@ from .bfu_export_single_static_mesh import *
 
 
 def ExportSingleStaticMeshCollection(
+        op,
         originalScene,
         dirpath,
         filename,
@@ -62,7 +63,7 @@ def ExportSingleStaticMeshCollection(
     bpy.context.scene.collection.objects.link(obj)
     obj.instance_type = 'COLLECTION'
     obj.instance_collection = bpy.data.collections[collectionName]
-    ExportSingleStaticMesh(originalScene, dirpath, filename, obj)
+    ExportSingleStaticMesh(op, originalScene, dirpath, filename, obj)
 
     # Remove the created collection
     SelectSpecificObject(obj)

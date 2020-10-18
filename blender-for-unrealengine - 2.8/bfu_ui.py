@@ -2506,12 +2506,6 @@ class BFU_PT_Export(bpy.types.Panel):
         def execute(self, context):
             scene = bpy.context.scene
 
-            def CheckIfFbxPluginIsActivated():
-                is_enabled, is_loaded = addon_utils.check("io_scene_fbx")
-                if is_enabled and is_enabled:
-                    return True
-                return False
-
             def GetIfOneTypeCheck():
                 if (scene.static_export
                         or scene.static_collection_export
@@ -2523,13 +2517,6 @@ class BFU_PT_Export(bpy.types.Panel):
                 else:
                     return False
 
-            if not CheckIfFbxPluginIsActivated():
-                self.report(
-                    {'WARNING'},
-                    'Add-on FBX format is not activated!' +
-                    ' Edit > Preferences > Add-ons > And check "FBX format"')
-                return {'FINISHED'}
-
             if GetIfOneTypeCheck():
                 # Primary check	if file is saved
                 # to avoid windows PermissionError
@@ -2538,7 +2525,7 @@ class BFU_PT_Export(bpy.types.Panel):
                     scene.UnrealExportedAssetsList.clear()
                     s = CounterStart()
                     UpdateNameHierarchy()
-                    bfu_export_asset.ExportForUnrealEngine()
+                    bfu_export_asset.ExportForUnrealEngine(self)
                     bfu_write_text.WriteAllTextFiles()
 
                     if len(scene.UnrealExportedAssetsList) > 0:
