@@ -20,7 +20,6 @@
 import bpy
 import time
 import math
-import os
 
 from mathutils import Matrix
 from bpy_extras.io_utils import axis_conversion
@@ -129,6 +128,7 @@ def ExportSingleSkeletalMesh(
             global_matrix=axis_conversion(to_forward='-Z', to_up='Y').to_4x4(),
             apply_unit_scale=True,
             global_scale=GetObjExportScale(active),
+            apply_scale_options='FBX_SCALE_NONE',
             object_types={
                 'ARMATURE',
                 'EMPTY',
@@ -140,7 +140,12 @@ def ExportSingleSkeletalMesh(
             mesh_smooth_type="FACE",
             add_leaf_bones=False,
             use_armature_deform_only=active.exportDeformOnly,
+            armature_nodetype='NULL',
             bake_anim=False,
+            path_mode='AUTO',
+            embed_textures=False,
+            batch_mode='OFF',
+            use_batch_own_dir=True,
             use_metadata=addon_prefs.exportWithMetaData,
             primary_bone_axis=active.exportPrimaryBoneAxis,
             secondary_bone_axis=active.exporSecondaryBoneAxis,
