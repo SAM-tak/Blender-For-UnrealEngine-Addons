@@ -193,7 +193,7 @@ class BFU_PT_ObjectProperties(bpy.types.Panel):
 
 		layout = self.layout
 		obj = context.object
-		addon_prefs = bpy.context.user_preferences.addons["blender-for-unrealengine"].preferences
+		addon_prefs = bpy.context.user_preferences.addons[__package__].preferences
 
 		if obj is not None:
 
@@ -355,7 +355,7 @@ class BFU_PT_ObjectImportProperties(bpy.types.Panel):
 
 		layout = self.layout
 		obj = context.object
-		addon_prefs = bpy.context.user_preferences.addons["blender-for-unrealengine"].preferences
+		addon_prefs = bpy.context.user_preferences.addons[__package__].preferences
 
 		if addon_prefs.UseGeneratedScripts == True:
 			if obj is not None:
@@ -799,7 +799,7 @@ class BFU_PT_CollisionsAndSockets(bpy.types.Panel):
 
 	def draw(self, context):
 
-		addon_prefs = bpy.context.user_preferences.addons["blender-for-unrealengine"].preferences
+		addon_prefs = bpy.context.user_preferences.addons[__package__].preferences
 
 		def ActiveModeIs(targetMode): #Return True is active mode ==
 			obj = bpy.context.active_object
@@ -1001,7 +1001,7 @@ class BFU_PT_Nomenclature(bpy.types.Panel):
 
 	def draw(self, context):
 		scn = context.scene
-		addon_prefs = bpy.context.user_preferences.addons["blender-for-unrealengine"].preferences
+		addon_prefs = bpy.context.user_preferences.addons[__package__].preferences
 
 		#Presets
 		row = self.layout.row(align=True)
@@ -1071,7 +1071,7 @@ class BFU_PT_ImportScript(bpy.types.Panel):
 
 	def draw(self, context):
 		scn = context.scene
-		addon_prefs = bpy.context.user_preferences.addons["blender-for-unrealengine"].preferences
+		addon_prefs = bpy.context.user_preferences.addons[__package__].preferences
 
 		#Sub folder
 		if addon_prefs.UseGeneratedScripts == True:
@@ -1440,7 +1440,7 @@ class BFU_PT_Clipboard(bpy.types.Panel):
 	def draw(self, context):
 		scn = context.scene
 		layout = self.layout
-		addon_prefs = bpy.context.user_preferences.addons["blender-for-unrealengine"].preferences
+		addon_prefs = bpy.context.user_preferences.addons[__package__].preferences
 
 		if addon_prefs.UseGeneratedScripts == True:
 			layout.label(text="Click on one of the buttons to copy the import command.", icon='INFO')
