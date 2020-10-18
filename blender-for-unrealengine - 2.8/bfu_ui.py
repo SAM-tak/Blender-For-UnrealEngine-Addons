@@ -1655,7 +1655,7 @@ class BFU_PT_AvancedObjectProperties(bpy.types.Panel):
             ('-Y', "-Y", ""),
             ('-Z', "-Z", ""),
             ],
-        default='Y',
+        default='X',
         )
 
     bpy.types.Object.exporSecondaryBoneAxis = EnumProperty(
@@ -1668,7 +1668,7 @@ class BFU_PT_AvancedObjectProperties(bpy.types.Panel):
             ('-Y', "-Y", ""),
             ('-Z', "-Z", ""),
             ],
-        default='X',
+        default='-Z',
         )
 
     bpy.types.Object.MoveToCenterForExport = BoolProperty(
