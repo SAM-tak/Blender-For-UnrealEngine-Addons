@@ -107,7 +107,7 @@ def ExportSingleStaticMesh(
         use_armature_deform_only=active.exportDeformOnly,
         bake_anim=False,
         use_metadata=addon_prefs.exportWithMetaData,
-        primary_bone_axis=active.exportPrimaryBaneAxis,
+        primary_bone_axis=active.exportPrimaryBoneAxis,
         secondary_bone_axis=active.exporSecondaryBoneAxis,
         axis_forward=active.exportAxisForward,
         axis_up=active.exportAxisUp,

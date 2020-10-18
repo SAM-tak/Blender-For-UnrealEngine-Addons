@@ -96,7 +96,7 @@ def ExportSingleFbxCamera(
         bake_anim_step=GetAnimSample(obj),
         bake_anim_simplify_factor=obj.SimplifyAnimForExport,
         use_metadata=addon_prefs.exportWithMetaData,
-        primary_bone_axis=obj.exportPrimaryBaneAxis,
+        primary_bone_axis=obj.exportPrimaryBoneAxis,
         secondary_bone_axis=obj.exporSecondaryBoneAxis,
         axis_forward=obj.exportAxisForward,
         axis_up=obj.exportAxisUp,

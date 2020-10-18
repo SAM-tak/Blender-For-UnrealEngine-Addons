@@ -143,7 +143,7 @@ def ExportSingleFbxAction(
             bake_anim_step=GetAnimSample(active),
             bake_anim_simplify_factor=active.SimplifyAnimForExport,
             use_metadata=addon_prefs.exportWithMetaData,
-            primary_bone_axis=active.exportPrimaryBaneAxis,
+            primary_bone_axis=active.exportPrimaryBoneAxis,
             secondary_bone_axis=active.exporSecondaryBoneAxis,
             axis_forward=active.exportAxisForward,
             axis_up=active.exportAxisUp,
