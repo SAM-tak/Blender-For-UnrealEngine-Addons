@@ -98,6 +98,7 @@ def ExportSingleFbxCamera(
         use_metadata=addon_prefs.exportWithMetaData,
         primary_bone_axis=obj.exportPrimaryBoneAxis,
         secondary_bone_axis=obj.exporSecondaryBoneAxis,
+        reverse_symmetry_rightside_bone_forwarding = True,
         axis_forward=obj.exportAxisForward,
         axis_up=obj.exportAxisUp,
         bake_space_transform=False
