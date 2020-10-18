@@ -48,6 +48,7 @@ importlib.reload(export_fbx_bin)
 
 
 def ExportSingleSkeletalMesh(
+        op,
         originalScene,
         dirpath,
         filename,
