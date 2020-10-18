@@ -125,7 +125,7 @@ def ExportSingleSkeletalMesh(
             filepath=fullpath,
             check_existing=False,
             use_selection=True,
-            global_matrix=axis_conversion(to_forward='-Z', to_up='Y').to_4x4(),
+            global_matrix=axis_conversion(to_forward=active.exportAxisForward, to_up=active.exportAxisUp).to_4x4(),
             apply_unit_scale=True,
             global_scale=GetObjExportScale(active),
             apply_scale_options='FBX_SCALE_NONE',
