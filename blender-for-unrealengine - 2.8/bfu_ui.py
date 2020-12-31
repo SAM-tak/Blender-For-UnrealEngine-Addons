@@ -1295,6 +1295,26 @@ class BFU_PT_AnimProperties(bpy.types.Panel):
             UpdateExportActionList(bpy.context.object)
             return {'FINISHED'}
 
+    class BFU_OT_SelectAllActionsButton(Operator):
+        bl_label = "Select All"
+        bl_idname = "object.selectallactions"
+        bl_description = "Select all actions"
+
+        def execute(self, context):
+            for Anim in context.object.exportActionList:  # CollectionProperty
+                Anim.use = True
+            return {'FINISHED'}
+
+    class BFU_OT_DeselectAllActionsButton(Operator):
+        bl_label = "Deselect All"
+        bl_idname = "object.deselectallactions"
+        bl_description = "Deselect all actions"
+
+        def execute(self, context):
+            for Anim in context.object.exportActionList:  # CollectionProperty
+                Anim.use = False
+            return {'FINISHED'}
+
     class BFU_OT_ShowActionToExport(Operator):
         bl_label = "Show action(s)"
         bl_idname = "object.showobjaction"
@@ -1409,6 +1429,9 @@ class BFU_PT_AnimProperties(bpy.types.Panel):
                             ActionListProperty.operator(
                                 "object.updateobjactionlist",
                                 icon='RECOVER_LAST')
+                            ActionSelectionButtons = layout.row()
+                            ActionSelectionButtons.operator("object.selectallactions")
+                            ActionSelectionButtons.operator("object.deselectallactions")
                         if obj.exportActionEnum == "export_specific_prefix":
                             ActionListProperty.prop(obj, 'PrefixNameToExport')
 
@@ -2806,6 +2829,8 @@ classes = (
     BFU_PT_AnimProperties,
     BFU_PT_AnimProperties.BFU_UL_ActionExportTarget,
     BFU_PT_AnimProperties.BFU_OT_UpdateObjActionListButton,
+    BFU_PT_AnimProperties.BFU_OT_SelectAllActionsButton,
+    BFU_PT_AnimProperties.BFU_OT_DeselectAllActionsButton,
     BFU_PT_AnimProperties.BFU_OT_ShowActionToExport,
 
     BFU_PT_CollectionProperties,
