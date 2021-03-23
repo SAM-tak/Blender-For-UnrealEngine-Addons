@@ -48,7 +48,7 @@ from .bfu_export_single_static_mesh import *
 from . import bfu_check_potential_error
 
 
-def ProcessCollectionExport(col):
+def ProcessCollectionExport(op, col):
 
     addon_prefs = bpy.context.preferences.addons[__package__].preferences
     dirpath = GetCollectionExportDir(bpy.data.collections[col])
@@ -58,7 +58,7 @@ def ProcessCollectionExport(col):
     MyAsset = scene.UnrealExportedAssetsList.add()
     MyAsset.StartAssetExport(collection=col)
 
-    obj = ExportSingleStaticMeshCollection(dirpath, GetCollectionExportFileName(col), col)
+    obj = ExportSingleStaticMeshCollection(op, dirpath, GetCollectionExportFileName(col), col)
 
     MyAsset.SetObjData(obj)
 
@@ -81,6 +81,7 @@ def ProcessCollectionExport(col):
 
 
 def ExportSingleStaticMeshCollection(
+        op,
         dirpath,
         filename,
         collectionName
@@ -98,7 +99,7 @@ def ExportSingleStaticMeshCollection(
     bpy.context.scene.collection.objects.link(obj)
     obj.instance_type = 'COLLECTION'
     obj.instance_collection = collection
-    ExportSingleStaticMesh(dirpath, filename, obj)
+    ExportSingleStaticMesh(op, dirpath, filename, obj)
     obj.exportFolderName = collection.exportFolderName
     return obj
 

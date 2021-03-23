@@ -22,6 +22,9 @@ import time
 import math
 import os
 
+from mathutils import Matrix
+from bpy_extras.io_utils import axis_conversion
+
 if "bpy" in locals():
     import importlib
     if "bfu_write_text" in locals():
@@ -34,6 +37,8 @@ if "bpy" in locals():
         importlib.reload(bfu_export_utils)
     if "bfu_check_potential_error" in locals():
         importlib.reload(bfu_check_potential_error)
+    if "export_fbx_bin" in locals():
+        importlib.reload(export_fbx_bin)
 
 from . import bfu_write_text
 from . import bfu_basics
@@ -43,9 +48,10 @@ from .bfu_utils import *
 from . import bfu_export_utils
 from .bfu_export_utils import *
 from . import bfu_check_potential_error
+from .fbxio import export_fbx_bin
 
 
-def ProcessSkeletalMeshExport(obj):
+def ProcessSkeletalMeshExport(op, obj):
     addon_prefs = bpy.context.preferences.addons[__package__].preferences
     dirpath = GetObjExportDir(obj)
     absdirpath = bpy.path.abspath(dirpath)
@@ -54,7 +60,7 @@ def ProcessSkeletalMeshExport(obj):
     MyAsset = scene.UnrealExportedAssetsList.add()
     MyAsset.StartAssetExport(obj)
 
-    ExportSingleSkeletalMesh(scene, absdirpath, GetObjExportFileName(obj), obj)
+    ExportSingleSkeletalMesh(op, scene, absdirpath, GetObjExportFileName(obj), obj)
     file = MyAsset.files.add()
     file.name = GetObjExportFileName(obj)
     file.path = dirpath
@@ -73,6 +79,7 @@ def ProcessSkeletalMeshExport(obj):
 
 
 def ExportSingleSkeletalMesh(
+        op,
         originalScene,
         dirpath,
         filename,
@@ -138,11 +145,17 @@ def ExportSingleSkeletalMesh(
 
     if (export_procedure == "normal"):
         pass
-        bpy.ops.export_scene.fbx(
+        export_fbx_bin.save(
+            op,
+            bpy.context,
             filepath=fullpath,
             check_existing=False,
             use_selection=True,
+            use_active_collection=False,
+            global_matrix=axis_conversion(to_forward=active.exportAxisForward, to_up=active.exportAxisUp).to_4x4(),
+            apply_unit_scale=True,
             global_scale=GetObjExportScale(active),
+            apply_scale_options='FBX_SCALE_NONE',
             object_types={
                 'ARMATURE',
                 'EMPTY',
@@ -154,10 +167,16 @@ def ExportSingleSkeletalMesh(
             mesh_smooth_type="FACE",
             add_leaf_bones=False,
             use_armature_deform_only=active.exportDeformOnly,
+            armature_nodetype='NULL',
             bake_anim=False,
+            path_mode='AUTO',
+            embed_textures=False,
+            batch_mode='OFF',
+            use_batch_own_dir=True,
             use_metadata=addon_prefs.exportWithMetaData,
-            primary_bone_axis=active.exportPrimaryBaneAxis,
+            primary_bone_axis=active.exportPrimaryBoneAxis,
             secondary_bone_axis=active.exporSecondaryBoneAxis,
+            reverse_symmetry_rightside_bone_forwarding=True,
             axis_forward=active.exportAxisForward,
             axis_up=active.exportAxisUp,
             bake_space_transform=False

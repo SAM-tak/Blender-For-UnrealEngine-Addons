@@ -699,7 +699,7 @@ class BFU_PT_BlenderForUnrealObject(bpy.types.Panel):
         default='Y',
         )
 
-    bpy.types.Object.exportPrimaryBaneAxis = EnumProperty(
+    bpy.types.Object.exportPrimaryBoneAxis = EnumProperty(
         name="Primary Axis Bone",
         items=[
             ('X', "X", ""),
@@ -709,7 +709,7 @@ class BFU_PT_BlenderForUnrealObject(bpy.types.Panel):
             ('-Y', "-Y", ""),
             ('-Z', "-Z", ""),
             ],
-        default='Y',
+        default='X',
         )
 
     bpy.types.Object.exporSecondaryBoneAxis = EnumProperty(
@@ -722,7 +722,7 @@ class BFU_PT_BlenderForUnrealObject(bpy.types.Panel):
             ('-Y', "-Y", ""),
             ('-Z', "-Z", ""),
             ],
-        default='X',
+        default='-Z',
         )
 
     bpy.types.Object.MoveToCenterForExport = BoolProperty(
@@ -948,6 +948,26 @@ class BFU_PT_BlenderForUnrealObject(bpy.types.Panel):
                 )
             return {'FINISHED'}
 
+    class BFU_OT_SelectAllActionsButton(Operator):
+        bl_label = "Select All"
+        bl_idname = "object.selectallactions"
+        bl_description = "Select all actions"
+
+        def execute(self, context):
+            for Anim in context.object.exportActionList:  # CollectionProperty
+                Anim.use = True
+            return {'FINISHED'}
+
+    class BFU_OT_DeselectAllActionsButton(Operator):
+        bl_label = "Deselect All"
+        bl_idname = "object.deselectallactions"
+        bl_description = "Deselect all actions"
+
+        def execute(self, context):
+            for Anim in context.object.exportActionList:  # CollectionProperty
+                Anim.use = False
+            return {'FINISHED'}
+
     class BFU_MT_ObjectGlobalPropertiesPresets(bpy.types.Menu):
         bl_label = 'Global Properties Presets'
         preset_subdir = 'blender-for-unrealengine/global-properties-presets'
@@ -1018,7 +1038,7 @@ class BFU_PT_BlenderForUnrealObject(bpy.types.Panel):
                             'obj.exportGlobalScale',
                             'obj.exportAxisForward',
                             'obj.exportAxisUp',
-                            'obj.exportPrimaryBaneAxis',
+                            'obj.exportPrimaryBoneAxis',
                             'obj.exporSecondaryBoneAxis',
                             'obj.MoveToCenterForExport',
                             'obj.RotateToZeroForExport',
@@ -1352,7 +1372,7 @@ class BFU_PT_BlenderForUnrealObject(bpy.types.Panel):
                         AxisProperty.prop(obj, 'exportAxisUp')
                         if GetAssetType(obj) == "SkeletalMesh":
                             BoneAxisProperty = layout.column()
-                            BoneAxisProperty.prop(obj, 'exportPrimaryBaneAxis')
+                            BoneAxisProperty.prop(obj, 'exportPrimaryBoneAxis')
                             BoneAxisProperty.prop(obj, 'exporSecondaryBoneAxis')
                 else:
                     layout.label(text='(No properties to show.)')
@@ -1404,6 +1424,9 @@ class BFU_PT_BlenderForUnrealObject(bpy.types.Panel):
                                     ActionListProperty.operator(
                                         "object.updateobjactionlist",
                                         icon='RECOVER_LAST')
+                                    ActionSelectionButtons = layout.row()
+                                    ActionSelectionButtons.operator("object.selectallactions")
+                                    ActionSelectionButtons.operator("object.deselectallactions")
                                 if obj.exportActionEnum == "export_specific_prefix":
                                     ActionListProperty.prop(obj, 'PrefixNameToExport')
 
@@ -2239,13 +2262,6 @@ class BFU_PT_Export(bpy.types.Panel):
                     else:
                         return False
 
-                if not CheckPluginIsActivated("io_scene_fbx"):
-                    self.report(
-                        {'WARNING'},
-                        'Add-on FBX format is not activated!' +
-                        ' Edit > Preferences > Add-ons > And check "FBX format"')
-                    return False
-
                 if not GetIfOneTypeCheck():
                     self.report(
                         {'WARNING'},
@@ -2276,7 +2292,7 @@ class BFU_PT_Export(bpy.types.Panel):
             scene.UnrealExportedAssetsList.clear()
             counter = CounterTimer()
             bfu_check_potential_error.UpdateNameHierarchy()
-            bfu_export_asset.ExportForUnrealEngine()
+            bfu_export_asset.ExportForUnrealEngine(Operator)
             bfu_write_text.WriteAllTextFiles()
 
             self.report(
@@ -2584,6 +2600,8 @@ classes = (
     BFU_PT_BlenderForUnrealObject.BFU_OT_ComputLightMap,
     BFU_PT_BlenderForUnrealObject.BFU_UL_ActionExportTarget,
     BFU_PT_BlenderForUnrealObject.BFU_OT_UpdateObjActionListButton,
+    BFU_PT_BlenderForUnrealObject.BFU_OT_SelectAllActionsButton,
+    BFU_PT_BlenderForUnrealObject.BFU_OT_DeselectAllActionsButton,
     BFU_PT_BlenderForUnrealObject.BFU_OT_ShowActionToExport,
     BFU_PT_BlenderForUnrealObject.BFU_UL_CollectionExportTarget,
     BFU_PT_BlenderForUnrealObject.BFU_OT_UpdateCollectionButton,
