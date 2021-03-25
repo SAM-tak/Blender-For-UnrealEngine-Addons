@@ -233,6 +233,8 @@ class AnimationManagment():
         self.action_influence = None
 
     def SaveAnimationData(self, obj):
+        if obj.animation_data is None:
+            obj.animation_data_create()
         self.action = obj.animation_data.action
         self.action_extrapolation = obj.animation_data.action_extrapolation
         self.action_blend_type = obj.animation_data.action_blend_type
