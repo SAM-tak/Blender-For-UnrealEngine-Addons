@@ -41,6 +41,8 @@ def ApplyProxyData(obj):
 
     # Apply proxy data if needed.
     if obj.ExportProxyChild is not None:
+        
+        obj.data = obj.ExportProxyChild.data.copy()
 
         def ReasignProxySkeleton(newArmature, oldArmature):
             for select in bpy.context.selected_objects:
@@ -90,10 +92,11 @@ def ApplyProxyData(obj):
                         selectedObj.name += "_UEProxyChild"
                         selectedObj.parent = obj
                         selectedObj.matrix_world = SavedPos
-                    else:
+                    elif selectedObj.parent != obj:
+                        print(selectedObj, selectedObj.parent, OldProxyChildArmature)
                         ToRemove.append(selectedObj)
             ReasignProxySkeleton(obj, OldProxyChildArmature)
-            SavedSelect = GetCurrentSelection()
+            SavedSelect = GetCurrentSelection()            
             RemovedObjects = CleanDeleteObjects(ToRemove)
             SavedSelect.RemoveFromListByName(RemovedObjects)
             SetCurrentSelection(SavedSelect)

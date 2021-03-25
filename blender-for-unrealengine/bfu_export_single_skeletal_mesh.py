@@ -144,7 +144,6 @@ def ExportSingleSkeletalMesh(
     bpy.context.object.data.pose_position = 'REST'
 
     if (export_procedure == "normal"):
-        pass
         export_fbx_bin.save(
             op,
             bpy.context,
