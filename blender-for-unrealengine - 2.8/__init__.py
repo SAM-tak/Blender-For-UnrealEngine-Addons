@@ -50,13 +50,13 @@ from . import bfu_basics
 from . import bfu_utils
 
 bl_info = {
-    'name': 'Blender for UnrealEngine',
+    'name': 'Blender for UnrealEngine Old',
     'description': "This add-ons allows to easily export several "
     "objects at the same time for use in unreal engine 4.",
     'author': 'Loux Xavier (BleuRaven)',
     'version': (0, 2, 8, 0),  # Rev 0.2.8.0
     'blender': (2, 90, 0),
-    'location': 'View3D > UI > Unreal Engine 4',
+    'location': 'View3D > UI > Unreal Engine 4 Old',
     'warning': '',
     "wiki_url": "https://github.com/xavier150/" \
                 "Blender-For-UnrealEngine-Addons" \
