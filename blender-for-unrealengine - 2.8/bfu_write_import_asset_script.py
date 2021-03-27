@@ -422,7 +422,7 @@ def WriteImportAssetScript():
         ImportScript += desiredTaskType+"_PreImportPath = []" + "\n"
         ImportScript += "print('========================= Creating "+desiredTaskType+" tasks... =========================')" + "\n"
 
-        for asset in scene.UnrealExportedAssetsList:
+        for asset in scene.BFUO_ExportedAssetsList:
             if desiredTaskType == asset.assetType or (GetIsAnimation(asset.assetType) and desiredTaskType == "Animation" ):
                 ImportScript += WriteOneAssetTaskDef(asset)
 
@@ -435,7 +435,7 @@ def WriteImportAssetScript():
 
     def ExsitTypeInExportedAssets(desiredTaskType):
         #Cree un groupe de tache uniquement si il trouve des taches a faire si non return
-        for asset in scene.UnrealExportedAssetsList:
+        for asset in scene.BFUO_ExportedAssetsList:
             if asset.assetType == desiredTaskType:
                 return True
             if GetIsAnimation(asset.assetType) and desiredTaskType == "Animation":

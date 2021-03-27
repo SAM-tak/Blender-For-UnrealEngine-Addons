@@ -172,7 +172,7 @@ def ExportSingleFbxNLAAnim(
 
     CleanDeleteObjects(bpy.context.selected_objects)
 
-    MyAsset = originalScene.UnrealExportedAssetsList.add()
+    MyAsset = originalScene.BFUO_ExportedAssetsList.add()
     MyAsset.assetName = filename
     MyAsset.assetType = "NlAnim"
     MyAsset.exportPath = absdirpath

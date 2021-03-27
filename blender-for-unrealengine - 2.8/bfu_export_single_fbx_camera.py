@@ -125,7 +125,7 @@ def ExportSingleFbxCamera(
 
     exportTime = CounterEnd(s)
 
-    MyAsset = originalScene.UnrealExportedAssetsList.add()
+    MyAsset = originalScene.BFUO_ExportedAssetsList.add()
     MyAsset.assetName = filename
     MyAsset.assetType = "Camera"
     MyAsset.exportPath = absdirpath

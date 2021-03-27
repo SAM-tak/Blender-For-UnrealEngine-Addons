@@ -93,7 +93,7 @@ def ExportAllAssetByList(
     def UpdateProgress(time=None):
         update_progress(
             "Export assets",
-            len(originalScene.UnrealExportedAssetsList)/NumberAssetToExport,
+            len(originalScene.BFUO_ExportedAssetsList)/NumberAssetToExport,
             time
         )
     UpdateProgress()

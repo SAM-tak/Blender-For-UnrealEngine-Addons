@@ -199,7 +199,7 @@ def ExportSingleFbxAction(
     CleanDeleteObjects(bpy.context.selected_objects)
 
     exportTime = CounterEnd(s)
-    MyAsset = originalScene.UnrealExportedAssetsList.add()
+    MyAsset = originalScene.BFUO_ExportedAssetsList.add()
     MyAsset.assetName = filename
     MyAsset.assetType = actionType
     MyAsset.exportPath = absdirpath

@@ -136,7 +136,7 @@ def ExportSingleStaticMesh(
 
     exportTime = CounterEnd(s)
 
-    MyAsset = originalScene.UnrealExportedAssetsList.add()
+    MyAsset = originalScene.BFUO_ExportedAssetsList.add()
     MyAsset.assetName = filename
     MyAsset.assetType = meshType
     MyAsset.exportPath = absdirpath

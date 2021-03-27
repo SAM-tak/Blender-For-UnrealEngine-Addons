@@ -82,7 +82,7 @@ def ExportSingleAlembicAnimation(
     scene.frame_end -= obj.EndFramesOffset
     exportTime = CounterEnd(s)
 
-    MyAsset = originalScene.UnrealExportedAssetsList.add()
+    MyAsset = originalScene.BFUO_ExportedAssetsList.add()
     MyAsset.assetName = filename
     MyAsset.assetType = "Alembic"
     MyAsset.exportPath = absdirpath

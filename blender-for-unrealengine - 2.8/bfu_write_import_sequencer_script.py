@@ -151,7 +151,7 @@ def WriteImportSequencerScript():
     ImportScript += "\n"
 
     #Import camera
-    for asset in scene.UnrealExportedAssetsList:
+    for asset in scene.BFUO_ExportedAssetsList:
         if (asset.assetType == "Camera"):
             camera = asset.object
             ImportScript += "\t" + "#import " + camera.name + "\n"

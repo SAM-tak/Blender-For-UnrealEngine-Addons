@@ -239,7 +239,7 @@ class BFUO_AP_AddonPreferences(bpy.types.AddonPreferences):
 
     class BFUO_OT_OpenDocumentationTargetPage(Operator):
         bl_label = "Documentation"
-        bl_idname = "object.open_documentation_target_page"
+        bl_idname = "bfuo.open_documentation_target_page"
         bl_description = "Clic for open documentation page on GitHub"
         octicon: StringProperty(default="")
 
@@ -254,7 +254,7 @@ class BFUO_AP_AddonPreferences(bpy.types.AddonPreferences):
 
     class BFUO_OT_NewReleaseInfo(Operator):
         bl_label = "Open last release page"
-        bl_idname = "object.new_release_info"
+        bl_idname = "bfuo.new_release_info"
         bl_description = "Clic for open latest release page."
 
         def execute(self, context):
@@ -271,7 +271,7 @@ class BFUO_AP_AddonPreferences(bpy.types.AddonPreferences):
             newRow = tagetlayout.row()
             newRow.label(text=name)
             docOperator = newRow.operator(
-                "object.open_documentation_target_page",
+                "bfuo.open_documentation_target_page",
                 icon="HELP",
                 text=""
                 )
@@ -281,7 +281,7 @@ class BFUO_AP_AddonPreferences(bpy.types.AddonPreferences):
             newRow = tagetlayout.row()
             newRow.prop(self, name)
             docOperator = newRow.operator(
-                "object.open_documentation_target_page",
+                "bfuo.open_documentation_target_page",
                 icon="HELP",
                 text=""
                 )
@@ -341,7 +341,7 @@ class BFUO_AP_AddonPreferences(bpy.types.AddonPreferences):
 
         updateButton = layout.row()
         updateButton.scale_y = 2.0
-        updateButton.operator("object.new_release_info", icon="TIME")
+        updateButton.operator("bfuo.new_release_info", icon="TIME")
 
 
 class BFUO_PT_BlenderForUnrealObject(bpy.types.Panel):
@@ -355,7 +355,7 @@ class BFUO_PT_BlenderForUnrealObject(bpy.types.Panel):
 
     class BFUO_OT_OpenDocumentationPage(Operator):
         bl_label = "Documentation"
-        bl_idname = "object.open_documentation_page"
+        bl_idname = "bfuo.open_documentation_page"
         bl_description = "Clic for open documentation page on GitHub"
 
         def execute(self, context):
@@ -373,7 +373,7 @@ class BFUO_PT_BlenderForUnrealObject(bpy.types.Panel):
 
         layout = self.layout
         docsButton = layout.row()
-        docsButton.operator("object.open_documentation_page", icon="HELP")
+        docsButton.operator("bfuo.open_documentation_page", icon="HELP")
 
 
 class BFUO_PT_BlenderForUnreal(bpy.types.Panel):
@@ -387,14 +387,14 @@ class BFUO_PT_BlenderForUnreal(bpy.types.Panel):
 
     class BFUO_MT_ObjectGlobalPropertiesPresets(bpy.types.Menu):
         bl_label = 'Global Properties Presets'
-        preset_subdir = 'blender-for-unrealengine/global-properties-presets'
+        preset_subdir = 'blender-for-unrealengine-old/global-properties-presets'
         preset_operator = 'script.execute_preset'
         draw = bpy.types.Menu.draw_preset
 
     from bl_operators.presets import AddPresetBase
 
     class BFUO_OT_AddObjectGlobalPropertiesPreset(AddPresetBase, Operator):
-        bl_idname = 'object.add_globalproperties_preset'
+        bl_idname = 'bfuo.add_globalproperties_preset'
         bl_label = 'Add or remove a preset for Global properties'
         bl_description = 'Add or remove a preset for Global properties'
         preset_menu = 'BFUO_MT_ObjectGlobalPropertiesPresets'
@@ -457,7 +457,7 @@ class BFUO_PT_BlenderForUnreal(bpy.types.Panel):
                         ]
 
         # Directory to store the presets
-        preset_subdir = 'blender-for-unrealengine/global-properties-presets'
+        preset_subdir = 'blender-for-unrealengine-old/global-properties-presets'
 
     def draw(self, contex):
         pass
@@ -598,12 +598,12 @@ class BFUO_PT_ObjectProperties(bpy.types.Panel):
                     text='Global Properties Presets'
                     )
                 row.operator(
-                    'object.add_globalproperties_preset',
+                    'bfuo.add_globalproperties_preset',
                     text='',
                     icon='ADD'
                     )
                 row.operator(
-                    'object.add_globalproperties_preset',
+                    'bfuo.add_globalproperties_preset',
                     text='',
                     icon='REMOVE'
                     ).remove_active = True
@@ -910,7 +910,7 @@ class BFUO_PT_ObjectImportProperties(bpy.types.Panel):
 
     class BFUO_OT_ComputLightMap(Operator):
         bl_label = "Calculate surface area"
-        bl_idname = "object.computlightmap"
+        bl_idname = "bfuo.computlightmap"
         bl_description = "Click to calculate the surface of the object"
 
         def execute(self, context):
@@ -924,7 +924,7 @@ class BFUO_PT_ObjectImportProperties(bpy.types.Panel):
 
     class BFUO_OT_ComputAllLightMap(Operator):
         bl_label = "Calculate all surface area"
-        bl_idname = "object.computalllightmap"
+        bl_idname = "bfuo.computalllightmap"
         bl_description = (
             "Click to calculate the surface of the all object in the scene"
             )
@@ -1002,11 +1002,11 @@ class BFUO_PT_ObjectImportProperties(bpy.types.Panel):
                     if obj.StaticMeshLightMapEnum == "SurfaceArea":
                         SurfaceAreaLightMap = StaticMeshLightMapRes.column()
                         SurfaceAreaLightMap.operator(
-                            "object.computlightmap",
+                            "bfuo.computlightmap",
                             icon='TEXTURE'
                             )
                         SurfaceAreaLightMap.operator(
-                            "object.computalllightmap",
+                            "bfuo.computalllightmap",
                             icon='TEXTURE'
                             )
                         SurfaceAreaLightMap.prop(
@@ -1268,7 +1268,7 @@ class BFUO_PT_AnimProperties(bpy.types.Panel):
 
     class BFUO_OT_UpdateObjActionListButton(Operator):
         bl_label = "Update action list"
-        bl_idname = "object.updateobjactionlist"
+        bl_idname = "bfuo.updateobjactionlist"
         bl_description = "Update action list"
 
         def execute(self, context):
@@ -1297,7 +1297,7 @@ class BFUO_PT_AnimProperties(bpy.types.Panel):
 
     class BFUO_OT_SelectAllActionsButton(Operator):
         bl_label = "Select All"
-        bl_idname = "object.selectallactions"
+        bl_idname = "bfuo.selectallactions"
         bl_description = "Select all actions"
 
         def execute(self, context):
@@ -1307,7 +1307,7 @@ class BFUO_PT_AnimProperties(bpy.types.Panel):
 
     class BFUO_OT_DeselectAllActionsButton(Operator):
         bl_label = "Deselect All"
-        bl_idname = "object.deselectallactions"
+        bl_idname = "bfuo.deselectallactions"
         bl_description = "Deselect all actions"
 
         def execute(self, context):
@@ -1317,7 +1317,7 @@ class BFUO_PT_AnimProperties(bpy.types.Panel):
 
     class BFUO_OT_ShowActionToExport(Operator):
         bl_label = "Show action(s)"
-        bl_idname = "object.showobjaction"
+        bl_idname = "bfuo.showobjaction"
         bl_description = (
             "Click to show actions that are" +
             " to be exported with this armature."
@@ -1427,11 +1427,11 @@ class BFUO_PT_AnimProperties(bpy.types.Panel):
                                 rows=5
                             )
                             ActionListProperty.operator(
-                                "object.updateobjactionlist",
+                                "bfuo.updateobjactionlist",
                                 icon='RECOVER_LAST')
                             ActionSelectionButtons = layout.row()
-                            ActionSelectionButtons.operator("object.selectallactions")
-                            ActionSelectionButtons.operator("object.deselectallactions")
+                            ActionSelectionButtons.operator("bfuo.selectallactions")
+                            ActionSelectionButtons.operator("bfuo.deselectallactions")
                         if obj.exportActionEnum == "export_specific_prefix":
                             ActionListProperty.prop(obj, 'PrefixNameToExport')
 
@@ -1474,7 +1474,7 @@ class BFUO_PT_AnimProperties(bpy.types.Panel):
                         ArmaturePropertyInfo.label(
                             text=actionFeedback,
                             icon='INFO')
-                        ArmaturePropertyInfo.operator("object.showobjaction")
+                        ArmaturePropertyInfo.operator("bfuo.showobjaction")
 
                 else:
                     layout.label(
@@ -1539,7 +1539,7 @@ class BFUO_PT_CollectionProperties(bpy.types.Panel):
 
     class BFUO_OT_UpdateCollectionButton(Operator):
         bl_label = "Update collection list"
-        bl_idname = "object.updatecollectionlist"
+        bl_idname = "bfuo.updatecollectionlist"
         bl_description = "Update collection list"
 
         def execute(self, context):
@@ -1568,7 +1568,7 @@ class BFUO_PT_CollectionProperties(bpy.types.Panel):
 
     class BFUO_OT_ShowCollectionToExport(Operator):
         bl_label = "Show action(s)"
-        bl_idname = "object.showscenecollection"
+        bl_idname = "bfuo.showscenecollection"
         bl_description = "Click to show collections to export"
 
         def execute(self, context):
@@ -1613,7 +1613,7 @@ class BFUO_PT_CollectionProperties(bpy.types.Panel):
             rows=5
         )
         collectionListProperty.operator(
-            "object.updatecollectionlist",
+            "bfuo.updatecollectionlist",
             icon='RECOVER_LAST')
 
         collectionPropertyInfo = layout.row().box().split(factor=0.75)
@@ -1622,7 +1622,7 @@ class BFUO_PT_CollectionProperties(bpy.types.Panel):
             str(collectionNum) +
             " Collection(s) will be exported with this armature.")
         collectionPropertyInfo.label(text=collectionFeedback, icon='INFO')
-        collectionPropertyInfo.operator("object.showscenecollection")
+        collectionPropertyInfo.operator("bfuo.showscenecollection")
         layout.label(text='Note: The collection are exported like StaticMesh.')
 
 
@@ -1783,7 +1783,7 @@ class BFUO_PT_CollisionsAndSockets(bpy.types.Panel):
 
     class BFUO_OT_ConvertToCollisionButtonBox(Operator):
         bl_label = "Convert to box (UBX)"
-        bl_idname = "object.converttoboxcollision"
+        bl_idname = "bfuo.converttoboxcollision"
         bl_description = (
             "Convert selected mesh(es) to Unreal" +
             " collision ready for export (Boxes type)")
@@ -1805,7 +1805,7 @@ class BFUO_PT_CollisionsAndSockets(bpy.types.Panel):
 
     class BFUO_OT_ConvertToCollisionButtonCapsule(Operator):
         bl_label = "Convert to capsule (UCP)"
-        bl_idname = "object.converttocapsulecollision"
+        bl_idname = "bfuo.converttocapsulecollision"
         bl_description = (
             "Convert selected mesh(es) to Unreal collision" +
             " ready for export (Capsules type)")
@@ -1827,7 +1827,7 @@ class BFUO_PT_CollisionsAndSockets(bpy.types.Panel):
 
     class BFUO_OT_ConvertToCollisionButtonSphere(Operator):
         bl_label = "Convert to sphere (USP)"
-        bl_idname = "object.converttospherecollision"
+        bl_idname = "bfuo.converttospherecollision"
         bl_description = (
             "Convert selected mesh(es)" +
             " to Unreal collision ready for export (Spheres type)")
@@ -1849,7 +1849,7 @@ class BFUO_PT_CollisionsAndSockets(bpy.types.Panel):
 
     class BFUO_OT_ConvertToCollisionButtonConvex(Operator):
         bl_label = "Convert to convex shape (UCX)"
-        bl_idname = "object.converttoconvexcollision"
+        bl_idname = "bfuo.converttoconvexcollision"
         bl_description = (
             "Convert selected mesh(es) to Unreal" +
             " collision ready for export (Convex shapes type)")
@@ -1871,7 +1871,7 @@ class BFUO_PT_CollisionsAndSockets(bpy.types.Panel):
 
     class BFUO_OT_ConvertToStaticSocketButton(Operator):
         bl_label = "Convert to StaticMesh socket"
-        bl_idname = "object.converttostaticsocket"
+        bl_idname = "bfuo.converttostaticsocket"
         bl_description = (
             "Convert selected Empty(s) to Unreal sockets" +
             " ready for export (StaticMesh)")
@@ -1893,7 +1893,7 @@ class BFUO_PT_CollisionsAndSockets(bpy.types.Panel):
 
     class BFUO_OT_ConvertToSkeletalSocketButton(Operator):
         bl_label = "Convert to SkeletalMesh socket"
-        bl_idname = "object.converttoskeletalsocket"
+        bl_idname = "bfuo.converttoskeletalsocket"
         bl_description = (
             "Convert selected Empty(s)" +
             " to Unreal sockets ready for export (SkeletalMesh)")
@@ -1958,16 +1958,16 @@ class BFUO_PT_CollisionsAndSockets(bpy.types.Panel):
         else:
             convertStaticCollisionButtons.enabled = False
         convertStaticCollisionButtons.operator(
-            "object.converttoboxcollision",
+            "bfuo.converttoboxcollision",
             icon='MESH_CUBE')
         convertStaticCollisionButtons.operator(
-            "object.converttoconvexcollision",
+            "bfuo.converttoconvexcollision",
             icon='MESH_ICOSPHERE')
         convertStaticCollisionButtons.operator(
-            "object.converttocapsulecollision",
+            "bfuo.converttocapsulecollision",
             icon='MESH_CAPSULE')
         convertStaticCollisionButtons.operator(
-            "object.converttospherecollision",
+            "bfuo.converttospherecollision",
             icon='MESH_UVSPHERE')
 
         convertButtons = self.layout.row().split(factor=0.80)
@@ -1979,7 +1979,7 @@ class BFUO_PT_CollisionsAndSockets(bpy.types.Panel):
         else:
             convertStaticSocketButtons.enabled = False
         convertStaticSocketButtons.operator(
-            "object.converttostaticsocket",
+            "bfuo.converttostaticsocket",
             icon='OUTLINER_DATA_EMPTY')
 
         if addon_prefs.useGeneratedScripts:
@@ -1995,7 +1995,7 @@ class BFUO_PT_CollisionsAndSockets(bpy.types.Panel):
             else:
                 convertSkeletalSocketButtons.enabled = False
             convertSkeletalSocketButtons.operator(
-                "object.converttoskeletalsocket",
+                "bfuo.converttoskeletalsocket",
                 icon='OUTLINER_DATA_EMPTY')
 
         obj = context.object
@@ -2027,7 +2027,7 @@ class BFUO_PT_Nomenclature(bpy.types.Panel):
     from bl_operators.presets import AddPresetBase
 
     class BFUO_OT_AddNomenclaturePreset(AddPresetBase, Operator):
-        bl_idname = 'object.add_nomenclature_preset'
+        bl_idname = 'bfuo.add_nomenclature_preset'
         bl_label = 'Add or remove a preset for Nomenclature'
         bl_description = 'Add or remove a preset for Nomenclature'
         preset_menu = 'BFUO_MT_NomenclaturePresets'
@@ -2176,9 +2176,9 @@ class BFUO_PT_Nomenclature(bpy.types.Panel):
         # Presets
         row = self.layout.row(align=True)
         row.menu('BFUO_MT_NomenclaturePresets', text='Nomenclature Presets')
-        row.operator('object.add_nomenclature_preset', text='', icon='ADD')
+        row.operator('bfuo.add_nomenclature_preset', text='', icon='ADD')
         row.operator(
-            'object.add_nomenclature_preset',
+            'bfuo.add_nomenclature_preset',
             text='',
             icon='REMOVE').remove_active = True
 
@@ -2315,7 +2315,7 @@ class BFUO_PT_Export(bpy.types.Panel):
 
     class BFUO_OT_ShowAssetToExport(Operator):
         bl_label = "Show asset(s)"
-        bl_idname = "object.showasset"
+        bl_idname = "bfuo.showasset"
         bl_description = "Click to show assets that are to be exported."
 
         def execute(self, context):
@@ -2364,13 +2364,13 @@ class BFUO_PT_Export(bpy.types.Panel):
 
     class BFUO_OT_CheckPotentialErrorPopup(Operator):
         bl_label = "Check potential errors"
-        bl_idname = "object.checkpotentialerror"
+        bl_idname = "bfuo.checkpotentialerror"
         bl_description = "Check potential errors"
         correctedProperty = 0
 
         class BFUO_OT_FixitTarget(Operator):
             bl_label = "Fix it !"
-            bl_idname = "object.fixit_objet"
+            bl_idname = "bfuo.fixit_objet"
             bl_description = "Correct target error"
             errorIndex: bpy.props.IntProperty(default=-1)
 
@@ -2381,7 +2381,7 @@ class BFUO_PT_Export(bpy.types.Panel):
 
         class BFUO_OT_SelectObjectButton(Operator):
             bl_label = "Select(Object)"
-            bl_idname = "object.select_error_objet"
+            bl_idname = "bfuo.select_error_objet"
             bl_description = "Select target Object."
             errorIndex: bpy.props.IntProperty(default=-1)
 
@@ -2391,7 +2391,7 @@ class BFUO_PT_Export(bpy.types.Panel):
 
         class BFUO_OT_SelectVertexButton(Operator):
             bl_label = "Select(Vertex)"
-            bl_idname = "object.select_error_vertex"
+            bl_idname = "bfuo.select_error_vertex"
             bl_description = "Select target Vertex."
             errorIndex: bpy.props.IntProperty(default=-1)
 
@@ -2401,7 +2401,7 @@ class BFUO_PT_Export(bpy.types.Panel):
 
         class BFUO_OT_SelectPoseBoneButton(Operator):
             bl_label = "Select(PoseBone)"
-            bl_idname = "object.select_error_posebone"
+            bl_idname = "bfuo.select_error_posebone"
             bl_description = "Select target Pose Bone."
             errorIndex: bpy.props.IntProperty(default=-1)
 
@@ -2411,7 +2411,7 @@ class BFUO_PT_Export(bpy.types.Panel):
 
         class BFUO_OT_OpenPotentialErrorDocs(Operator):
             bl_label = "Open docs"
-            bl_idname = "object.open_potential_error_docs"
+            bl_idname = "bfuo.open_potential_error_docs"
             bl_description = "Open potential error docs."
             octicon: StringProperty(default="")
 
@@ -2491,7 +2491,7 @@ class BFUO_PT_Export(bpy.types.Panel):
                         FisrtTextLine = TextLine.row()
                         if (error.docsOcticon != "None"):  # Doc button
                             props = FisrtTextLine.operator(
-                                "object.open_potential_error_docs",
+                                "bfuo.open_potential_error_docs",
                                 icon="HELP",
                                 text="")
                             props.octicon = error.docsOcticon
@@ -2504,26 +2504,26 @@ class BFUO_PT_Export(bpy.types.Panel):
                 ButtonLine = myLine.column()
                 if (error.correctRef != "None"):
                     props = ButtonLine.operator(
-                        "object.fixit_objet",
+                        "bfuo.fixit_objet",
                         text=error.correctlabel)
                     props.errorIndex = x
                 if (error.object is not None):
                     if (error.selectObjectButton):
                         props = ButtonLine.operator(
-                            "object.select_error_objet")
+                            "bfuo.select_error_objet")
                         props.errorIndex = x
                     if (error.selectVertexButton):
                         props = ButtonLine.operator(
-                            "object.select_error_vertex")
+                            "bfuo.select_error_vertex")
                         props.errorIndex = x
                     if (error.selectPoseBoneButton):
                         props = ButtonLine.operator(
-                            "object.select_error_posebone")
+                            "bfuo.select_error_posebone")
                         props.errorIndex = x
 
     class BFUO_OT_ExportForUnrealEngineButton(Operator):
         bl_label = "Export for UnrealEngine 4"
-        bl_idname = "object.exportforunreal"
+        bl_idname = "bfuo.exportforunreal"
         bl_description = "Export all assets of this scene."
 
         def execute(self, context):
@@ -2545,17 +2545,17 @@ class BFUO_PT_Export(bpy.types.Panel):
                 # to avoid windows PermissionError
 
                 if bpy.data.is_saved:
-                    scene.UnrealExportedAssetsList.clear()
+                    scene.BFUO_ExportedAssetsList.clear()
                     s = CounterStart()
                     UpdateNameHierarchy()
                     bfu_export_asset.ExportForUnrealEngine(self)
                     bfu_write_text.WriteAllTextFiles()
 
-                    if len(scene.UnrealExportedAssetsList) > 0:
+                    if len(scene.BFUO_ExportedAssetsList) > 0:
                         self.report(
                             {'INFO'},
                             "Export of " +
-                            str(len(scene.UnrealExportedAssetsList)) +
+                            str(len(scene.BFUO_ExportedAssetsList)) +
                             " asset(s) has been finalized in " +
                             str(round(CounterEnd(s), 2)) +
                             "seconds. Look in console for more info.")
@@ -2694,12 +2694,12 @@ class BFUO_PT_Export(bpy.types.Panel):
         AssetInfo = layout.row().box().split(factor=0.75)
         AssetFeedback = str(AssetNum) + " Asset(s) will be exported."
         AssetInfo.label(text=AssetFeedback, icon='INFO')
-        AssetInfo.operator("object.showasset")
+        AssetInfo.operator("bfuo.showasset")
 
         # Export button :
         checkButton = layout.column()
-        checkButton.operator("object.checkpotentialerror", icon='FILE_TICK')
-        checkButton.operator("object.computalllightmap", icon='TEXTURE')
+        checkButton.operator("bfuo.checkpotentialerror", icon='FILE_TICK')
+        checkButton.operator("bfuo.computalllightmap", icon='TEXTURE')
 
         # exportProperty
         exportOnlySelect = layout.row()
@@ -2707,7 +2707,7 @@ class BFUO_PT_Export(bpy.types.Panel):
 
         exportButton = layout.row()
         exportButton.scale_y = 2.0
-        exportButton.operator("object.exportforunreal", icon='EXPORT')
+        exportButton.operator("bfuo.exportforunreal", icon='EXPORT')
 
 
 class BFUO_PT_Clipboard(bpy.types.Panel):
@@ -2723,7 +2723,7 @@ class BFUO_PT_Clipboard(bpy.types.Panel):
 
     class BFUO_OT_CopyImportAssetScriptCommand(Operator):
         bl_label = "ImportAssetScript"
-        bl_idname = "object.copy_importassetscript_command"
+        bl_idname = "bfuo.copy_importassetscript_command"
         bl_description = "Copy Import Asset Script command"
 
         def execute(self, context):
@@ -2737,7 +2737,7 @@ class BFUO_PT_Clipboard(bpy.types.Panel):
 
     class BFUO_OT_CopyImportSequencerScriptCommand(Operator):
         bl_label = "ImportSequencerScript"
-        bl_idname = "object.copy_importsequencerscript_command"
+        bl_idname = "bfuo.copy_importsequencerscript_command"
         bl_description = "Copy Import Sequencer Script command"
 
         def execute(self, context):
@@ -2759,8 +2759,8 @@ class BFUO_PT_Clipboard(bpy.types.Panel):
                 text="Click on one of the buttons to copy the import command.",
                 icon='INFO')
             copyButton = layout.row()
-            copyButton.operator("object.copy_importassetscript_command")
-            copyButton.operator("object.copy_importsequencerscript_command")
+            copyButton.operator("bfuo.copy_importassetscript_command")
+            copyButton.operator("bfuo.copy_importsequencerscript_command")
             layout.label(
                 text="Then you can paste it into the python console of unreal",
                 icon='INFO')
@@ -2780,7 +2780,7 @@ class BFUO_PT_CorrectAndImprov(bpy.types.Panel):
 
     class BFUO_OT_CorrectExtremUV(Operator):
         bl_label = "Correct extrem UV For Unreal"
-        bl_idname = "object.correct_extrem_uv"
+        bl_idname = "bfuo.correct_extrem_uv"
         bl_description = (
             "Correct extrem UV island of the selected object" +
             " for better use in real time engines"
@@ -2893,7 +2893,7 @@ def register():
     bpy.types.Scene.CollectionExportList = CollectionProperty(
         type=BFUO_OT_SceneCollectionExport)
     bpy.utils.register_class(BFUO_OT_UnrealExportedAsset)
-    bpy.types.Scene.UnrealExportedAssetsList = CollectionProperty(
+    bpy.types.Scene.BFUO_ExportedAssetsList = CollectionProperty(
         type=BFUO_OT_UnrealExportedAsset)
     bpy.utils.register_class(BFUO_OT_UnrealPotentialError)
     bpy.types.Scene.potentialErrorList = CollectionProperty(

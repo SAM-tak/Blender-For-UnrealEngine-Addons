@@ -80,7 +80,7 @@ def ExportSingleConfigParser(config, dirpath, filename):
 
 
 def WriteExportLog():
-    # Write Export log with exported assets in scene.UnrealExportedAssetsList
+    # Write Export log with exported assets in scene.BFUO_ExportedAssetsList
 
     scene = bpy.context.scene
     StaticNum = 0
@@ -89,7 +89,7 @@ def WriteExportLog():
     AnimNum = 0
     CameraNum = 0
 
-    for assets in scene.UnrealExportedAssetsList:
+    for assets in scene.BFUO_ExportedAssetsList:
         if assets.assetType == "StaticMesh":
             StaticNum += 1
         if assets.assetType == "SkeletalMesh":
@@ -100,7 +100,7 @@ def WriteExportLog():
             AnimNum += 1
         if assets.assetType == "Camera":
             CameraNum += 1
-    asset_number = len(scene.UnrealExportedAssetsList)
+    asset_number = len(scene.BFUO_ExportedAssetsList)
     exported_assets = StaticNum+SkeletalNum+AlembicNum+AnimNum+CameraNum
 
     OtherNum = asset_number - exported_assets
@@ -115,7 +115,7 @@ def WriteExportLog():
     ExportLog = "..." + "\n"
     ExportLog += AssetNumberByType
     ExportLog += "\n"
-    for asset in scene.UnrealExportedAssetsList:
+    for asset in scene.BFUO_ExportedAssetsList:
 
         if (asset.assetType == "NlAnim"):
             primaryInfo = "Animation"
@@ -201,7 +201,7 @@ def WriteExportedAssetsDetail():
             config.set(AssetSectionName, animOption+'_import_path', os.path.join(obj.exportFolderName, scene.anim_subfolder_name) )
 
     AssetForImport = []
-    for asset in scene.UnrealExportedAssetsList:
+    for asset in scene.BFUO_ExportedAssetsList:
         if (asset.assetType == "StaticMesh"
         or asset.assetType == "SkeletalMesh"
         or GetIsAnimation(asset.assetType)):
