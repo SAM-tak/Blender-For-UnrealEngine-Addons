@@ -100,6 +100,13 @@ def ApplyProxyData(obj):
             RemovedObjects = CleanDeleteObjects(ToRemove)
             SavedSelect.RemoveFromListByName(RemovedObjects)
             SetCurrentSelection(SavedSelect)
+        else:
+            for select in bpy.context.selected_objects:
+                if select.type == "MESH":
+                    for mod in select.modifiers:
+                        if mod.type == 'ARMATURE':
+                            if mod.object == obj.ExportProxyChild:
+                                mod.object = obj
 
 
 def BakeArmatureAnimation(armature, frame_start, frame_end):
