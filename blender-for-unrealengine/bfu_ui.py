@@ -1517,7 +1517,7 @@ class BFU_PT_BlenderForUnrealObject(bpy.types.Panel):
                         AxisProperty.prop(obj, 'exportAxisUp')
                         if GetAssetType(obj) == "SkeletalMesh":
                             BoneAxisProperty = layout.column()
-                            BoneAxisProperty.prop(obj, 'exportPrimaryBaneAxis')
+                            BoneAxisProperty.prop(obj, 'exportPrimaryBoneAxis')
                             BoneAxisProperty.prop(obj, 'exporSecondaryBoneAxis')
                 else:
                     layout.label(text='(No properties to show.)')

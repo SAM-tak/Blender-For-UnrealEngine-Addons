@@ -21,6 +21,9 @@ import bpy
 import time
 import math
 
+from mathutils import Matrix
+from bpy_extras.io_utils import axis_conversion
+
 if "bpy" in locals():
     import importlib
     if "bfu_write_text" in locals():
@@ -29,30 +32,40 @@ if "bpy" in locals():
         importlib.reload(bfu_basics)
     if "bfu_utils" in locals():
         importlib.reload(bfu_utils)
-    if "bfu_export_utils" in locals():
-        importlib.reload(bfu_export_utils)
     if "bfu_check_potential_error" in locals():
         importlib.reload(bfu_check_potential_error)
 
-from . import bfu_write_text
-from . import bfu_basics
-from .bfu_basics import *
-from . import bfu_utils
-from .bfu_utils import *
+    if "bfu_export_utils" in locals():
+        importlib.reload(bfu_export_utils)
+    if "export_fbx_bin" in locals():
+        importlib.reload(export_fbx_bin)
+
+from .. import bfu_write_text
+from .. import bfu_basics
+from ..bfu_basics import *
+from .. import bfu_utils
+from ..bfu_utils import *
+from .. import bfu_check_potential_error
+
 from . import bfu_export_utils
 from .bfu_export_utils import *
-from . import bfu_check_potential_error
+from ..fbxio import export_fbx_bin
 
-
-def ProcessActionExport(obj, action):
+def ProcessActionExport(op, obj, action):
     scene = bpy.context.scene
-    addon_prefs = bpy.context.preferences.addons[__package__].preferences
+    addon_prefs = GetAddonPrefs()
     dirpath = os.path.join(GetObjExportDir(obj), scene.anim_subfolder_name)
 
     MyAsset = scene.UnrealExportedAssetsList.add()
-    MyAsset.StartAssetExport(obj, action)
+    MyAsset.object = obj
+    MyAsset.skeleton_name = obj.name
+    MyAsset.asset_name = bfu_utils.GetActionExportFileName(obj, action, "")
+    MyAsset.folder_name = obj.exportFolderName
+    MyAsset.asset_type = bfu_utils.GetActionType(action)
 
-    ExportSingleFbxAction(scene, dirpath, GetActionExportFileName(obj, action), obj, action)
+    MyAsset.StartAssetExport()
+
+    ExportSingleFbxAction(op, scene, dirpath, GetActionExportFileName(obj, action), obj, action)
     file = MyAsset.files.add()
     file.name = GetActionExportFileName(obj, action)
     file.path = dirpath
@@ -63,6 +76,7 @@ def ProcessActionExport(obj, action):
 
 
 def ExportSingleFbxAction(
+        op,
         originalScene,
         dirpath,
         filename,
@@ -78,7 +92,9 @@ def ExportSingleFbxAction(
     # Export a single action like a animation or pose
 
     scene = bpy.context.scene
-    addon_prefs = bpy.context.preferences.addons[__package__].preferences
+    addon_prefs = GetAddonPrefs()
+    export_as_proxy = GetExportAsProxy(obj)
+    export_proxy_child = GetExportProxyChild(obj)
 
     if obj.animation_data is None:
         obj.animation_data_create()
@@ -87,24 +103,30 @@ def ExportSingleFbxAction(
     userAction_blend_type = obj.animation_data.action_blend_type
     userAction_influence = obj.animation_data.action_influence
 
-    SafeModeSet('OBJECT')
+    bbpl.utils.SafeModeSet('OBJECT')
 
     SelectParentAndDesiredChilds(obj)
     asset_name = PrepareExportName(obj, True)
-    data_to_remove = DuplicateSelectForExport()
+    if export_as_proxy is False:
+        duplicate_data = DuplicateSelectForExport()
+        SetDuplicateNameForExport(duplicate_data)
+
+    if export_as_proxy is False:
+        MakeSelectVisualReal()
 
     BaseTransform = obj.matrix_world.copy()
     active = bpy.context.view_layer.objects.active
     asset_name.target_object = active
-    if active.ExportAsProxy:
+    if export_as_proxy:
         ApplyProxyData(active)
 
     scene.frame_start = GetDesiredActionStartEndTime(active, targetAction)[0]
     scene.frame_end = GetDesiredActionStartEndTime(active, targetAction)[1]
 
-    if obj.ExportAsProxy:
-        if obj.ExportProxyChild is not None:
+    if export_as_proxy:
+        if export_proxy_child is not None:
             obj.animation_data.action = targetAction  # Apply desired action
+        RemoveSocketFromSelectForProxyArmature()
 
     active.animation_data.action = targetAction  # Apply desired action
     export_procedure = active.bfu_export_procedure
@@ -112,7 +134,7 @@ def ExportSingleFbxAction(
     if addon_prefs.bakeArmatureAction:
         BakeArmatureAnimation(active, scene.frame_start, scene.frame_end)
 
-    ApplyExportTransform(active)
+    ApplyExportTransform(active, "Action")  # Apply export transform before rescale
 
     # This will rescale the rig and unit scale to get a root bone egal to 1
     ShouldRescaleRig = GetShouldRescaleRig(active)
@@ -120,13 +142,15 @@ def ExportSingleFbxAction(
 
         rrf = GetRescaleRigFactor()  # rigRescaleFactor
         savedUnitLength = bpy.context.scene.unit_settings.scale_length
-        bpy.context.scene.unit_settings.scale_length *= 1/rrf
+        bpy.context.scene.unit_settings.scale_length = 0.01  # *= 1/rrf
+
         oldScale = active.scale.z
-        ApplySkeletalExportScale(active, rrf)
-        RescaleAllActionCurve(rrf*oldScale)
+        ApplySkeletalExportScale(active, rrf, is_a_proxy=export_as_proxy)
+        RescaleAllActionCurve(rrf*oldScale, savedUnitLength/0.01)
         for selected in bpy.context.selected_objects:
             if selected.type == "MESH":
-                RescaleShapeKeysCurve(selected, 1/rrf)
+                if export_as_proxy is False:
+                    RescaleShapeKeysCurve(selected, 1/rrf)
         RescaleSelectCurveHook(1/rrf)
         ResetArmaturePose(active)
         RescaleRigConsraints(active, rrf)
@@ -140,18 +164,19 @@ def ExportSingleFbxAction(
         active.animation_data.action_blend_type = 'REPLACE'
         active.animation_data.action_influence = 1
 
-    absdirpath = bpy.path.abspath(dirpath)
-    VerifiDirs(absdirpath)
-    fullpath = os.path.join(absdirpath, filename)
-
     asset_name.SetExportName()
 
     if (export_procedure == "normal"):
-        bpy.ops.export_scene.fbx(
-            filepath=fullpath,
+        export_fbx_bin.save(
+            op,
+            bpy.context,
+            filepath=GetExportFullpath(dirpath, filename),
             check_existing=False,
             use_selection=True,
+            global_matrix=axis_conversion(to_forward=active.exportAxisForward, to_up=active.exportAxisUp).to_4x4(),
+            apply_unit_scale=True,
             global_scale=GetObjExportScale(active),
+            apply_scale_options='FBX_SCALE_NONE',
             object_types={'ARMATURE', 'EMPTY', 'MESH'},
             use_custom_props=addon_prefs.exportWithCustomProps,
             mesh_smooth_type="FACE",
@@ -163,31 +188,37 @@ def ExportSingleFbxAction(
             bake_anim_force_startend_keying=True,
             bake_anim_step=GetAnimSample(active),
             bake_anim_simplify_factor=active.SimplifyAnimForExport,
+            path_mode='AUTO',
+            embed_textures=False,
+            batch_mode='OFF',
+            use_batch_own_dir=True,
             use_metadata=addon_prefs.exportWithMetaData,
-            primary_bone_axis=active.exportPrimaryBaneAxis,
+            primary_bone_axis=active.exportPrimaryBoneAxis,
             secondary_bone_axis=active.exporSecondaryBoneAxis,
+            reverse_symmetry_rightside_bone_forwarding=True,
             axis_forward=active.exportAxisForward,
             axis_up=active.exportAxisUp,
             bake_space_transform=False
             )
 
-    # Rename Action name for export
-    TempName = "ActionAutoRigProTempExportNameForUnreal"
-    OriginalActionName = active.animation_data.action.name
-    active.animation_data.action.name = TempName
+    elif (export_procedure == "auto-rig-pro"):
 
-    if (export_procedure == "auto-rig-pro"):
+        # Rename Action name for export
+        TempName = "ActionAutoRigProTempExportNameForUnreal"
+        OriginalActionName = active.animation_data.action.name
+        active.animation_data.action.name = TempName
+
         ExportAutoProRig(
-            filepath=fullpath,
-            # export_rig_name=GetDesiredExportArmatureName(),
+            filepath=GetExportFullpath(dirpath, filename),
+            # export_rig_name=GetDesiredExportArmatureName(active),
             bake_anim=True,
             anim_export_name_string=active.animation_data.action.name,
             mesh_smooth_type="FACE",
             arp_simplify_fac=active.SimplifyAnimForExport
             )
 
-    # Reset Action name
-    active.animation_data.action.name = OriginalActionName
+        # Reset Action name
+        active.animation_data.action.name = OriginalActionName
 
     asset_name.ResetNames()
 
@@ -206,11 +237,12 @@ def ExportSingleFbxAction(
     if ShouldRescaleRig:
         # Reset Curve an unit
         bpy.context.scene.unit_settings.scale_length = savedUnitLength
-        RescaleAllActionCurve(1/(rrf*oldScale))
+        RescaleAllActionCurve(1/(rrf*oldScale), 0.01/savedUnitLength)
 
-    CleanDeleteObjects(bpy.context.selected_objects)
-    for data in data_to_remove:
-        data.RemoveData()
+    if export_as_proxy is False:
+        CleanDeleteObjects(bpy.context.selected_objects)
+        for data in duplicate_data.data_to_remove:
+            data.RemoveData()
 
         ResetDuplicateNameAfterExport(duplicate_data)
 

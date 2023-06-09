@@ -11,6 +11,8 @@ import time
 
 from itertools import zip_longest, chain
 
+from .. import __package__ as parent_package
+
 if "bpy" in locals():
     import importlib
     if "encode_bin" in locals():

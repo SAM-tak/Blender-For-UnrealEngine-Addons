@@ -5,6 +5,7 @@
 
 import math
 import time
+import re
 
 from collections import namedtuple
 from collections.abc import Iterable
