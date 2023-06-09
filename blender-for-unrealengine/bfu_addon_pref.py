@@ -20,7 +20,7 @@ import os
 import bpy
 import addon_utils
 
-from . import bfu_export_asset
+from .export import bfu_export_asset
 from . import bfu_write_text
 from . import bfu_basics
 from .bfu_basics import *
@@ -77,19 +77,13 @@ class BFU_AP_AddonPreferences(bpy.types.AddonPreferences):
         default=False,
         )
 
-    correctExtremUVScale: BoolProperty(
-        name=(ti('correct_extrem_uv_scale_name')),
-        description=(tt('correct_extrem_uv_scale_desc')),
+    add_skeleton_root_bone: BoolProperty(
+        name=(ti('add_skeleton_root_bone_name')),
+        description=(tt('add_skeleton_root_bone_desc')),
         default=False,
         )
 
-    removeSkeletonRootBone: BoolProperty(
-        name=(ti('remove_skeleton_root_bone_name')),
-        description=(tt('remove_skeleton_root_bone_desc')),
-        default=True,
-        )
-
-    skeletonRootBoneName: StringProperty(
+    skeleton_root_bone_name: StringProperty(
         name=(ti('skeleton_root_bone_name_name')),
         description=(tt('skeleton_root_bone_name_desc')),
         default="ArmatureRoot",
@@ -163,6 +157,18 @@ class BFU_AP_AddonPreferences(bpy.types.AddonPreferences):
         default=1,
         )
 
+    exportCameraAsFBX: BoolProperty(
+        name=(ti('export_camera_as_fbx_name')),
+        description=(tt('export_camera_as_fbx_desc')),
+        default=False,
+        )
+
+    bakeOnlyKeyVisibleInCut: BoolProperty(
+        name=(ti('bake_only_key_visible_in_cut_name')),
+        description=(tt('bake_only_key_visible_in_cut_desc')),
+        default=True,
+        )
+
     ignoreNLAForAction: BoolProperty(
         name=(ti('ignore_nla_for_action_name')),
         description=(tt('ignore_nla_for_action_desc')),
@@ -194,7 +200,7 @@ class BFU_AP_AddonPreferences(bpy.types.AddonPreferences):
         )
 
     collisionColor:  FloatVectorProperty(
-        name='Collision color.',
+        name=ti('collision_color_name'),
         description='Color of the collision in Blender',
         subtype='COLOR',
         size=4,
@@ -203,27 +209,13 @@ class BFU_AP_AddonPreferences(bpy.types.AddonPreferences):
         )
 
     notifyUnitScalePotentialError: BoolProperty(
-        name='Notify UnitScale (PotentialError)',
+        name=ti('notify_unit_scale_potential_error_name'),
         description=(
             'Notify as potential error' +
             ' if the unit scale is not equal to 0.01.'
             ),
         default=True,
         )
-
-    class BFU_OT_OpenDocumentationTargetPage(Operator):
-        bl_label = "Documentation"
-        bl_idname = "object.open_documentation_target_page"
-        bl_description = "Clic for open documentation page on GitHub"
-        octicon: StringProperty(default="")
-
-        def execute(self, context):
-            os.system(
-                "start \"\" " +
-                "https://github.com/xavier150/Blender-For-UnrealEngine-Addons/wiki/How-export-assets" +
-                "#"+self.octicon
-                )
-            return {'FINISHED'}
 
     class BFU_OT_NewReleaseInfo(Operator):
         bl_label = "Open last release page"
@@ -240,48 +232,30 @@ class BFU_AP_AddonPreferences(bpy.types.AddonPreferences):
     def draw(self, context):
         layout = self.layout
 
-        def LabelWithDocButton(tagetlayout, name, docOcticon):
-            newRow = tagetlayout.row()
-            newRow.label(text=name)
-            docOperator = newRow.operator(
-                "object.open_documentation_target_page",
-                icon="HELP",
-                text=""
-                )
-            docOperator.octicon = docOcticon
-
-        def PropWithDocButton(tagetlayout, name, docOcticon):
-            newRow = tagetlayout.row()
-            newRow.prop(self, name)
-            docOperator = newRow.operator(
-                "object.open_documentation_target_page",
-                icon="HELP",
-                text=""
-                )
-            docOperator.octicon = docOcticon
-
         boxColumn = layout.column().split(
             factor=0.5
             )
+        ColumnLeft = boxColumn.column()
+        ColumnRight = boxColumn.column()
 
-        rootBone = boxColumn.box()
+        rootBone = ColumnLeft.box()
 
-        LabelWithDocButton(
+        bfu_ui_utils.LabelWithDocButton(
             rootBone,
             "SKELETON & ROOT BONE",
             "skeleton--root-bone"
             )
-        rootBone.prop(self, "removeSkeletonRootBone")
+        rootBone.prop(self, "add_skeleton_root_bone")
         rootBoneName = rootBone.column()
-        rootBoneName.enabled = not self.removeSkeletonRootBone
-        rootBoneName.prop(self, "skeletonRootBoneName")
+        rootBoneName.enabled = self.add_skeleton_root_bone
+        rootBoneName.prop(self, "skeleton_root_bone_name")
 
         rootBone.prop(self, "rescaleFullRigAtExport")
         newRigScale = rootBone.column()
         newRigScale.enabled = self.rescaleFullRigAtExport == "custom_rescale"
         newRigScale.prop(self, "newRigScale")
 
-        socket = boxColumn.box()
+        socket = ColumnLeft.box()
         socket.label(text='SOCKET')
         socket.prop(self, "staticSocketsAdd90X")
         socket.prop(self, "rescaleSocketsAtExport")
@@ -290,27 +264,27 @@ class BFU_AP_AddonPreferences(bpy.types.AddonPreferences):
         socketRescale.prop(self, "staticSocketsImportedSize")
         socketRescale.prop(self, "skeletalSocketsImportedSize")
 
-        boxColumn = layout.column().split(factor=0.5)
+        camera = ColumnLeft.box()
+        camera.label(text='CAMERA')
+        camera.prop(self, "exportCameraAsFBX")
+        camera.prop(self, "bakeOnlyKeyVisibleInCut")
 
-        data = boxColumn.box()
+        data = ColumnRight.box()
         data.label(text='DATA')
         data.prop(self, "ignoreNLAForAction")
-        PropWithDocButton(data, "correctExtremUVScale", "uv")
         data.prop(self, "bakeArmatureAction")
         data.prop(self, "exportWithCustomProps")
         data.prop(self, "exportWithMetaData")
         data.prop(self, "revertExportPath")
 
-        script = boxColumn.box()
-        script.label(text='IMPORT SCRIPT')
-        script.prop(self, "useGeneratedScripts")
-
-        boxColumn = layout.column().split(factor=0.5)
-
-        other = boxColumn.box()
+        other = ColumnRight.box()
         other.label(text='OTHER')
         other.prop(self, "collisionColor")
         other.prop(self, "notifyUnitScalePotentialError")
+
+        script = ColumnRight.box()
+        script.label(text='IMPORT SCRIPT')
+        script.prop(self, "useGeneratedScripts")
 
         updateButton = layout.row()
         updateButton.scale_y = 2.0
@@ -320,15 +294,7 @@ class BFU_AP_AddonPreferences(bpy.types.AddonPreferences):
 classes = (
     BFU_AP_AddonPreferences,
     BFU_AP_AddonPreferences.BFU_OT_NewReleaseInfo,
-    BFU_AP_AddonPreferences.BFU_OT_OpenDocumentationTargetPage,
 )
-
-
-def menu_func(self, context):
-    layout = self.layout
-    col = layout.column()
-    col.separator(factor=1.0)
-    col.operator(BFU_PT_CorrectAndImprov.BFU_OT_CorrectExtremUV.bl_idname)
 
 
 def register():
@@ -343,5 +309,3 @@ def unregister():
 
     for cls in reversed(classes):
         unregister_class(cls)
-
-    bpy.types.VIEW3D_MT_uv_map.remove(menu_func)

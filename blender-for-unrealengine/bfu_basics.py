@@ -27,6 +27,10 @@ from mathutils import Vector
 from mathutils import Quaternion
 
 
+def GetAddonPrefs():
+    return bpy.context.preferences.addons[__package__].preferences
+
+
 def is_deleted(o):
     if o and o is not None:
         return not (o.name in bpy.data.objects)
@@ -40,15 +44,26 @@ def CheckPluginIsActivated(PluginName):
 
 
 def MoveToGlobalView():
+    local_view_areas = []
     for area in bpy.context.screen.areas:
         if area.type == 'VIEW_3D':
             space = area.spaces[0]
             if space.local_view:  # check if using local view
-                for region in area.regions:
-                    if region.type == 'WINDOW':
-                        # override context and switch to global view
-                        override = {'area': area, 'region': region}
-                        bpy.ops.view3d.localview(override)
+                local_view_areas.append(area)
+
+    for local_view_area in local_view_areas:
+        for region in local_view_area.regions:
+            if region.type == 'WINDOW':
+                # override context and switch to global view
+                override = {'area': local_view_area, 'region': region}
+                bpy.ops.view3d.localview(override)
+
+    return local_view_areas
+
+
+def MoveToLocalView(local_view_areas):
+    # TO DO
+    pass
 
 
 def GetCurrentSelection():
@@ -83,7 +98,7 @@ def GetCurrentSelection():
     Selected.selected_objects = bpy.context.selected_objects.copy()
     for sel in Selected.selected_objects:
         Selected.old_name.append(sel.name)
-    return(Selected)
+    return (Selected)
 
 
 def SetCurrentSelection(selection):
@@ -94,8 +109,14 @@ def SetCurrentSelection(selection):
         if not is_deleted(obj):
             if obj.name in bpy.context.window.view_layer.objects:
                 obj.select_set(True)
-    selection.active.select_set(True)
-    bpy.context.view_layer.objects.active = selection.active
+
+    if selection.active:
+        selection.active.select_set(True)
+        bpy.context.view_layer.objects.active = selection.active
+    else:
+        if len(selection.selected_objects) > 0:
+            selection.selected_objects[0].select_set(True)
+            bpy.context.view_layer.objects.active = selection.selected_objects[0]
 
 
 def SelectSpecificObject(obj):
@@ -240,16 +261,33 @@ def VerifiDirs(directory):
     return False
 
 
-def ValidFilename(filename):
+def ValidDirName(directory):
+    # https://gist.github.com/seanh/93666
     # Normalizes string, removes non-alpha characters
     # File name use
 
+    illegal_chars = r':*?"<>|'
+    directory = ''.join(c for c in directory if c not in illegal_chars)
+
+    return directory
+
+
+def ValidFilename(filename):
+    # https://gist.github.com/seanh/93666
+    # Normalizes string, removes non-alpha characters
+    # File name use
+
+    illegal_chars = r'\/:*?"<>|'
     valid_chars = "-_.() %s%s" % (string.ascii_letters, string.digits)
+
+    filename = ''.join(c for c in filename if c not in illegal_chars)
     filename = ''.join(c for c in filename if c in valid_chars)
+
     return filename
 
 
 def ValidDefname(filename):
+    # https://gist.github.com/seanh/93666
     # Normalizes string, removes non-alpha characters
     # Def name use
 

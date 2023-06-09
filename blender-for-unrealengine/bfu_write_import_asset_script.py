@@ -19,10 +19,18 @@
 
 import bpy
 import time
-import configparser
 from math import degrees
 from . import languages
 from .languages import *
+
+from . import bfu_basics
+from .bfu_basics import *
+from . import bfu_utils
+from .bfu_utils import *
+from . import bfu_write_utils
+from .bfu_write_utils import *
+from .export import bfu_export_get_info
+from .export.bfu_export_get_info import *
 
 if "bpy" in locals():
     import importlib
@@ -34,13 +42,8 @@ if "bpy" in locals():
         importlib.reload(bfu_write_utils)
     if "languages" in locals():
         importlib.reload(languages)
-
-from . import bfu_basics
-from .bfu_basics import *
-from . import bfu_utils
-from .bfu_utils import *
-from . import bfu_write_utils
-from .bfu_write_utils import *
+    if "bfu_export_get_info" in locals():
+        importlib.reload(bfu_export_get_info)
 
 
 def WriteImportAssetScript():
@@ -54,7 +57,7 @@ def WriteImportAssetScript():
         '3/3': ti('write_text_additional_track_end'),
     }
 
-    data['unreal_import_location'] = '/Game/' + scene.unreal_import_location
+    data['unreal_import_location'] = '/' + scene.unreal_import_module + '/' + scene.unreal_import_location
 
     # Import assets
     data['assets'] = []
@@ -78,10 +81,13 @@ def WriteImportAssetScript():
         else:
             relative_import_path = asset.folder_name
 
-        asset_data["full_import_path"] = "/Game/" + os.path.join(scene.unreal_import_location, relative_import_path).replace('\\', '/').rstrip('/')
+        full_import_path = "/" + scene.unreal_import_module + "/" + os.path.join(scene.unreal_import_location, relative_import_path)
+        full_import_path = full_import_path.replace('\\', '/').rstrip('/')
+        asset_data["full_import_path"] = full_import_path
 
         if asset.GetFileByType("FBX"):
             asset_data["fbx_path"] = asset.GetFileByType("FBX").GetAbsolutePath()
+            asset_data["asset_filename"] = asset.GetFileByType("FBX").GetAbsolutePath()
         else:
             asset_data["fbx_path"] = None
 
@@ -95,23 +101,29 @@ def WriteImportAssetScript():
         else:
             asset_data["additional_tracks_path"] = None
 
-        if GetIsAnimation(asset.asset_type):
+        if GetIsAnimation(asset.asset_type) or asset.asset_type == "SkeletalMesh":
             if(asset.object.bfu_skeleton_search_mode) == "auto":
-                customName = scene.skeletal_prefix_export_name+ValidUnrealAssetename(asset.asset_name)+"_Skeleton"
+                customName = scene.skeleton_prefix_export_name+ValidUnrealAssetsName(asset.skeleton_name)+"_Skeleton"
                 SkeletonName = customName+"."+customName
                 SkeletonLoc = os.path.join(asset.folder_name, SkeletonName)
-                asset_data["animation_skeleton_path"] = os.path.join("/Game/", scene.unreal_import_location, SkeletonLoc).replace('\\', '/')
+
+                animation_skeleton_path = os.path.join("/" + scene.unreal_import_module + "/", scene.unreal_import_location, SkeletonLoc)
+                animation_skeleton_path = animation_skeleton_path.replace('\\', '/')
+                asset_data["animation_skeleton_path"] = animation_skeleton_path
 
             elif(asset.object.bfu_skeleton_search_mode) == "custom_name":
-                customName = ValidUnrealAssetename(asset.object.bfu_target_skeleton_custom_name)
+                customName = ValidUnrealAssetsName(asset.object.bfu_target_skeleton_custom_name)
                 SkeletonName = customName+"."+customName
                 SkeletonLoc = os.path.join(asset.folder_name, SkeletonName)
-                asset_data["animation_skeleton_path"] = os.path.join("/Game/", scene.unreal_import_location, SkeletonLoc).replace('\\', '/')
+
+                animation_skeleton_path = os.path.join("/" + scene.unreal_import_module + "/", scene.unreal_import_location, SkeletonLoc)
+                animation_skeleton_path = animation_skeleton_path.replace('\\', '/')
+                asset_data["animation_skeleton_path"] = animation_skeleton_path
 
             elif(asset.object.bfu_skeleton_search_mode) == "custom_path_name":
-                customName = ValidUnrealAssetename(asset.object.bfu_target_skeleton_custom_name)
+                customName = ValidUnrealAssetsName(asset.object.bfu_target_skeleton_custom_name)
                 SkeletonName = customName+"."+customName
-                SkeletonLoc = os.path.join("/Game/", asset.object.bfu_target_skeleton_custom_path, SkeletonName)
+                SkeletonLoc = os.path.join("/" + scene.unreal_import_module + "/", asset.object.bfu_target_skeleton_custom_path, SkeletonName)
                 asset_data["animation_skeleton_path"] = SkeletonLoc.replace('\\', '/')
 
             elif(asset.object.bfu_skeleton_search_mode) == "custom_reference":
@@ -128,16 +140,10 @@ def WriteImportAssetScript():
                 asset_data["static_mesh_lod_group"] = None
             asset_data["generate_lightmap_u_vs"] = asset.object.GenerateLightmapUVs
 
-            asset_data["custom_light_map_resolution"] = ExportCompuntedLightMapValue(asset.object)
+            asset_data["use_custom_light_map_resolution"] = GetUseCustomLightMapResolution(asset.object)
             asset_data["light_map_resolution"] = GetCompuntedLightMap(asset.object)
             asset_data["collision_trace_flag"] = asset.object.CollisionTraceFlag
-            asset_data["vertex_color_import_option"] = asset.object.VertexColorImportOption
-            vertex_override_color = (
-                asset.object.VertexOverrideColor[0],  # R
-                asset.object.VertexOverrideColor[1],  # G
-                asset.object.VertexOverrideColor[2]  # B
-            )  # Color to Json
-            asset_data["vertex_override_color"] = vertex_override_color
+
         data['assets'].append(asset_data)
 
     return data
