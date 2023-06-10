@@ -133,7 +133,7 @@ def ExportSingleStaticMeshCollection(
         bake_anim=False,
         use_metadata=addon_prefs.exportWithMetaData,
         # primary_bone_axis=active.exportPrimaryBoneAxis,
-        # secondary_bone_axis=active.exporSecondaryBoneAxis,
+        # secondary_bone_axis=active.exportSecondaryBoneAxis,
         # axis_forward=active.exportAxisForward,
         # axis_up=active.exportAxisUp,
         bake_space_transform=False

@@ -194,8 +194,8 @@ def ExportSingleFbxAction(
             use_batch_own_dir=True,
             use_metadata=addon_prefs.exportWithMetaData,
             primary_bone_axis=active.exportPrimaryBoneAxis,
-            secondary_bone_axis=active.exporSecondaryBoneAxis,
-            reverse_symmetry_rightside_bone_forwarding=True,
+            secondary_bone_axis=active.exportSecondaryBoneAxis,
+            use_ue_mannequin_bone_coordinate=True,
             axis_forward=active.exportAxisForward,
             axis_up=active.exportAxisUp,
             bake_space_transform=False

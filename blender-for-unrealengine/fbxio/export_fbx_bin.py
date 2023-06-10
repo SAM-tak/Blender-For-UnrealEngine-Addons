@@ -556,12 +556,7 @@ def fbx_data_empty_elements(root, empty, scene_data):
     null = elem_data_single_int64(root, b"NodeAttribute", get_fbx_uuid_from_key(empty_key))
     null.add_string(fbx_name_class(empty.name.encode(), b"NodeAttribute"))
     val = empty.bdata.get('fbx_type', None)
-	
-	#empty groups = LODS
-    if empty.parent is None and empty.name.startswith("LOD"):
-        null.add_string(b"LodGroup")
-    else:
-        null.add_string(val.encode() if val and isinstance(val, str) else b"Null")
+    null.add_string(val.encode() if val and isinstance(val, str) else b"Null")
 
     elem_data_single_string(null, b"TypeFlags", b"Null")
 
@@ -1978,6 +1973,7 @@ def fbx_animations_do(scene_data, ref_id, f_start, f_end, start_zero, objects=No
     back_currframe = scene.frame_current
     animdata_ob = {}
     p_rots = {}
+    custom_curves = {}
 
     for ob_obj in objects:
         if ob_obj.parented_to_armature:
@@ -2401,7 +2397,7 @@ def fbx_data_from_scene(scene, depsgraph, settings):
                 data_meshes[ob_obj] = (get_blenderID_key(tmp_me), tmp_me, True)
             # Change armatures back.
             for armature, pose_position in backup_pose_positions:
-                #print((armature, pose_position))
+                # print((armature, pose_position))
                 armature.pose_position = pose_position
                 # Update now, so we don't leave modified state after last object was exported.
             # Re-enable temporary disabled modifiers.
@@ -3092,7 +3088,7 @@ def save_single(operator, scene, depsgraph, filepath="",
                 add_leaf_bones=False,
                 primary_bone_axis='Y',
                 secondary_bone_axis='X',
-                reverse_symmetry_rightside_bone_forwarding=False,
+                use_ue_mannequin_bone_coordinate=False,
                 use_metadata=True,
                 path_mode='AUTO',
                 use_mesh_edges=True,
@@ -3150,13 +3146,16 @@ def save_single(operator, scene, depsgraph, filepath="",
                                                  ).to_4x4()
         bone_correction_matrix_inv = bone_correction_matrix.inverted()
     
-    symmetry_rightside_bone_correction_matrix = None
-    symmetry_rightside_bone_correction_matrix_inv = None
-    if reverse_symmetry_rightside_bone_forwarding:
-        symmetry_rightside_bone_correction_matrix = Matrix.Rotation(-math.pi if secondary_bone_axis[0] == '-' else math.pi, 4, secondary_bone_axis[-1])
+    # Calculate reverse direction bone correction matrix for UE Mannequin
+    reverse_direction_bone_correction_matrix = None  # Default is None = no change
+    reverse_direction_bone_correction_matrix_inv = None
+    reverse_direction_bone_rotation = None
+    if use_ue_mannequin_bone_coordinate:
+        reverse_direction_bone_correction_matrix = Matrix.Rotation(-math.pi if secondary_bone_axis[0] == '-' else math.pi, 4, secondary_bone_axis[-1])
+        reverse_direction_bone_rotation = reverse_direction_bone_correction_matrix.to_quaternion()
         if bone_correction_matrix:
-            symmetry_rightside_bone_correction_matrix = bone_correction_matrix @ symmetry_rightside_bone_correction_matrix
-        symmetry_rightside_bone_correction_matrix_inv = symmetry_rightside_bone_correction_matrix.inverted()
+            reverse_direction_bone_correction_matrix = bone_correction_matrix @ reverse_direction_bone_correction_matrix
+        reverse_direction_bone_correction_matrix_inv = reverse_direction_bone_correction_matrix.inverted()
 
 
     media_settings = FBXExportSettingsMedia(
@@ -3177,7 +3176,7 @@ def save_single(operator, scene, depsgraph, filepath="",
         mesh_smooth_type, use_subsurf, use_mesh_edges, use_tspace, use_triangles,
         armature_nodetype, use_armature_deform_only,
         add_leaf_bones, bone_correction_matrix, bone_correction_matrix_inv,
-        symmetry_rightside_bone_correction_matrix, symmetry_rightside_bone_correction_matrix_inv,
+        reverse_direction_bone_correction_matrix, reverse_direction_bone_correction_matrix_inv, reverse_direction_bone_rotation,
         bake_anim, bake_anim_use_all_bones, bake_anim_use_nla_strips, bake_anim_use_all_actions,
         bake_anim_step, bake_anim_simplify_factor, bake_anim_force_startend_keying,
         False, media_settings, use_custom_props, colors_type, prioritize_active_color

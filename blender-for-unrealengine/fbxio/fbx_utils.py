@@ -14,7 +14,7 @@ from itertools import zip_longest, chain
 import bpy
 import bpy_extras
 from bpy.types import Object, Bone, PoseBone, DepsgraphObjectInstance
-from mathutils import Vector, Matrix
+from mathutils import Vector, Matrix, Quaternion
 
 from . import encode_bin, data_types
 
@@ -1066,6 +1066,16 @@ class ObjectWrapper(metaclass=MetaObjectWrapper):
             return True
         return False
 
+    LEG_NAME_PATTERN = re.compile(r'[^a-zA-Z]?(thigh|calf)([^a-zA-Z]|$)', re.IGNORECASE)
+
+    def is_leg_bone(self):
+        return self.LEG_NAME_PATTERN.match(self.name) != None
+
+    PELVIS_OR_FOOT_NAME_PATTERN = re.compile(r'^(pelvis$|foot[_\.$])', re.IGNORECASE)
+
+    def is_pelvis_or_foot_bone(self):
+        return self.PELVIS_OR_FOOT_NAME_PATTERN.match(self.name) != None
+
     SYMMETRY_RIGHTSIDE_NAME_PATTERN = re.compile(r'(.+[_\.])(r|R)(\.\d+)?$')
 
     def is_rightside_bone(self, objects):
@@ -1077,6 +1087,11 @@ class ObjectWrapper(metaclass=MetaObjectWrapper):
                     #print(self.name, counterpartname)
                     return True
         return False
+
+    def is_reverse_direction_bone(self, objects):
+        if self.is_leg_bone():
+            return not self.is_rightside_bone(objects)
+        return self.is_rightside_bone(objects)
 
     def use_bake_space_transform(self, scene_data):
         # NOTE: Only applies to object types supporting this!!! Currently, only meshes and the like...
@@ -1112,13 +1127,13 @@ class ObjectWrapper(metaclass=MetaObjectWrapper):
         if self._tag == 'BO':
             # If we have a bone parent we need to undo the parent correction.
             if not is_global and scene_data.settings.bone_correction_matrix_inv and parent and parent.is_bone:
-                if scene_data.settings.symmetry_rightside_bone_correction_matrix_inv and parent.is_rightside_bone(scene_data.objects):
-                    matrix = scene_data.settings.symmetry_rightside_bone_correction_matrix_inv @ matrix
+                if scene_data.settings.reverse_direction_bone_correction_matrix_inv and parent.is_reverse_direction_bone(scene_data.objects):
+                    matrix = scene_data.settings.reverse_direction_bone_correction_matrix_inv @ matrix
                 elif scene_data.settings.bone_correction_matrix_inv:
                     matrix = scene_data.settings.bone_correction_matrix_inv @ matrix
             # Apply the bone correction.
-            if scene_data.settings.symmetry_rightside_bone_correction_matrix and self.is_rightside_bone(scene_data.objects):
-                matrix = matrix @ scene_data.settings.symmetry_rightside_bone_correction_matrix
+            if scene_data.settings.reverse_direction_bone_correction_matrix and self.is_reverse_direction_bone(scene_data.objects):
+                matrix = matrix @ scene_data.settings.reverse_direction_bone_correction_matrix
             elif scene_data.settings.bone_correction_matrix:
                 matrix = matrix @ scene_data.settings.bone_correction_matrix
         elif self.bdata.type == 'LIGHT':
@@ -1144,6 +1159,15 @@ class ObjectWrapper(metaclass=MetaObjectWrapper):
                 # ...and move it back into parent's *FBX* local space.
                 par_mat = parent.fbx_object_matrix(scene_data, rest=rest, local_space=True)
                 matrix = par_mat.inverted_safe() @ matrix
+
+        # Set pelvis and foot bone matrix like as UE Mannequin
+        if self._tag == 'BO' and scene_data.settings.reverse_direction_bone_rotation and self.is_pelvis_or_foot_bone():
+            trs = matrix.to_translation()
+            rot = Quaternion((0.0, 1.0, 0.0), math.radians(-90.0))
+            if self.is_rightside_bone(scene_data.objects):
+                rot = rot @ scene_data.settings.reverse_direction_bone_rotation
+            scl = matrix.to_scale()
+            matrix = Matrix.LocRotScale(trs, rot, scl)
 
         if self.use_bake_space_transform(scene_data):
             # If we bake the transforms we need to post-multiply inverse global transform.
@@ -1243,7 +1267,7 @@ FBXExportSettings = namedtuple("FBXExportSettings", (
     "mesh_smooth_type", "use_subsurf", "use_mesh_edges", "use_tspace", "use_triangles",
     "armature_nodetype", "use_armature_deform_only", "add_leaf_bones",
     "bone_correction_matrix", "bone_correction_matrix_inv",
-    "symmetry_rightside_bone_correction_matrix", "symmetry_rightside_bone_correction_matrix_inv",
+    "reverse_direction_bone_correction_matrix", "reverse_direction_bone_correction_matrix_inv", "reverse_direction_bone_rotation",
     "bake_anim", "bake_anim_use_all_bones", "bake_anim_use_nla_strips", "bake_anim_use_all_actions",
     "bake_anim_step", "bake_anim_simplify_factor", "bake_anim_force_startend_keying",
     "use_metadata", "media_settings", "use_custom_props", "colors_type", "prioritize_active_color"
@@ -1262,19 +1286,4 @@ FBXExportData = namedtuple("FBXExportData", (
     "data_empties", "data_lights", "data_cameras", "data_meshes", "mesh_material_indices",
     "data_bones", "data_leaf_bones", "data_deformers_skin", "data_deformers_shape",
     "data_world", "data_materials", "data_textures", "data_videos",
-))
-
-# Helper container gathering all importer settings.
-FBXImportSettings = namedtuple("FBXImportSettings", (
-    "report", "to_axes", "global_matrix", "global_scale",
-    "bake_space_transform", "global_matrix_inv", "global_matrix_inv_transposed",
-    "use_custom_normals", "use_image_search",
-    "use_alpha_decals", "decal_offset",
-    "use_anim", "anim_offset",
-    "use_subsurf",
-    "use_custom_props", "use_custom_props_enum_as_string",
-    "nodal_material_wrap_map", "image_cache",
-    "ignore_leaf_bones", "force_connect_children", "automatic_bone_orientation", "bone_correction_matrix",
-    "use_prepost_rot", "colors_type",
-	"symmetry_rightside_bone_correction_matrix",
 ))
