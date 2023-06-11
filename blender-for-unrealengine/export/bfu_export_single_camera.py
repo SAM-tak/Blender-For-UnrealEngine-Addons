@@ -21,6 +21,9 @@ import bpy
 import time
 import math
 
+from mathutils import Matrix
+from bpy_extras.io_utils import axis_conversion
+
 if "bpy" in locals():
     import importlib
     if "bfu_write_text" in locals():
@@ -33,6 +36,8 @@ if "bpy" in locals():
         importlib.reload(bfu_check_potential_error)
     if "bfu_export_utils" in locals():
         importlib.reload(bfu_export_utils)
+    if "export_fbx_bin" in locals():
+        importlib.reload(export_fbx_bin)
 
 
 from .. import bfu_write_text
@@ -44,9 +49,10 @@ from .. import bfu_check_potential_error
 
 from . import bfu_export_utils
 from .bfu_export_utils import *
+from ..fbxio import export_fbx_bin
 
 
-def ProcessCameraExport(obj):
+def ProcessCameraExport(op, obj):
     addon_prefs = GetAddonPrefs()
     counter = CounterTimer()
     dirpath = GetObjExportDir(obj)
@@ -62,6 +68,7 @@ def ProcessCameraExport(obj):
 
     if obj.bfu_export_fbx_camera:
         ExportSingleFbxCamera(
+            op,
             dirpath,
             GetObjExportFileName(obj),
             obj
@@ -88,6 +95,7 @@ def ProcessCameraExport(obj):
 
 
 def ExportSingleFbxCamera(
+        op,
         dirpath,
         filename,
         obj
@@ -121,11 +129,16 @@ def ExportSingleFbxCamera(
 
     ExportCameraAsFBX = addon_prefs.exportCameraAsFBX
     if ExportCameraAsFBX:
-        bpy.ops.export_scene.fbx(
+        export_fbx_bin.save(
+            op,
+            bpy.context,
             filepath=GetExportFullpath(dirpath, filename),
             check_existing=False,
             use_selection=True,
+            global_matrix=axis_conversion(to_forward=addon_prefs.exportAxisForward, to_up=addon_prefs.exportAxisUp).to_4x4(),
+            apply_unit_scale=True,
             global_scale=GetObjExportScale(obj),
+            apply_scale_options='FBX_SCALE_NONE',
             object_types={'CAMERA'},
             use_custom_props=addon_prefs.exportWithCustomProps,
             add_leaf_bones=False,
@@ -136,9 +149,14 @@ def ExportSingleFbxCamera(
             bake_anim_force_startend_keying=True,
             bake_anim_step=GetAnimSample(obj),
             bake_anim_simplify_factor=obj.SimplifyAnimForExport,
+            path_mode='AUTO',
+            embed_textures=False,
+            batch_mode='OFF',
+            use_batch_own_dir=True,
             use_metadata=addon_prefs.exportWithMetaData,
-            primary_bone_axis=obj.exportPrimaryBaneAxis,
-            secondary_bone_axis=obj.exporSecondaryBoneAxis,
+            primary_bone_axis=obj.exportPrimaryBoneAxis,
+            secondary_bone_axis=obj.exportSecondaryBoneAxis,
+            use_ue_mannequin_bone_coordinate=True,
             axis_forward=obj.exportAxisForward,
             axis_up=obj.exportAxisUp,
             bake_space_transform=False

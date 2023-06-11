@@ -846,7 +846,7 @@ class BFU_PT_BlenderForUnrealObject(bpy.types.Panel):
         default='Y',
         )
 
-    bpy.types.Object.exportPrimaryBaneAxis = EnumProperty(
+    bpy.types.Object.exportPrimaryBoneAxis = EnumProperty(
         name="Primary Axis Bone",
         override={'LIBRARY_OVERRIDABLE'},
         items=[
@@ -857,10 +857,10 @@ class BFU_PT_BlenderForUnrealObject(bpy.types.Panel):
             ('-Y', "-Y", ""),
             ('-Z', "-Z", ""),
             ],
-        default='Y',
+        default='X',
         )
 
-    bpy.types.Object.exporSecondaryBoneAxis = EnumProperty(
+    bpy.types.Object.exportSecondaryBoneAxis = EnumProperty(
         name="Secondary Axis Bone",
         override={'LIBRARY_OVERRIDABLE'},
         items=[
@@ -871,7 +871,16 @@ class BFU_PT_BlenderForUnrealObject(bpy.types.Panel):
             ('-Y', "-Y", ""),
             ('-Z', "-Z", ""),
             ],
-        default='X',
+        default='-Z',
+        )
+
+    bpy.types.Object.bfu_use_ue_mannequin_bone_coordinate = BoolProperty(
+        name="Use UE Mannequin bone coordinate",
+        description=(
+            "If checked, exports the right side bone and leg bone as reverse direction "
+            ),
+        override={'LIBRARY_OVERRIDABLE'},
+        default=True
         )
 
     bpy.types.Object.MoveToCenterForExport = BoolProperty(
@@ -1246,8 +1255,9 @@ class BFU_PT_BlenderForUnrealObject(bpy.types.Panel):
                             'obj.exportGlobalScale',
                             'obj.exportAxisForward',
                             'obj.exportAxisUp',
-                            'obj.exportPrimaryBaneAxis',
-                            'obj.exporSecondaryBoneAxis',
+                            'obj.exportPrimaryBoneAxis',
+                            'obj.exportSecondaryBoneAxis',
+                            'obj.bfu_use_ue_mannequin_bone_coordinate',
                             'obj.MoveToCenterForExport',
                             'obj.RotateToZeroForExport',
                             'obj.MoveActionToCenterForExport',
@@ -1360,13 +1370,14 @@ class BFU_PT_BlenderForUnrealObject(bpy.types.Panel):
         addon_prefs = GetAddonPrefs()
         layout = self.layout
 
-        version = "-1"
+        version = (0, 0, 0)
         for addon in addon_utils.modules():
             if addon.bl_info['name'] == "Blender for UnrealEngine":
-                version = addon.bl_info.get('version', (-1, -1, -1))
+                version = addon.bl_info.get('version', (0, 0, 0))
 
         credit_box = layout.box()
-        credit_box.label(text=ti('intro')+' Version: '+str(version))
+        credit_box.label(text=ti('intro'))
+        credit_box.label(text='Version '+'.'.join([str(x) for x in version]))
         credit_box.operator("object.bfu_open_documentation_page", icon="HELP")
 
         row = layout.row(align=True)
@@ -1498,8 +1509,8 @@ class BFU_PT_BlenderForUnrealObject(bpy.types.Panel):
                         AxisProperty.prop(obj, 'exportAxisUp')
                         if GetAssetType(obj) == "SkeletalMesh":
                             BoneAxisProperty = layout.column()
-                            BoneAxisProperty.prop(obj, 'exportPrimaryBaneAxis')
-                            BoneAxisProperty.prop(obj, 'exporSecondaryBoneAxis')
+                            BoneAxisProperty.prop(obj, 'exportPrimaryBoneAxis')
+                            BoneAxisProperty.prop(obj, 'exportSecondaryBoneAxis')
                 else:
                     layout.label(text='(No properties to show.)')
 
@@ -1523,6 +1534,7 @@ class BFU_PT_BlenderForUnrealObject(bpy.types.Panel):
                                     Ue4Skeleton.prop(obj, "bfu_target_skeleton_custom_name")
                                 if obj.bfu_skeleton_search_mode == "custom_reference":
                                     Ue4Skeleton.prop(obj, "bfu_target_skeleton_custom_ref")
+                                Ue4Skeleton.prop(obj, "bfu_use_ue_mannequin_bone_coordinate")
 
         if bfu_ui_utils.DisplayPropertyFilter("OBJECT", "ANIM"):
             if obj is not None:
@@ -2710,7 +2722,7 @@ class BFU_PT_Export(bpy.types.Panel):
             scene.UnrealExportedAssetsList.clear()
             counter = CounterTimer()
             bfu_check_potential_error.UpdateNameHierarchy()
-            bfu_export_asset.ExportForUnrealEngine()
+            bfu_export_asset.ExportForUnrealEngine(self)
             bfu_write_text.WriteAllTextFiles()
 
             self.report(

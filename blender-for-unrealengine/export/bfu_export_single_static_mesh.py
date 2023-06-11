@@ -21,6 +21,9 @@ import bpy
 import time
 import math
 
+from mathutils import Matrix
+from bpy_extras.io_utils import axis_conversion
+
 if "bpy" in locals():
     import importlib
     if "bfu_write_text" in locals():
@@ -33,6 +36,8 @@ if "bpy" in locals():
         importlib.reload(bfu_check_potential_error)
     if "bfu_export_utils" in locals():
         importlib.reload(bfu_export_utils)
+    if "export_fbx_bin" in locals():
+        importlib.reload(export_fbx_bin)
 
 
 from .. import bfu_write_text
@@ -44,9 +49,10 @@ from .. import bfu_check_potential_error
 
 from . import bfu_export_utils
 from .bfu_export_utils import *
+from ..fbxio import export_fbx_bin
 
 
-def ProcessStaticMeshExport(obj):
+def ProcessStaticMeshExport(op, obj):
     addon_prefs = GetAddonPrefs()
     dirpath = GetObjExportDir(obj)
     absdirpath = bpy.path.abspath(dirpath)
@@ -59,7 +65,7 @@ def ProcessStaticMeshExport(obj):
     MyAsset.asset_type = bfu_utils.GetAssetType(obj)
     MyAsset.StartAssetExport()
 
-    ExportSingleStaticMesh(dirpath, GetObjExportFileName(obj), obj)
+    ExportSingleStaticMesh(op, dirpath, GetObjExportFileName(obj), obj)
     file = MyAsset.files.add()
     file.name = GetObjExportFileName(obj)
     file.path = dirpath
@@ -78,6 +84,7 @@ def ProcessStaticMeshExport(obj):
 
 
 def ExportSingleStaticMesh(
+        op,
         dirpath,
         filename,
         obj
@@ -123,20 +130,30 @@ def ExportSingleStaticMesh(
 
     asset_name.SetExportName()
 
-    bpy.ops.export_scene.fbx(
+    export_fbx_bin.save(
+        op,
+        bpy.context,
         filepath=GetExportFullpath(dirpath, filename),
         check_existing=False,
         use_selection=True,
+        global_matrix=axis_conversion(to_forward=active.exportAxisForward, to_up=active.exportAxisUp).to_4x4(),
+        apply_unit_scale=True,
         global_scale=GetObjExportScale(active),
+        apply_scale_options='FBX_SCALE_NONE',
         object_types={'EMPTY', 'CAMERA', 'LIGHT', 'MESH', 'OTHER'},
         use_custom_props=addon_prefs.exportWithCustomProps,
         mesh_smooth_type="FACE",
         add_leaf_bones=False,
         use_armature_deform_only=active.exportDeformOnly,
         bake_anim=False,
+        path_mode='AUTO',
+        embed_textures=False,
+        batch_mode='OFF',
+        use_batch_own_dir=True,
         use_metadata=addon_prefs.exportWithMetaData,
-        primary_bone_axis=active.exportPrimaryBaneAxis,
-        secondary_bone_axis=active.exporSecondaryBoneAxis,
+        primary_bone_axis=active.exportPrimaryBoneAxis,
+        secondary_bone_axis=active.exportSecondaryBoneAxis,
+        use_ue_mannequin_bone_coordinate=True,
         axis_forward=active.exportAxisForward,
         axis_up=active.exportAxisUp,
         bake_space_transform=False

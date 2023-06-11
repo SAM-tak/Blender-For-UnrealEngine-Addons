@@ -132,7 +132,7 @@ def IsValidObjectForExport(scene, obj):
     return False
 
 
-def ExportAllAssetByList(targetobjects, targetActionName, targetcollection):
+def ExportAllAssetByList(op, targetobjects, targetActionName, targetcollection):
     # Export all objects that need to be exported from a list
 
     if len(targetobjects) < 1 and len(targetcollection) < 1:
@@ -172,7 +172,7 @@ def ExportAllAssetByList(targetobjects, targetActionName, targetcollection):
                 UserStartFrame = scene.frame_start
                 UserEndFrame = scene.frame_end
 
-                ProcessCollectionExport(col)
+                ProcessCollectionExport(op, col)
 
                 # Resets previous start/end frame
                 scene.frame_start = UserStartFrame
@@ -189,7 +189,7 @@ def ExportAllAssetByList(targetobjects, targetActionName, targetcollection):
                 # Save current start/end frame
                 UserStartFrame = scene.frame_start
                 UserEndFrame = scene.frame_end
-                ProcessCameraExport(obj)
+                ProcessCameraExport(op, obj)
 
                 # Resets previous start/end frame
                 scene.frame_start = UserStartFrame
@@ -203,7 +203,7 @@ def ExportAllAssetByList(targetobjects, targetActionName, targetcollection):
                 # Save current start/end frame
                 UserStartFrame = scene.frame_start
                 UserEndFrame = scene.frame_end
-                ProcessStaticMeshExport(obj)
+                ProcessStaticMeshExport(op, obj)
 
                 # Resets previous start/end frame
                 scene.frame_start = UserStartFrame
@@ -216,7 +216,7 @@ def ExportAllAssetByList(targetobjects, targetActionName, targetcollection):
                 # Save current start/end frame
                 UserStartFrame = scene.frame_start
                 UserEndFrame = scene.frame_end
-                ProcessSkeletalMeshExport(obj)
+                ProcessSkeletalMeshExport(op, obj)
 
                 # Resets previous start/end frame
                 scene.frame_start = UserStartFrame
@@ -249,7 +249,7 @@ def ExportAllAssetByList(targetobjects, targetActionName, targetcollection):
                                 # Save current start/end frame
                                 UserStartFrame = scene.frame_start
                                 UserEndFrame = scene.frame_end
-                                ProcessActionExport(obj, action)
+                                ProcessActionExport(op, obj, action)
 
                                 # Resets previous start/end frame
                                 scene.frame_start = UserStartFrame
@@ -264,7 +264,7 @@ def ExportAllAssetByList(targetobjects, targetActionName, targetcollection):
                         UserStartFrame = scene.frame_start
                         UserEndFrame = scene.frame_end
 
-                        ProcessNLAAnimExport(obj)
+                        ProcessNLAAnimExport(op, obj)
                         # Resets previous start/end frame
                         scene.frame_start = UserStartFrame
                         scene.frame_end = UserEndFrame
@@ -272,7 +272,7 @@ def ExportAllAssetByList(targetobjects, targetActionName, targetcollection):
     UpdateExportProgress(counter.GetTime())
 
 
-def ExportForUnrealEngine():
+def ExportForUnrealEngine(op):
     scene = bpy.context.scene
     addon_prefs = GetAddonPrefs()
 
@@ -333,6 +333,7 @@ def ExportForUnrealEngine():
                 obj_list.append(Asset.obj)
 
     ExportAllAssetByList(
+        op,
         targetobjects=obj_list,
         targetActionName=action_list,
         targetcollection=col_list,
