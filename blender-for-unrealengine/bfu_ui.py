@@ -874,14 +874,23 @@ class BFU_PT_BlenderForUnrealObject(bpy.types.Panel):
         default='-Z',
         )
 
-    bpy.types.Object.bfu_use_ue_mannequin_bone_coordinate = BoolProperty(
-        name="Use UE Mannequin bone coordinate",
+    bpy.types.Object.bfu_mirror_symmetry_right_side_bones = BoolProperty(
+        name="Revert direction of symmetry right side bones",
         description=(
-            "If checked, exports the right side bone and leg bone as reverse direction "
+            "If checked, The right-side bones will be mirrored for mirroring physic object in UE PhysicAsset Editor."
             ),
         override={'LIBRARY_OVERRIDABLE'},
         default=True
         )
+
+    bpy.types.Object.bfu_use_ue_mannequin_bone_alignment = BoolProperty(
+        name="Apply bone alignments similar to UE Mannequin.",
+        description=(
+            "If checked, similar to the UE Mannequin, the leg bones will be oriented upwards, and the pelvis and feet bone will be aligned facing upwards during export."
+        ),
+        override={'LIBRARY_OVERRIDABLE'},
+        default=False
+    )
 
     bpy.types.Object.MoveToCenterForExport = BoolProperty(
         name="Move to center",
@@ -1257,7 +1266,8 @@ class BFU_PT_BlenderForUnrealObject(bpy.types.Panel):
                             'obj.exportAxisUp',
                             'obj.exportPrimaryBoneAxis',
                             'obj.exportSecondaryBoneAxis',
-                            'obj.bfu_use_ue_mannequin_bone_coordinate',
+                            'obj.bfu_mirror_symmetry_right_side_bones',
+                            'obj.bfu_use_ue_mannequin_bone_alignment',
                             'obj.MoveToCenterForExport',
                             'obj.RotateToZeroForExport',
                             'obj.MoveActionToCenterForExport',
@@ -1534,7 +1544,10 @@ class BFU_PT_BlenderForUnrealObject(bpy.types.Panel):
                                     Ue4Skeleton.prop(obj, "bfu_target_skeleton_custom_name")
                                 if obj.bfu_skeleton_search_mode == "custom_reference":
                                     Ue4Skeleton.prop(obj, "bfu_target_skeleton_custom_ref")
-                                Ue4Skeleton.prop(obj, "bfu_use_ue_mannequin_bone_coordinate")
+                                Ue4Skeleton.prop(obj, "bfu_mirror_symmetry_right_side_bones")
+                                MirrorSymmetryRightSideBonesRow = Ue4Skeleton.row()
+                                MirrorSymmetryRightSideBonesRow.enabled = obj.bfu_mirror_symmetry_right_side_bones
+                                MirrorSymmetryRightSideBonesRow.prop(obj, "bfu_use_ue_mannequin_bone_alignment")
 
         if bfu_ui_utils.DisplayPropertyFilter("OBJECT", "ANIM"):
             if obj is not None:

@@ -1986,7 +1986,8 @@ def fbx_animations_do(scene_data, ref_id, f_start, f_end, start_zero, objects=No
                                ACNW(ob_obj.key, 'LCL_ROTATION', force_key, force_sek, rot_deg),
                                ACNW(ob_obj.key, 'LCL_SCALING', force_key, force_sek, scale))
         p_rots[ob_obj] = rot
-        if scene_data.settings.use_custom_props and ob_obj.is_bone:
+        # Collect custom values per bone
+        if scene_data.settings.use_custom_curves and ob_obj.is_bone:
             bid = ob_obj.bdata_pose_bone
             rna_properties = {prop.identifier for prop in bid.bl_rna.properties if prop.is_runtime}
             for curve_name in bid.keys():
@@ -1998,7 +1999,7 @@ def fbx_animations_do(scene_data, ref_id, f_start, f_end, start_zero, objects=No
                     #print("!##BONE CUSTOM", ob_obj.bdata_pose_bone.name, ob_obj.key, curve_name)
 
     # Loop through the data empties to get the root object to associate the custom values
-    if scene_data.settings.use_custom_props:
+    if scene_data.settings.use_custom_curves:
         for root_obj, root_key in scene_data.data_empties.items():
             ACNW = AnimationCurveNodeWrapper
             bid = bpy.data.objects[root_obj.name]
@@ -3088,7 +3089,8 @@ def save_single(operator, scene, depsgraph, filepath="",
                 add_leaf_bones=False,
                 primary_bone_axis='Y',
                 secondary_bone_axis='X',
-                use_ue_mannequin_bone_coordinate=False,
+                mirror_symmetry_right_side_bones=False,
+                use_ue_mannequin_bone_alignment=False,
                 use_metadata=True,
                 path_mode='AUTO',
                 use_mesh_edges=True,
@@ -3096,6 +3098,7 @@ def save_single(operator, scene, depsgraph, filepath="",
                 use_triangles=False,
                 embed_textures=False,
                 use_custom_props=False,
+                use_custom_curves=False,
                 bake_space_transform=False,
                 armature_nodetype='NULL',
                 colors_type='SRGB',
@@ -3146,13 +3149,15 @@ def save_single(operator, scene, depsgraph, filepath="",
                                                  ).to_4x4()
         bone_correction_matrix_inv = bone_correction_matrix.inverted()
     
+    print('save_single', mirror_symmetry_right_side_bones, use_ue_mannequin_bone_alignment)
     # Calculate reverse direction bone correction matrix for UE Mannequin
     reverse_direction_bone_correction_matrix = None  # Default is None = no change
     reverse_direction_bone_correction_matrix_inv = None
     reverse_direction_bone_rotation = None
-    if use_ue_mannequin_bone_coordinate:
+    if mirror_symmetry_right_side_bones:
         reverse_direction_bone_correction_matrix = Matrix.Rotation(-math.pi if secondary_bone_axis[0] == '-' else math.pi, 4, secondary_bone_axis[-1])
-        reverse_direction_bone_rotation = reverse_direction_bone_correction_matrix.to_quaternion()
+        if use_ue_mannequin_bone_alignment:
+            reverse_direction_bone_rotation = reverse_direction_bone_correction_matrix.to_quaternion()
         if bone_correction_matrix:
             reverse_direction_bone_correction_matrix = bone_correction_matrix @ reverse_direction_bone_correction_matrix
         reverse_direction_bone_correction_matrix_inv = reverse_direction_bone_correction_matrix.inverted()
@@ -3179,7 +3184,7 @@ def save_single(operator, scene, depsgraph, filepath="",
         reverse_direction_bone_correction_matrix, reverse_direction_bone_correction_matrix_inv, reverse_direction_bone_rotation,
         bake_anim, bake_anim_use_all_bones, bake_anim_use_nla_strips, bake_anim_use_all_actions,
         bake_anim_step, bake_anim_simplify_factor, bake_anim_force_startend_keying,
-        False, media_settings, use_custom_props, colors_type, prioritize_active_color
+        False, media_settings, use_custom_props, use_custom_curves, colors_type, prioritize_active_color
     )
 
     import bpy_extras.io_utils

@@ -1079,6 +1079,8 @@ class ObjectWrapper(metaclass=MetaObjectWrapper):
     SYMMETRY_RIGHTSIDE_NAME_PATTERN = re.compile(r'(.+[_\.])(r|R)(\.\d+)?$')
 
     def is_rightside_bone(self, objects):
+        if self.name.lower() == 'ik_hand_gun':
+            return True
         match = self.SYMMETRY_RIGHTSIDE_NAME_PATTERN.match(self.name)
         if match:
             counterpartname = match.group(1) + ('l' if match.group(2) == 'r' else 'L') + (match.group(3) if match.group(3) else '')
@@ -1088,10 +1090,10 @@ class ObjectWrapper(metaclass=MetaObjectWrapper):
                     return True
         return False
 
-    def is_reverse_direction_bone(self, objects):
-        if self.is_leg_bone():
-            return not self.is_rightside_bone(objects)
-        return self.is_rightside_bone(objects)
+    def is_reverse_direction_bone(self, scene_data):
+        if scene_data.settings.reverse_direction_bone_rotation and self.is_leg_bone():
+            return not self.is_rightside_bone(scene_data.objects)
+        return self.is_rightside_bone(scene_data.objects)
 
     def use_bake_space_transform(self, scene_data):
         # NOTE: Only applies to object types supporting this!!! Currently, only meshes and the like...
@@ -1127,12 +1129,12 @@ class ObjectWrapper(metaclass=MetaObjectWrapper):
         if self._tag == 'BO':
             # If we have a bone parent we need to undo the parent correction.
             if not is_global and scene_data.settings.bone_correction_matrix_inv and parent and parent.is_bone:
-                if scene_data.settings.reverse_direction_bone_correction_matrix_inv and parent.is_reverse_direction_bone(scene_data.objects):
+                if scene_data.settings.reverse_direction_bone_correction_matrix_inv and parent.is_reverse_direction_bone(scene_data):
                     matrix = scene_data.settings.reverse_direction_bone_correction_matrix_inv @ matrix
                 elif scene_data.settings.bone_correction_matrix_inv:
                     matrix = scene_data.settings.bone_correction_matrix_inv @ matrix
             # Apply the bone correction.
-            if scene_data.settings.reverse_direction_bone_correction_matrix and self.is_reverse_direction_bone(scene_data.objects):
+            if scene_data.settings.reverse_direction_bone_correction_matrix and self.is_reverse_direction_bone(scene_data):
                 matrix = matrix @ scene_data.settings.reverse_direction_bone_correction_matrix
             elif scene_data.settings.bone_correction_matrix:
                 matrix = matrix @ scene_data.settings.bone_correction_matrix
@@ -1162,6 +1164,7 @@ class ObjectWrapper(metaclass=MetaObjectWrapper):
 
         # Set pelvis and foot bone matrix like as UE Mannequin
         if self._tag == 'BO' and scene_data.settings.reverse_direction_bone_rotation and self.is_pelvis_or_foot_bone():
+            print('UE Mannequin Alignment', self.name)
             trs = matrix.to_translation()
             rot = Quaternion((0.0, 1.0, 0.0), math.radians(-90.0))
             if self.is_rightside_bone(scene_data.objects):
@@ -1270,7 +1273,7 @@ FBXExportSettings = namedtuple("FBXExportSettings", (
     "reverse_direction_bone_correction_matrix", "reverse_direction_bone_correction_matrix_inv", "reverse_direction_bone_rotation",
     "bake_anim", "bake_anim_use_all_bones", "bake_anim_use_nla_strips", "bake_anim_use_all_actions",
     "bake_anim_step", "bake_anim_simplify_factor", "bake_anim_force_startend_keying",
-    "use_metadata", "media_settings", "use_custom_props", "colors_type", "prioritize_active_color"
+    "use_metadata", "media_settings", "use_custom_props", "use_custom_curves", "colors_type", "prioritize_active_color"
 ))
 
 # Helper container gathering some data we need multiple times:

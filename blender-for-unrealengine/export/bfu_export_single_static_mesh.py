@@ -142,6 +142,7 @@ def ExportSingleStaticMesh(
         apply_scale_options='FBX_SCALE_NONE',
         object_types={'EMPTY', 'CAMERA', 'LIGHT', 'MESH', 'OTHER'},
         use_custom_props=addon_prefs.exportWithCustomProps,
+        use_custom_curves=addon_prefs.exportWithCustomCurves,
         mesh_smooth_type="FACE",
         add_leaf_bones=False,
         use_armature_deform_only=active.exportDeformOnly,
@@ -153,7 +154,8 @@ def ExportSingleStaticMesh(
         use_metadata=addon_prefs.exportWithMetaData,
         primary_bone_axis=active.exportPrimaryBoneAxis,
         secondary_bone_axis=active.exportSecondaryBoneAxis,
-        use_ue_mannequin_bone_coordinate=True,
+        mirror_symmetry_right_side_bones=active.bfu_mirror_symmetry_right_side_bones,
+        use_ue_mannequin_bone_alignment=active.bfu_use_ue_mannequin_bone_alignment,
         axis_forward=active.exportAxisForward,
         axis_up=active.exportAxisUp,
         bake_space_transform=False
