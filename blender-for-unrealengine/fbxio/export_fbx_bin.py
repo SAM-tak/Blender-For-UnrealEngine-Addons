@@ -3149,7 +3149,6 @@ def save_single(operator, scene, depsgraph, filepath="",
                                                  ).to_4x4()
         bone_correction_matrix_inv = bone_correction_matrix.inverted()
     
-    print('save_single', mirror_symmetry_right_side_bones, use_ue_mannequin_bone_alignment)
     # Calculate reverse direction bone correction matrix for UE Mannequin
     reverse_direction_bone_correction_matrix = None  # Default is None = no change
     reverse_direction_bone_correction_matrix_inv = None

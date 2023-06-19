@@ -1164,7 +1164,6 @@ class ObjectWrapper(metaclass=MetaObjectWrapper):
 
         # Set pelvis and foot bone matrix like as UE Mannequin
         if self._tag == 'BO' and scene_data.settings.reverse_direction_bone_rotation and self.is_pelvis_or_foot_bone():
-            print('UE Mannequin Alignment', self.name)
             trs = matrix.to_translation()
             rot = Quaternion((0.0, 1.0, 0.0), math.radians(-90.0))
             if self.is_rightside_bone(scene_data.objects):
