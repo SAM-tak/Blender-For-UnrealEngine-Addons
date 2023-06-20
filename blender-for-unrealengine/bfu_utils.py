@@ -483,9 +483,9 @@ class ShapeKeysCurveScale():
             rrf = self.rescale_rig_factor
             for obj in bpy.context.selected_objects:
                 if obj.type == "MESH":
-                    if obj.data.shape_keys is None:
-                        if obj.data.shape_keys.animation_data is None:
-                            if obj.data.shape_keys.animation_data.drivers is None:
+                    if obj.data.shape_keys is not None:
+                        if obj.data.shape_keys.animation_data is not None:
+                            if obj.data.shape_keys.animation_data.drivers is not None:
                                 for driver in obj.data.shape_keys.animation_data.drivers:
                                     drivers.append(self.DriverProxyData(driver))
         return drivers
