@@ -26,7 +26,7 @@ import bpy
 import bpy_extras
 from bpy_extras import node_shader_utils
 from bpy.app.translations import pgettext_tip as tip_
-from mathutils import Vector, Matrix
+from mathutils import Vector, Matrix, Quaternion
 
 from . import encode_bin, data_types, fbx_utils
 from .fbx_utils import (
@@ -2287,6 +2287,8 @@ def fbx_data_from_scene(scene, depsgraph, settings):
     perfmon = PerfMon()
     perfmon.level_up()
 
+    ObjectWrapper.BONE_ALIGNS = settings.bone_align_rotation_dict
+
     # ##### Gathering data...
 
     perfmon.step("FBX export prepare: Wrapping Objects...")
@@ -3152,11 +3154,22 @@ def save_single(operator, scene, depsgraph, filepath="",
     # Calculate reverse direction bone correction matrix for UE Mannequin
     reverse_direction_bone_correction_matrix = None  # Default is None = no change
     reverse_direction_bone_correction_matrix_inv = None
-    reverse_direction_bone_rotation = None
+    bone_align_matrix_dict = None
     if mirror_symmetry_right_side_bones:
         reverse_direction_bone_correction_matrix = Matrix.Rotation(-math.pi if secondary_bone_axis[0] == '-' else math.pi, 4, secondary_bone_axis[-1])
         if use_ue_mannequin_bone_alignment:
-            reverse_direction_bone_rotation = reverse_direction_bone_correction_matrix.to_quaternion()
+            import re
+            PELVIS_OR_FOOT_NAME_PATTERN = re.compile(r'^(pelvis$|foot[_\.$])', re.IGNORECASE)
+            for arm_obj in [arm_obj for arm_obj in scene.objects if arm_obj.type == 'ARMATURE']:
+                map = {}
+                for bone in [bone for bone in arm_obj.data.bones if PELVIS_OR_FOOT_NAME_PATTERN.match(bone.name) != None]:
+                    print(arm_obj, bone)
+                    rot = Quaternion((1.0, 0.0, 0.0), math.radians(90.0)).rotation_difference(bone.matrix_local.to_quaternion()).to_matrix().to_4x4()
+                    map[bone.name] = (rot, rot.inverted_safe())
+                if len(map) > 0:
+                    if bone_align_matrix_dict == None:
+                        bone_align_matrix_dict = {}
+                    bone_align_matrix_dict[arm_obj.name] = map
         if bone_correction_matrix:
             reverse_direction_bone_correction_matrix = bone_correction_matrix @ reverse_direction_bone_correction_matrix
         reverse_direction_bone_correction_matrix_inv = reverse_direction_bone_correction_matrix.inverted()
@@ -3180,7 +3193,7 @@ def save_single(operator, scene, depsgraph, filepath="",
         mesh_smooth_type, use_subsurf, use_mesh_edges, use_tspace, use_triangles,
         armature_nodetype, use_armature_deform_only,
         add_leaf_bones, bone_correction_matrix, bone_correction_matrix_inv,
-        reverse_direction_bone_correction_matrix, reverse_direction_bone_correction_matrix_inv, reverse_direction_bone_rotation,
+        reverse_direction_bone_correction_matrix, reverse_direction_bone_correction_matrix_inv, bone_align_matrix_dict,
         bake_anim, bake_anim_use_all_bones, bake_anim_use_nla_strips, bake_anim_use_all_actions,
         bake_anim_step, bake_anim_simplify_factor, bake_anim_force_startend_keying,
         False, media_settings, use_custom_props, use_custom_curves, colors_type, prioritize_active_color

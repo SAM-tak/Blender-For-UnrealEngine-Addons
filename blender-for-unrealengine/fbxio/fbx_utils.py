@@ -936,6 +936,8 @@ class ObjectWrapper(metaclass=MetaObjectWrapper):
             prev_i = i
         return ".".join(str(i) for i in pids[:idx_valid])
 
+    BONE_ALIGNS = None
+
     def __init__(self, bdata, armature=None):
         """
         bdata might be an Object (deprecated), DepsgraphObjectInstance, Bone or PoseBone.
@@ -1014,6 +1016,56 @@ class ObjectWrapper(metaclass=MetaObjectWrapper):
         return None
     bdata_pose_bone = property(get_bdata_pose_bone)
 
+    def get_bone_align_matrix(self):
+        if self.BONE_ALIGNS and self.armature.name in self.BONE_ALIGNS:
+            if self.bdata.name in self.BONE_ALIGNS[self.armature.name]:
+                return self.BONE_ALIGNS[self.armature.name][self.bdata.name][0]
+        return None
+
+    def get_parent_bone_align_matrix_inv(self):
+        if self.bdata.parent and self.BONE_ALIGNS and self.armature.name in self.BONE_ALIGNS:
+            if self.bdata.parent.name in self.BONE_ALIGNS[self.armature.name]:
+                return self.BONE_ALIGNS[self.armature.name][self.bdata.parent.name][1]
+        return None
+
+    def get_parent_pose_bone_matrix_inv(self):
+        par = self.bdata.parent
+        par_mat_inv = self._ref.pose.bones[par.name].matrix.inverted_safe() if par else Matrix()
+        par_align_mat_inv = self.get_parent_bone_align_matrix_inv() if par else None
+        if par_align_mat_inv:
+            # Apply bone alignment
+            par_mat_inv = par_align_mat_inv @ par_mat_inv
+        return par_mat_inv
+    parent_pose_bone_matrix_inv = property(get_parent_pose_bone_matrix_inv)
+
+    def get_pose_bone_matrix(self):
+        mat = self._ref.pose.bones[self.bdata.name].matrix
+        align_mat = self.get_bone_align_matrix()
+        if align_mat:
+            # Apply bone alignment
+            mat = mat @ align_mat
+        return mat
+    pose_bone_matrix = property(get_pose_bone_matrix)
+
+    def get_parent_bone_rest_matrix_inv(self):
+        par = self.bdata.parent
+        par_mat_inv = par.matrix_local.inverted_safe() if par else Matrix()
+        par_align_mat_inv = self.get_parent_bone_align_matrix_inv() if par else None
+        if par_align_mat_inv:
+            # Apply bone alignment
+            par_mat_inv = par_align_mat_inv @ par_mat_inv
+        return par_mat_inv
+    parent_bone_rest_matrix_inv = property(get_parent_bone_rest_matrix_inv)
+
+    def get_bone_rest_matrix(self):
+        mat = self.bdata.matrix_local.copy()
+        align_mat = self.get_bone_align_matrix()
+        if align_mat:
+            # Apply bone alignment
+            mat = mat @ align_mat
+        return mat
+    bone_rest_matrix = property(get_bone_rest_matrix)
+
     def get_matrix_local(self):
         if self._tag == 'OB':
             return self.bdata.matrix_local.copy()
@@ -1021,9 +1073,7 @@ class ObjectWrapper(metaclass=MetaObjectWrapper):
             return self._ref.matrix_world.inverted_safe() @ self._dupli_matrix
         else:  # 'BO', current pose
             # PoseBone.matrix is in armature space, bring in back in real local one!
-            par = self.bdata.parent
-            par_mat_inv = self._ref.pose.bones[par.name].matrix.inverted_safe() if par else Matrix()
-            return par_mat_inv @ self._ref.pose.bones[self.bdata.name].matrix
+            return self.parent_pose_bone_matrix_inv @ self.pose_bone_matrix
     matrix_local = property(get_matrix_local)
 
     def get_matrix_global(self):
@@ -1032,22 +1082,20 @@ class ObjectWrapper(metaclass=MetaObjectWrapper):
         elif self._tag == 'DP':
             return self._dupli_matrix
         else:  # 'BO', current pose
-            return self._ref.matrix_world @ self._ref.pose.bones[self.bdata.name].matrix
+            return self._ref.matrix_world @ self.pose_bone_matrix
     matrix_global = property(get_matrix_global)
 
     def get_matrix_rest_local(self):
         if self._tag == 'BO':
             # Bone.matrix_local is in armature space, bring in back in real local one!
-            par = self.bdata.parent
-            par_mat_inv = par.matrix_local.inverted_safe() if par else Matrix()
-            return par_mat_inv @ self.bdata.matrix_local
+            return self.parent_bone_rest_matrix_inv @ self.bone_rest_matrix
         else:
             return self.matrix_local.copy()
     matrix_rest_local = property(get_matrix_rest_local)
 
     def get_matrix_rest_global(self):
         if self._tag == 'BO':
-            return self._ref.matrix_world @ self.bdata.matrix_local
+            return self._ref.matrix_world @ self.bone_rest_matrix
         else:
             return self.matrix_global.copy()
     matrix_rest_global = property(get_matrix_rest_global)
@@ -1071,11 +1119,6 @@ class ObjectWrapper(metaclass=MetaObjectWrapper):
     def is_leg_bone(self):
         return self.LEG_NAME_PATTERN.match(self.name) != None
 
-    PELVIS_OR_FOOT_NAME_PATTERN = re.compile(r'^(pelvis$|foot[_\.$])', re.IGNORECASE)
-
-    def is_pelvis_or_foot_bone(self):
-        return self.PELVIS_OR_FOOT_NAME_PATTERN.match(self.name) != None
-
     SYMMETRY_RIGHTSIDE_NAME_PATTERN = re.compile(r'(.+[_\.])(r|R)(\.\d+)?$')
 
     def is_rightside_bone(self, objects):
@@ -1091,7 +1134,7 @@ class ObjectWrapper(metaclass=MetaObjectWrapper):
         return False
 
     def is_reverse_direction_bone(self, scene_data):
-        if scene_data.settings.reverse_direction_bone_rotation and self.is_leg_bone():
+        if scene_data.settings.bone_align_rotation_dict and self.is_leg_bone():
             return not self.is_rightside_bone(scene_data.objects)
         return self.is_rightside_bone(scene_data.objects)
 
@@ -1161,15 +1204,6 @@ class ObjectWrapper(metaclass=MetaObjectWrapper):
                 # ...and move it back into parent's *FBX* local space.
                 par_mat = parent.fbx_object_matrix(scene_data, rest=rest, local_space=True)
                 matrix = par_mat.inverted_safe() @ matrix
-
-        # Set pelvis and foot bone matrix like as UE Mannequin
-        if self._tag == 'BO' and scene_data.settings.reverse_direction_bone_rotation and self.is_pelvis_or_foot_bone():
-            trs = matrix.to_translation()
-            rot = Quaternion((0.0, 1.0, 0.0), math.radians(-90.0))
-            if self.is_rightside_bone(scene_data.objects):
-                rot = rot @ scene_data.settings.reverse_direction_bone_rotation
-            scl = matrix.to_scale()
-            matrix = Matrix.LocRotScale(trs, rot, scl)
 
         if self.use_bake_space_transform(scene_data):
             # If we bake the transforms we need to post-multiply inverse global transform.
@@ -1269,7 +1303,7 @@ FBXExportSettings = namedtuple("FBXExportSettings", (
     "mesh_smooth_type", "use_subsurf", "use_mesh_edges", "use_tspace", "use_triangles",
     "armature_nodetype", "use_armature_deform_only", "add_leaf_bones",
     "bone_correction_matrix", "bone_correction_matrix_inv",
-    "reverse_direction_bone_correction_matrix", "reverse_direction_bone_correction_matrix_inv", "reverse_direction_bone_rotation",
+    "reverse_direction_bone_correction_matrix", "reverse_direction_bone_correction_matrix_inv", "bone_align_rotation_dict",
     "bake_anim", "bake_anim_use_all_bones", "bake_anim_use_nla_strips", "bake_anim_use_all_actions",
     "bake_anim_step", "bake_anim_simplify_factor", "bake_anim_force_startend_keying",
     "use_metadata", "media_settings", "use_custom_props", "use_custom_curves", "colors_type", "prioritize_active_color"
