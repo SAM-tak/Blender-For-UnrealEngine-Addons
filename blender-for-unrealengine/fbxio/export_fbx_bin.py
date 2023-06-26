@@ -3165,9 +3165,9 @@ def save_single(operator, scene, depsgraph, filepath="",
                     lowerbonename = bone.name.lower()
                     if lowerbonename.startswith('foot'):
                         if lowerbonename[-1] == 'l':
-                            taregt_rot = Quaternion((1.0, 0.1, 0.0), math.radians(89.0))
+                            taregt_rot = Quaternion((1.0, 0.01, 0.0), math.radians(89.0))
                         else:
-                            taregt_rot = Quaternion((1.0, -0.1, 0.0), math.radians(89.0))
+                            taregt_rot = Quaternion((1.0, -0.01, 0.0), math.radians(89.0))
                     rot = bone.matrix_local.to_quaternion().rotation_difference(taregt_rot)
                     rot_mat = rot.to_matrix().to_4x4()
                     map[bone.name] = (rot_mat, rot_mat.inverted_safe())
@@ -3198,7 +3198,8 @@ def save_single(operator, scene, depsgraph, filepath="",
         mesh_smooth_type, use_subsurf, use_mesh_edges, use_tspace, use_triangles,
         armature_nodetype, use_armature_deform_only,
         add_leaf_bones, bone_correction_matrix, bone_correction_matrix_inv,
-        reverse_direction_bone_correction_matrix, reverse_direction_bone_correction_matrix_inv, bone_align_matrix_dict,
+        reverse_direction_bone_correction_matrix, reverse_direction_bone_correction_matrix_inv,
+        use_ue_mannequin_bone_alignment, bone_align_matrix_dict,
         bake_anim, bake_anim_use_all_bones, bake_anim_use_nla_strips, bake_anim_use_all_actions,
         bake_anim_step, bake_anim_simplify_factor, bake_anim_force_startend_keying,
         False, media_settings, use_custom_props, use_custom_curves, colors_type, prioritize_active_color
