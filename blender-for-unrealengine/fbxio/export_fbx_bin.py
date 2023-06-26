@@ -2287,8 +2287,6 @@ def fbx_data_from_scene(scene, depsgraph, settings):
     perfmon = PerfMon()
     perfmon.level_up()
 
-    ObjectWrapper.BONE_ALIGNS = settings.bone_align_rotation_dict
-
     # ##### Gathering data...
 
     perfmon.step("FBX export prepare: Wrapping Objects...")
@@ -3163,9 +3161,16 @@ def save_single(operator, scene, depsgraph, filepath="",
             for arm_obj in [arm_obj for arm_obj in scene.objects if arm_obj.type == 'ARMATURE']:
                 map = {}
                 for bone in [bone for bone in arm_obj.data.bones if PELVIS_OR_FOOT_NAME_PATTERN.match(bone.name) != None]:
-                    print(arm_obj, bone)
-                    rot = Quaternion((1.0, 0.0, 0.0), math.radians(90.0)).rotation_difference(bone.matrix_local.to_quaternion()).to_matrix().to_4x4()
-                    map[bone.name] = (rot, rot.inverted_safe())
+                    taregt_rot = Quaternion((1.0, 0.0, 0.0), math.radians(90.0))
+                    lowerbonename = bone.name.lower()
+                    if lowerbonename.startswith('foot'):
+                        if lowerbonename[-1] == 'l':
+                            taregt_rot = Quaternion((1.0, 0.1, 0.0), math.radians(89.0))
+                        else:
+                            taregt_rot = Quaternion((1.0, -0.1, 0.0), math.radians(89.0))
+                    rot = bone.matrix_local.to_quaternion().rotation_difference(taregt_rot)
+                    rot_mat = rot.to_matrix().to_4x4()
+                    map[bone.name] = (rot_mat, rot_mat.inverted_safe())
                 if len(map) > 0:
                     if bone_align_matrix_dict == None:
                         bone_align_matrix_dict = {}
