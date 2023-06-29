@@ -176,7 +176,7 @@ def ExportSingleSkeletalMesh(
                 'MESH',
                 'OTHER'},
             use_custom_props=addon_prefs.exportWithCustomProps,
-            use_custom_curves=addon_prefs.exportWithCustomCurves,
+            use_custom_curves=True,
             mesh_smooth_type="FACE",
             add_leaf_bones=False,
             use_armature_deform_only=active.exportDeformOnly,

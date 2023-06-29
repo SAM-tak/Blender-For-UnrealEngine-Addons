@@ -141,7 +141,7 @@ def ExportSingleFbxCamera(
             apply_scale_options='FBX_SCALE_NONE',
             object_types={'CAMERA'},
             use_custom_props=addon_prefs.exportWithCustomProps,
-            use_custom_curves=addon_prefs.exportWithCustomCurves,
+            use_custom_curves=True,
             add_leaf_bones=False,
             use_armature_deform_only=obj.exportDeformOnly,
             bake_anim=True,

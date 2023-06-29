@@ -1987,7 +1987,7 @@ def fbx_animations_do(scene_data, ref_id, f_start, f_end, start_zero, objects=No
                                ACNW(ob_obj.key, 'LCL_SCALING', force_key, force_sek, scale))
         p_rots[ob_obj] = rot
         # Collect custom values per bone
-        if scene_data.settings.use_custom_curves and ob_obj.is_bone:
+        if scene_data.settings.use_custom_props and ob_obj.is_bone:
             bid = ob_obj.bdata_pose_bone
             rna_properties = {prop.identifier for prop in bid.bl_rna.properties if prop.is_runtime}
             for curve_name in bid.keys():
@@ -1999,7 +1999,7 @@ def fbx_animations_do(scene_data, ref_id, f_start, f_end, start_zero, objects=No
                     #print("!##BONE CUSTOM", ob_obj.bdata_pose_bone.name, ob_obj.key, curve_name)
 
     # Loop through the data empties to get the root object to associate the custom values
-    if scene_data.settings.use_custom_curves:
+    if scene_data.settings.use_custom_props:
         for root_obj, root_key in scene_data.data_empties.items():
             ACNW = AnimationCurveNodeWrapper
             bid = bpy.data.objects[root_obj.name]
@@ -3161,15 +3161,16 @@ def save_single(operator, scene, depsgraph, filepath="",
             for arm_obj in [arm_obj for arm_obj in scene.objects if arm_obj.type == 'ARMATURE']:
                 map = {}
                 for bone in [bone for bone in arm_obj.data.bones if PELVIS_OR_FOOT_NAME_PATTERN.match(bone.name) != None]:
-                    taregt_rot = Quaternion((1.0, 0.0, 0.0), math.radians(90.0))
+                    target_rot = Quaternion((1.0, 0.0, 0.0), math.radians(90.0))
                     lowerbonename = bone.name.lower()
                     if lowerbonename.startswith('foot'):
+                        # To mitigate the instability caused by singularities during XYZ Euler angle transformations of the foot bones,
+                        # an offset upward vector is used.
                         if lowerbonename[-1] == 'l':
-                            taregt_rot = Quaternion((1.0, 0.01, 0.0), math.radians(89.0))
+                            target_rot = Quaternion((1.0, 0.01, 0.0), math.radians(89.0))
                         else:
-                            taregt_rot = Quaternion((1.0, -0.01, 0.0), math.radians(89.0))
-                    rot = bone.matrix_local.to_quaternion().rotation_difference(taregt_rot)
-                    rot_mat = rot.to_matrix().to_4x4()
+                            target_rot = Quaternion((1.0, -0.01, 0.0), math.radians(89.0))
+                    rot_mat = bone.matrix_local.to_quaternion().rotation_difference(target_rot).to_matrix().to_4x4()
                     map[bone.name] = (rot_mat, rot_mat.inverted_safe())
                 if len(map) > 0:
                     if bone_align_matrix_dict == None:
@@ -3202,7 +3203,7 @@ def save_single(operator, scene, depsgraph, filepath="",
         use_ue_mannequin_bone_alignment, bone_align_matrix_dict,
         bake_anim, bake_anim_use_all_bones, bake_anim_use_nla_strips, bake_anim_use_all_actions,
         bake_anim_step, bake_anim_simplify_factor, bake_anim_force_startend_keying,
-        False, media_settings, use_custom_props, use_custom_curves, colors_type, prioritize_active_color
+        False, media_settings, use_custom_props, colors_type, prioritize_active_color
     )
 
     import bpy_extras.io_utils
