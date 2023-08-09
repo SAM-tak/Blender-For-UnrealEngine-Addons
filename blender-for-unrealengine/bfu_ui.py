@@ -769,6 +769,15 @@ class BFU_PT_BlenderForUnrealObject(bpy.types.Panel):
         default=0.0,
         )
 
+    bpy.types.Object.bfu_disable_free_scale_animation = BoolProperty(
+        name="Disable non-uniform scale animation.",
+        description=(
+            "If checked, scale animation track's elements always have same value."
+        ),
+        override={'LIBRARY_OVERRIDABLE'},
+        default=False
+    )
+
     bpy.types.Object.bfu_anim_nla_use = BoolProperty(
         name="Export NLA (Nonlinear Animation)",
         description=(
@@ -1268,6 +1277,7 @@ class BFU_PT_BlenderForUnrealObject(bpy.types.Panel):
                             'obj.exportSecondaryBoneAxis',
                             'obj.bfu_mirror_symmetry_right_side_bones',
                             'obj.bfu_use_ue_mannequin_bone_alignment',
+                            'obj.bfu_disable_free_scale_animation',
                             'obj.MoveToCenterForExport',
                             'obj.RotateToZeroForExport',
                             'obj.MoveActionToCenterForExport',
@@ -1668,6 +1678,8 @@ class BFU_PT_BlenderForUnrealObject(bpy.types.Panel):
                             if obj.bfu_export_procedure != "auto-rig-pro":
                                 propsFbx.prop(obj, 'SampleAnimForExport')
                             propsFbx.prop(obj, 'SimplifyAnimForExport')
+                        propsScaleAnimation = layout.row()
+                        propsScaleAnimation.prop(obj, "bfu_disable_free_scale_animation")
 
                     # Armature export action list feedback
                     if GetAssetType(obj) == "SkeletalMesh":

@@ -191,6 +191,7 @@ def ExportSingleSkeletalMesh(
             secondary_bone_axis=active.exportSecondaryBoneAxis,
             mirror_symmetry_right_side_bones=active.bfu_mirror_symmetry_right_side_bones,
             use_ue_mannequin_bone_alignment=active.bfu_use_ue_mannequin_bone_alignment,
+            disable_free_scale_animation=active.bfu_disable_free_scale_animation,
             axis_forward=active.exportAxisForward,
             axis_up=active.exportAxisUp,
             bake_space_transform=False

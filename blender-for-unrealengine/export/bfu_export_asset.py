@@ -237,8 +237,9 @@ def ExportAllAssetByList(op, targetobjects, targetActionName, targetcollection):
                 UpdateExportProgress()
 
             # Action animation
-            print("Start Export Action(s)")
             if GetAssetType(obj) == "SkeletalMesh" and obj.visible_get():
+                print("Start Export Action(s)")
+                action_curve_scale = None
                 for action in GetActionToExport(obj):
                     if action.name in targetActionName:
                         animType = GetActionType(action)
@@ -249,12 +250,14 @@ def ExportAllAssetByList(op, targetobjects, targetActionName, targetcollection):
                                 # Save current start/end frame
                                 UserStartFrame = scene.frame_start
                                 UserEndFrame = scene.frame_end
-                                ProcessActionExport(op, obj, action)
+                                action_curve_scale = ProcessActionExport(op, obj, action, action_curve_scale)
 
                                 # Resets previous start/end frame
                                 scene.frame_start = UserStartFrame
                                 scene.frame_end = UserEndFrame
                                 UpdateExportProgress()
+                if action_curve_scale:
+                    action_curve_scale.ResetScaleAfterExport()
 
                 # NLA animation
                 print("Start Export NLA(s)")

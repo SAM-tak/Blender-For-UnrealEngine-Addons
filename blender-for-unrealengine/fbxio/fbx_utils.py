@@ -1194,6 +1194,11 @@ class ObjectWrapper(metaclass=MetaObjectWrapper):
         """
         matrix = self.fbx_object_matrix(scene_data, rest=rest)
         loc, rot, scale = matrix.decompose()
+        if scene_data.settings.disable_free_scale_animation:
+            scale_value = (scale.x + scale.y + scale.z) / 3.0
+            if math.isclose(scale_value, 1.0, rel_tol=0.00001):
+                scale_value = 1.0
+            scale = Vector((scale_value, scale_value, scale_value))
         matrix_rot = rot.to_matrix()
         # quat -> euler, we always use 'XYZ' order, use ref rotation if given.
         if rot_euler_compat is not None:
@@ -1277,7 +1282,7 @@ FBXExportSettings = namedtuple("FBXExportSettings", (
     "armature_nodetype", "use_armature_deform_only", "add_leaf_bones",
     "bone_correction_matrix", "bone_correction_matrix_inv",
     "reverse_direction_bone_correction_matrix", "reverse_direction_bone_correction_matrix_inv",
-    "use_ue_mannequin_bone_alignment", "bone_align_matrix_dict",
+    "use_ue_mannequin_bone_alignment", "bone_align_matrix_dict", "disable_free_scale_animation",
     "bake_anim", "bake_anim_use_all_bones", "bake_anim_use_nla_strips", "bake_anim_use_all_actions",
     "bake_anim_step", "bake_anim_simplify_factor", "bake_anim_force_startend_keying",
     "use_metadata", "media_settings", "use_custom_props", "colors_type", "prioritize_active_color"

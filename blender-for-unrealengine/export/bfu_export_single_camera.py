@@ -159,6 +159,7 @@ def ExportSingleFbxCamera(
             secondary_bone_axis=obj.exportSecondaryBoneAxis,
             mirror_symmetry_right_side_bones=obj.bfu_mirror_symmetry_right_side_bones,
             use_ue_mannequin_bone_alignment=obj.bfu_use_ue_mannequin_bone_alignment,
+            disable_free_scale_animation=obj.bfu_disable_free_scale_animation,
             axis_forward=obj.exportAxisForward,
             axis_up=obj.exportAxisUp,
             bake_space_transform=False
