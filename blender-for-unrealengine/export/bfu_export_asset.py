@@ -140,8 +140,8 @@ def ExportAllAssetByList(op, targetobjects, targetActionName, targetcollection):
     UpdateExportProgress()
 
     # Export collections
-    print("Start Export collection(s)")
     if scene.static_collection_export:
+        print("Start Export collection(s)")
         for col in bfu_utils.GetCollectionToExport(scene):
             if col.name in targetcollection:
                 # Save current start/end frame
@@ -159,8 +159,8 @@ def ExportAllAssetByList(op, targetobjects, targetActionName, targetcollection):
         if obj.ExportEnum == "export_recursive":
 
             # Camera
-            print("Start Export camera(s)")
             if bfu_utils.GetAssetType(obj) == "Camera" and IsValidObjectForExport(scene, obj):
+                print("Start Export camera(s)")
                 # Save current start/end frame
                 UserStartFrame = scene.frame_start
                 UserEndFrame = scene.frame_end
@@ -172,9 +172,8 @@ def ExportAllAssetByList(op, targetobjects, targetActionName, targetcollection):
                 UpdateExportProgress()
 
             # StaticMesh
-            print("Start Export StaticMesh(s)")
             if bfu_utils.GetAssetType(obj) == "StaticMesh" and IsValidObjectForExport(scene, obj):
-
+                print("Start Export StaticMesh(s)")
                 # Save current start/end frame
                 UserStartFrame = scene.frame_start
                 UserEndFrame = scene.frame_end
@@ -186,8 +185,8 @@ def ExportAllAssetByList(op, targetobjects, targetActionName, targetcollection):
                 UpdateExportProgress()
 
             # SkeletalMesh
-            print("Start Export SkeletalMesh(s)")
             if bfu_utils.GetAssetType(obj) == "SkeletalMesh" and IsValidObjectForExport(scene, obj):
+                print("Start Export SkeletalMesh(s)")
                 # Save current start/end frame
                 UserStartFrame = scene.frame_start
                 UserEndFrame = scene.frame_end
@@ -199,8 +198,8 @@ def ExportAllAssetByList(op, targetobjects, targetActionName, targetcollection):
                 UpdateExportProgress()
 
             # Alembic
-            print("Start Export Alembic(s)")
             if bfu_utils.GetAssetType(obj) == "Alembic" and IsValidObjectForExport(scene, obj):
+                print("Start Export Alembic(s)")
                 # Save current start/end frame
                 UserStartFrame = scene.frame_start
                 UserEndFrame = scene.frame_end
@@ -235,9 +234,9 @@ def ExportAllAssetByList(op, targetobjects, targetActionName, targetcollection):
                     action_curve_scale.ResetScaleAfterExport()
 
                 # NLA animation
-                print("Start Export NLA(s)")
                 if IsValidActionForExport(scene, obj, "NLA"):
                     if obj.bfu_anim_nla_use:
+                        print("Start Export NLA(s)")
                         # Save current start/end frame
                         UserStartFrame = scene.frame_start
                         UserEndFrame = scene.frame_end
