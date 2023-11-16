@@ -882,6 +882,15 @@ class BFU_PT_BlenderForUnrealObject(bpy.types.Panel):
         default='-Z',
         )
 
+    bpy.types.Object.bfu_export_animation_without_mesh = BoolProperty(
+        name="Export animation without mesh",
+        description=(
+            "If checked, When exporting animation, do not include mesh data in the FBX file."
+            ),
+        override={'LIBRARY_OVERRIDABLE'},
+        default=True
+        )
+
     bpy.types.Object.bfu_mirror_symmetry_right_side_bones = BoolProperty(
         name="Revert direction of symmetry right side bones",
         description=(
@@ -1265,6 +1274,7 @@ class BFU_PT_BlenderForUnrealObject(bpy.types.Panel):
                             'obj.exportAxisUp',
                             'obj.exportPrimaryBoneAxis',
                             'obj.exportSecondaryBoneAxis',
+                            'obj.bfu_export_animation_without_mesh',
                             'obj.bfu_mirror_symmetry_right_side_bones',
                             'obj.bfu_use_ue_mannequin_bone_alignment',
                             'obj.bfu_disable_free_scale_animation',
@@ -1536,6 +1546,7 @@ class BFU_PT_BlenderForUnrealObject(bpy.types.Panel):
                                     Ue4Skeleton.prop(obj, "bfu_target_skeleton_custom_name")
                                 if obj.bfu_skeleton_search_mode == "custom_reference":
                                     Ue4Skeleton.prop(obj, "bfu_target_skeleton_custom_ref")
+                                Ue4Skeleton.prop(obj, "bfu_export_animation_without_mesh")
                                 Ue4Skeleton.prop(obj, "bfu_mirror_symmetry_right_side_bones")
                                 MirrorSymmetryRightSideBonesRow = Ue4Skeleton.row()
                                 MirrorSymmetryRightSideBonesRow.enabled = obj.bfu_mirror_symmetry_right_side_bones
