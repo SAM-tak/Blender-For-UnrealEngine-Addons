@@ -27,7 +27,6 @@ from . import bfu_export_single_skeletal_mesh
 from . import bfu_export_single_static_mesh
 from . import bfu_export_single_static_mesh_collection
 from .. import bfu_cached_asset_list
-from .. import bps
 from .. import bbpl
 from .. import bfu_basics
 from .. import bfu_utils
@@ -285,7 +284,7 @@ def export_spline_from_asset_list(op, asset_list: bfu_cached_asset_list.AssetToE
         bfu_export_single_spline.ProcessSplineExport(op, obj, spline_tracks)
 
 
-def export_static_mesh_from_asset_list(op, asset_list: [bfu_cached_asset_list.AssetToExport]):
+def export_static_mesh_from_asset_list(op, asset_list: bfu_cached_asset_list.AssetToExport):
     scene = bpy.context.scene
 
     print("Start Export StaticMesh(s)")
@@ -359,27 +358,29 @@ def export_animation_from_asset_list(op, asset_list: bfu_cached_asset_list.Asset
                 if bfu_utils.GetAssetType(obj) == "SkeletalMesh" and obj.visible_get():
                     # Action animation
                     print("Start Export Action(s)")
-                    action_curve_scale = None
                     animation_asset_cache = bfu_cached_asset_list.GetAnimationAssetCache(obj)
-                    animation_to_export = animation_asset_cache.GetAnimationAssetList()
-                    for action in animation_to_export:
+                    animations_to_export = []
+                    for action in animation_asset_cache.GetAnimationAssetList():
                         if action.name == asset.action.name:
                             animType = bfu_utils.GetActionType(action)
 
                             # Action and Pose
                             if IsValidActionForExport(scene, obj, animType):
                                 if animType == "Action" or animType == "Pose":
-                                    # Save current start/end frame
-                                    UserStartFrame = scene.frame_start
-                                    UserEndFrame = scene.frame_end
-                                    action_curve_scale = bfu_export_single_fbx_action.ProcessActionExport(op, obj, action, action_curve_scale)
+                                    animations_to_export.append(action)
 
-                                    # Resets previous start/end frame
-                                    scene.frame_start = UserStartFrame
-                                    scene.frame_end = UserEndFrame
-                                    #UpdateExportProgress()
-                    if action_curve_scale:
-                        action_curve_scale.ResetScaleAfterExport()
+                    if len(animations_to_export) > 0:
+                        # Save current start/end frame
+                        UserStartFrame = scene.frame_start
+                        UserEndFrame = scene.frame_end
+
+                        bfu_export_single_fbx_action.ExportActions(op, obj, animations_to_export)
+
+                        # Resets previous start/end frame
+                        scene.frame_start = UserStartFrame
+                        scene.frame_end = UserEndFrame
+                        #UpdateExportProgress()
+
 
 def export_nonlinear_animation_from_asset_list(op, asset_list: bfu_cached_asset_list.AssetToExport):
     scene = bpy.context.scene

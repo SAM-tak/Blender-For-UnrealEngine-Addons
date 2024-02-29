@@ -43,7 +43,6 @@ if "bpy" in locals():
 
 def ProcessNLAAnimExport(op, obj):
     scene = bpy.context.scene
-    addon_prefs = bfu_basics.GetAddonPrefs()
     dirpath = os.path.join(bfu_utils.GetObjExportDir(obj), scene.bfu_anim_subfolder_name)
 
     scene.frame_end += 1  # Why ?

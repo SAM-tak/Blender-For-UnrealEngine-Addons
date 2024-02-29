@@ -20,14 +20,10 @@ import os
 import bpy
 import datetime
 from . import bbpl
-from . import bfu_basics
 from . import bfu_utils
 
 
 def WriteImportPythonHeadComment(useSequencer=False):
-
-    scene = bpy.context.scene
-
     # Comment
     ImportScript = (
         "#This script was generated with the addons Blender for UnrealEngine" +
@@ -62,7 +58,6 @@ def WriteImportPythonHeadComment(useSequencer=False):
     return ImportScript
 
 def add_generated_json_meta_data(json_data):
-    
     current_datetime = datetime.datetime.now()
     current_datetime_str = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     timestamp = int(current_datetime.timestamp())

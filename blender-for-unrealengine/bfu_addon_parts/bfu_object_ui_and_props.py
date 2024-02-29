@@ -974,6 +974,28 @@ class BFU_PT_BlenderForUnrealObject(bpy.types.Panel):
             UpdateExportActionList(bpy.context.object)
             return {'FINISHED'}
 
+    class BFU_OT_SelectAllObjActionListButton(bpy.types.Operator):
+        bl_label = "Select All"
+        bl_idname = "object.selectallobjactionlist"
+        bl_description = "Select all action list"
+
+        def execute(self, context):
+            if bpy.context.object.bfu_animation_asset_list:
+                for item in bpy.context.object.bfu_animation_asset_list:
+                    item.use = True
+            return {'FINISHED'}
+
+    class BFU_OT_DeselectAllObjActionListButton(bpy.types.Operator):
+        bl_label = "Deselect"
+        bl_idname = "object.deselectallobjactionlist"
+        bl_description = "Deselect all action list"
+
+        def execute(self, context):
+            if bpy.context.object.bfu_animation_asset_list:
+                for item in bpy.context.object.bfu_animation_asset_list:
+                    item.use = False
+            return {'FINISHED'}
+
     class BFU_OT_ShowActionToExport(bpy.types.Operator):
         bl_label = "Show action(s)"
         bl_idname = "object.showobjaction"
@@ -1475,9 +1497,13 @@ class BFU_PT_BlenderForUnrealObject(bpy.types.Panel):
                                         maxrows=5,
                                         rows=5
                                     )
-                                    ActionListProperty.operator(
+                                    UpdateObjActionList = ActionListProperty.row()
+                                    UpdateObjActionList.operator(
                                         "object.updateobjactionlist",
                                         icon='RECOVER_LAST')
+                                    SelectDeselectObjActionList = ActionListProperty.row()
+                                    SelectDeselectObjActionList.operator("object.selectallobjactionlist")
+                                    SelectDeselectObjActionList.operator("object.deselectallobjactionlist")
                                 if obj.bfu_anim_action_export_enum == "export_specific_prefix":
                                     ActionListProperty.prop(obj, 'bfu_prefix_name_to_export')
 
@@ -1811,6 +1837,8 @@ classes = (
     BFU_PT_BlenderForUnrealObject.BFU_OT_ComputLightMap,
     BFU_PT_BlenderForUnrealObject.BFU_UL_ActionExportTarget,
     BFU_PT_BlenderForUnrealObject.BFU_OT_UpdateObjActionListButton,
+    BFU_PT_BlenderForUnrealObject.BFU_OT_SelectAllObjActionListButton,
+    BFU_PT_BlenderForUnrealObject.BFU_OT_DeselectAllObjActionListButton,
     BFU_PT_BlenderForUnrealObject.BFU_OT_ShowActionToExport,
     BFU_PT_BlenderForUnrealObject.BFU_UL_CollectionExportTarget,
     BFU_PT_BlenderForUnrealObject.BFU_OT_UpdateCollectionButton,
