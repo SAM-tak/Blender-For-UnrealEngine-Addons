@@ -19,7 +19,7 @@
 
 import bpy
 from . import bfu_export_single_alembic_animation
-from . import bfu_export_single_fbx_action
+from . import bfu_export_fbx_actions
 from . import bfu_export_single_camera
 from . import bfu_export_single_spline
 from . import bfu_export_single_fbx_nla_anim
@@ -374,7 +374,7 @@ def export_animation_from_asset_list(op, asset_list: bfu_cached_asset_list.Asset
                         UserStartFrame = scene.frame_start
                         UserEndFrame = scene.frame_end
 
-                        bfu_export_single_fbx_action.ExportActions(op, obj, animations_to_export)
+                        bfu_export_fbx_actions.ExportActions(op, obj, animations_to_export)
 
                         # Resets previous start/end frame
                         scene.frame_start = UserStartFrame
