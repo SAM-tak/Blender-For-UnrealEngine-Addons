@@ -105,7 +105,7 @@ def ExportActions(op, armature, actions):
         bbpl.anim_utils.copy_drivers(armature, active)
 
     # animation_data.action is ReadOnly with tweakmode in 2.8
-    if (scene.is_nla_tweakmode):
+    if scene.is_nla_tweakmode:
         active.animation_data.use_tweak_mode = False
 
     if addon_prefs.ignoreNLAForAction:  # Reset NLA
@@ -149,7 +149,7 @@ def ExportActions(op, armature, actions):
 
         asset_name.SetExportName()
 
-        if (skeleton_export_procedure == "ue-standard"):
+        if skeleton_export_procedure == "ue-standard":
             export_fbx_bin.save(
                 operator=op,
                 context=bpy.context,
@@ -187,7 +187,7 @@ def ExportActions(op, armature, actions):
                 axis_up=bfu_export_utils.get_skeleton_export_axis_up(armature),
                 bake_space_transform=False
                 )
-        elif (skeleton_export_procedure == "blender-standard"):
+        elif skeleton_export_procedure == "blender-standard":
             bpy.ops.export_scene.fbx(
                 filepath=bfu_export_utils.GetExportFullpath(dirpath, filename),
                 check_existing=False,
@@ -218,7 +218,7 @@ def ExportActions(op, armature, actions):
                 axis_up=bfu_export_utils.get_skeleton_export_axis_up(armature),
                 bake_space_transform=False
                 )
-        elif (skeleton_export_procedure == "auto-rig-pro"):
+        elif skeleton_export_procedure == "auto-rig-pro":
             # Rename Action name for export
             TempName = "ActionAutoRigProTempExportNameForUnreal"
             OriginalActionName = active.animation_data.action.name

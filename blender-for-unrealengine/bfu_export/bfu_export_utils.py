@@ -21,13 +21,10 @@ import bpy
 import math
 import os
 import mathutils
-from . import bfu_export_get_info
 from .. import bfu_write_text
 from .. import bfu_basics
 from .. import bfu_utils
 from .. import bbpl
-from .. import bfu_addon_parts
-from .. import bfu_camera
 from .. import bfu_vertex_color
 from .. import bfu_export_procedure
 from .. import bfu_collision

@@ -77,7 +77,7 @@ def ExportSingleAlembicAnimation(
     alembic_export_procedure = obj.bfu_alembic_export_procedure
 
     # Export
-    if (alembic_export_procedure == "blender-standard"):
+    if alembic_export_procedure == "blender-standard":
         bpy.ops.wm.alembic_export(
             filepath=bfu_export_utils.GetExportFullpath(dirpath, filename),
             check_existing=False,

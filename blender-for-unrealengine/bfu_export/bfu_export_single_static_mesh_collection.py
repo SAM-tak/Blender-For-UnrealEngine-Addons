@@ -18,7 +18,6 @@
 
 
 import bpy
-from bpy_extras.io_utils import axis_conversion
 from . import bfu_export_utils
 from .. import bbpl
 from .. import bfu_basics
@@ -66,8 +65,7 @@ def ProcessCollectionExport(op, col):
     MyAsset.StartAssetExport()
     ExportSingleStaticMeshCollection(op, dirpath, file.GetFileWithExtension(), col.name)
 
-    if (scene.text_AdditionalData and addon_prefs.useGeneratedScripts):
-        
+    if scene.text_AdditionalData and addon_prefs.useGeneratedScripts:
         file: bfu_export_logs.BFU_OT_FileExport = MyAsset.files.add()
         file.file_name = bfu_naming.get_collection_file_name(col, col.name+"_AdditionalTrack", "")
         file.file_extension = "json"
@@ -119,7 +117,7 @@ def ExportSingleStaticMeshCollection(
     save_use_simplify = bbpl.utils.SaveUserRenderSimplify()
     scene.render.use_simplify = False
 
-    if (static_export_procedure == "ue-standard"):
+    if static_export_procedure == "ue-standard":
         export_fbx_bin.save(
             operator=op,
             context=bpy.context,
@@ -141,7 +139,7 @@ def ExportSingleStaticMeshCollection(
             # axis_up=bfu_export_utils.get_export_axis_up(obj),
             bake_space_transform=False
             )
-    elif (static_export_procedure == "blender-standard"):
+    elif static_export_procedure == "blender-standard":
         bpy.ops.export_scene.fbx(
             filepath=bfu_export_utils.GetExportFullpath(dirpath, filename),
             check_existing=False,

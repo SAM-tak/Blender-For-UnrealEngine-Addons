@@ -97,7 +97,6 @@ def ExportSingleFbxSpline(
     # Export single spline
 
     scene = bpy.context.scene
-    addon_prefs = bfu_basics.GetAddonPrefs()
 
     filename = bfu_basics.ValidFilename(filename)
     if obj.type != 'CAMERA':
@@ -121,7 +120,7 @@ def ExportSingleFbxSpline(
     save_use_simplify = bbpl.utils.SaveUserRenderSimplify()
     scene.render.use_simplify = False
 
-    if (spline_export_procedure == "ue-standard") and export_fbx_spline:
+    if spline_export_procedure == "ue-standard" and export_fbx_spline:
         export_fbx_bin.save(
             op,
             bpy.context,
@@ -157,7 +156,7 @@ def ExportSingleFbxSpline(
             axis_up=bfu_export_utils.get_static_export_axis_up(obj),
             bake_space_transform=False
             )
-    elif (spline_export_procedure == "blender-standard") and export_fbx_spline:
+    elif spline_export_procedure == "blender-standard" and export_fbx_spline:
         bpy.ops.export_scene.fbx(
             filepath=bfu_export_utils.GetExportFullpath(dirpath, filename),
             check_existing=False,

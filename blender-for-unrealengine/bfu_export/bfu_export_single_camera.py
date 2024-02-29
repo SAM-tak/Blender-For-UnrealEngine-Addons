@@ -45,9 +45,7 @@ if "bpy" in locals():
 
 def ProcessCameraExport(op, obj, pre_bake_camera: bfu_camera.bfu_camera_data.BFU_CameraTracks = None):
     addon_prefs = bfu_basics.GetAddonPrefs()
-    counter = bps.utils.CounterTimer()
     dirpath = bfu_utils.GetObjExportDir(obj)
-    absdirpath = bpy.path.abspath(dirpath)
     scene = bpy.context.scene
 
     MyAsset: bfu_export_logs.BFU_OT_UnrealExportedAsset = scene.UnrealExportedAssetsList.add()
@@ -70,7 +68,6 @@ def ProcessCameraExport(op, obj, pre_bake_camera: bfu_camera.bfu_camera_data.BFU
         ExportSingleFbxCamera(op, dirpath, file.GetFileWithExtension(), obj)
 
     if scene.text_AdditionalData and addon_prefs.useGeneratedScripts:
-
         file: bfu_export_logs.BFU_OT_FileExport = MyAsset.files.add()
         file.file_name = bfu_naming.get_camera_file_name(obj, obj.name+"_AdditionalTrack", "")
         file.file_extension = "json"
@@ -118,7 +115,7 @@ def ExportSingleFbxCamera(
     export_fbx_camera = obj.bfu_export_fbx_camera
     camera_export_procedure = obj.bfu_camera_export_procedure
 
-    if (camera_export_procedure == "ue-standard") and export_fbx_camera:
+    if camera_export_procedure == "ue-standard" and export_fbx_camera:
         export_fbx_bin.save(
             op,
             bpy.context,
@@ -154,7 +151,7 @@ def ExportSingleFbxCamera(
             axis_up=bfu_export_utils.get_static_export_axis_up(obj),
             bake_space_transform=False
             )
-    elif (camera_export_procedure == "blender-standard") and export_fbx_camera:
+    elif camera_export_procedure == "blender-standard" and export_fbx_camera:
         bpy.ops.export_scene.fbx(
             filepath=bfu_export_utils.GetExportFullpath(dirpath, filename),
             check_existing=False,

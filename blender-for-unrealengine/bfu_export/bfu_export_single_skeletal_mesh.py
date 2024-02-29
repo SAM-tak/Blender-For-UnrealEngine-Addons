@@ -71,8 +71,7 @@ def ProcessSkeletalMeshExport(op, armature, mesh_parts, desired_name=""):
     ExportSingleSkeletalMesh(op, scene, dirpath, file.GetFileWithExtension(), armature, mesh_parts)
 
     if not armature.bfu_export_as_lod_mesh:
-        if (scene.text_AdditionalData and addon_prefs.useGeneratedScripts):
-        
+        if scene.text_AdditionalData and addon_prefs.useGeneratedScripts:
             file: bfu_export_logs.BFU_OT_FileExport = MyAsset.files.add()
             file.file_name = bfu_naming.get_skeletal_mesh_file_name(armature, final_name+"_AdditionalTrack", "")
             file.file_extension = "json"
@@ -101,9 +100,7 @@ def ExportSingleSkeletalMesh(
     # Export a single Mesh
 
     scene = bpy.context.scene
-    addon_prefs = bfu_basics.GetAddonPrefs()
     export_as_proxy = bfu_utils.GetExportAsProxy(armature)
-    export_proxy_child = bfu_utils.GetExportProxyChild(armature)
 
     bbpl.utils.safe_mode_set('OBJECT')
 
@@ -138,7 +135,6 @@ def ExportSingleSkeletalMesh(
     ShouldRescaleRig = bfu_export_utils.GetShouldRescaleRig(active)
 
     if ShouldRescaleRig:
-
         rrf = bfu_export_utils.GetRescaleRigFactor()  # rigRescaleFactor
         my_scene_unit_settings = bfu_utils.SceneUnitSettings(bpy.context.scene)
         my_scene_unit_settings.SetUnitForUnrealEngineExport()
@@ -158,7 +154,7 @@ def ExportSingleSkeletalMesh(
     save_use_simplify = bbpl.utils.SaveUserRenderSimplify()
     scene.render.use_simplify = False
 
-    if (skeleton_export_procedure == "ue-standard"):
+    if skeleton_export_procedure == "ue-standard":
         export_fbx_bin.save(
             operator=op,
             context=bpy.context,
@@ -198,7 +194,7 @@ def ExportSingleSkeletalMesh(
             axis_up=bfu_export_utils.get_skeleton_export_axis_up(active),
             bake_space_transform=False
             )
-    elif (skeleton_export_procedure == "blender-standard"):
+    elif skeleton_export_procedure == "blender-standard":
         bpy.ops.export_scene.fbx(
             filepath=bfu_export_utils.GetExportFullpath(dirpath, filename),
             check_existing=False,
@@ -232,7 +228,7 @@ def ExportSingleSkeletalMesh(
             axis_up=bfu_export_utils.get_skeleton_export_axis_up(active),
             bake_space_transform=False
             )
-    elif (skeleton_export_procedure == "auto-rig-pro"):
+    elif skeleton_export_procedure == "auto-rig-pro":
         bpy.ops.export_scene.fbx(
             filepath=bfu_export_utils.GetExportFullpath(dirpath, filename),
             # export_rig_name=GetDesiredExportArmatureName(active),
