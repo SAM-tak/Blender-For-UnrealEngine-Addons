@@ -24,7 +24,7 @@ class BFU_PT_CorrectAndImprov(bpy.types.Panel):
             name="Step scale",
             default=2,
             min=1,
-            max=100)
+            max=100) # type: ignore
 
         def execute(self, context):
             if bpy.context.active_object.mode == "EDIT":

@@ -36,7 +36,7 @@ def create_operator_class():
         bl_label = "Documentation"
         bl_idname = utils.get_operator_name()
         bl_description = "Click for open URL."
-        url: bpy.props.StringProperty(default="https://github.com/xavier150/BleuRavenBlenderPythonLibrary")
+        url: bpy.props.StringProperty(default="https://github.com/xavier150/BleuRavenBlenderPythonLibrary") # type: ignore
 
         def execute(self, context):
             # Check if the URL starts with http:// or https://

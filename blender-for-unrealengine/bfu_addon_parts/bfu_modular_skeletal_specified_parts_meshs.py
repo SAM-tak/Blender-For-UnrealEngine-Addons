@@ -36,7 +36,7 @@ class BFU_UL_ModularSkeletalSpecifiedPartsTargetItem(BBPL_UI_TemplateItem):
     enabled: bpy.props.BoolProperty(
         name="Use",
         default=True
-        )
+        ) # type: ignore
 
     target_type: bpy.props.EnumProperty(
         name="Target Type",
@@ -46,19 +46,19 @@ class BFU_UL_ModularSkeletalSpecifiedPartsTargetItem(BBPL_UI_TemplateItem):
             ('COLLECTION', 'Collection', 'Use a Collection as the target'),
         ],
         default='OBJECT',
-    )
+    ) # type: ignore
 
     obj: bpy.props.PointerProperty(
         name="Obj target",
         description="Target object for modular skeletal mesh.",
         type=bpy.types.Object,
-    )
+    ) # type: ignore
 
     collection: bpy.props.PointerProperty(
         name="Collection target",
         description="Target collection for modular skeletal mesh.",
         type=bpy.types.Collection,
-    )
+    ) # type: ignore
 
 
 class BFU_UL_ModularSkeletalSpecifiedPartsTargetItemDraw(BBPL_UI_TemplateItemDraw):
@@ -89,10 +89,10 @@ class BFU_UL_ModularSkeletalSpecifiedPartsTargetItemDraw(BBPL_UI_TemplateItemDra
 
     
 class BFU_ModularSkeletalSpecifiedPartsTargetList(BBPL_UI_TemplateList):
-    template_collection: bpy.props.CollectionProperty(type=BFU_UL_ModularSkeletalSpecifiedPartsTargetItem)
-    template_collection_uilist_class: bpy.props.StringProperty(default = "BFU_UL_ModularSkeletalSpecifiedPartsTargetItemDraw")
-    rows: bpy.props.IntProperty(default = 3)
-    maxrows: bpy.props.IntProperty(default = 3)
+    template_collection: bpy.props.CollectionProperty(type=BFU_UL_ModularSkeletalSpecifiedPartsTargetItem) # type: ignore
+    template_collection_uilist_class: bpy.props.StringProperty(default = "BFU_UL_ModularSkeletalSpecifiedPartsTargetItemDraw") # type: ignore
+    rows: bpy.props.IntProperty(default = 3) # type: ignore
+    maxrows: bpy.props.IntProperty(default = 3) # type: ignore
 
 
 
@@ -101,17 +101,17 @@ class BFU_UL_ModularSkeletalSpecifiedPartsMeshItem(BBPL_UI_TemplateItem):
     enabled: bpy.props.BoolProperty(
         name="Use",
         default=True
-        )
+        ) # type: ignore
 
     name: bpy.props.StringProperty(
         name="Bone groups name",
         description="Your bone group",
         default="MyGroup",
-        )
+        ) # type: ignore
     
     skeletal_parts: bpy.props.PointerProperty(
        type=BFU_ModularSkeletalSpecifiedPartsTargetList
-       )
+       ) # type: ignore
 
 class BFU_UL_ModularSkeletalSpecifiedPartsMeshItemDraw(BBPL_UI_TemplateItemDraw):
     def draw_item(self, context, layout, data, item, icon, active_data, active_propname, index):
@@ -147,8 +147,8 @@ class BFU_UL_ModularSkeletalSpecifiedPartsMeshItemDraw(BBPL_UI_TemplateItemDraw)
 
     
 class BFU_ModularSkeletalSpecifiedPartsMeshs(BBPL_UI_TemplateList):
-    template_collection: bpy.props.CollectionProperty(type=BFU_UL_ModularSkeletalSpecifiedPartsMeshItem)
-    template_collection_uilist_class: bpy.props.StringProperty(default = "BFU_UL_ModularSkeletalSpecifiedPartsMeshItemDraw")
+    template_collection: bpy.props.CollectionProperty(type=BFU_UL_ModularSkeletalSpecifiedPartsMeshItem) # type: ignore
+    template_collection_uilist_class: bpy.props.StringProperty(default = "BFU_UL_ModularSkeletalSpecifiedPartsMeshItemDraw") # type: ignore
     def draw(self, layout: bpy.types.UILayout):
         super().draw(layout)
 

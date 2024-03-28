@@ -62,13 +62,13 @@ class BBPL_UI_TemplateItem(bpy.types.PropertyGroup):
     use: bpy.props.BoolProperty(
         name="Use",
         default=True
-        )
+        ) # type: ignore
 
     name: bpy.props.StringProperty(
         name="Bone groups name",
         description="Your bone group",
         default="MyGroup",
-        )
+        ) # type: ignore
 
 
 class BBPL_UI_TemplateItemDraw(bpy.types.UIList):
@@ -96,11 +96,11 @@ class BBPL_UI_TemplateItemDraw(bpy.types.UIList):
 
 class BBPL_UI_TemplateList(bpy.types.PropertyGroup):
 
-    template_collection: bpy.props.CollectionProperty(type = BBPL_UI_TemplateItem)
-    template_collection_uilist_class: bpy.props.StringProperty(default = "BBPL_UI_TemplateItemDraw")
-    active_template_property: bpy.props.IntProperty(default = 0)
-    rows: bpy.props.IntProperty(default = 6)
-    maxrows: bpy.props.IntProperty(default = 6)
+    template_collection: bpy.props.CollectionProperty(type = BBPL_UI_TemplateItem) # type: ignore
+    template_collection_uilist_class: bpy.props.StringProperty(default = "BBPL_UI_TemplateItemDraw") # type: ignore
+    active_template_property: bpy.props.IntProperty(default = 0) # type: ignore
+    rows: bpy.props.IntProperty(default = 6) # type: ignore
+    maxrows: bpy.props.IntProperty(default = 6) # type: ignore
 
     def __len__(self):
         return len(self.template_collection)
@@ -170,10 +170,10 @@ class BBPL_OT_TemplateButtonBase (bpy.types.Operator):
     bl_label = "Template Actions"
     bl_options = {'REGISTER'}
 
-    target_id_data_path: bpy.props.StringProperty()
-    target_id_data_name: bpy.props.StringProperty()
-    target_id_data_type: bpy.props.StringProperty()
-    target_variable_name: bpy.props.StringProperty()
+    target_id_data_path: bpy.props.StringProperty() # type: ignore
+    target_id_data_name: bpy.props.StringProperty() # type: ignore
+    target_id_data_type: bpy.props.StringProperty() # type: ignore
+    target_variable_name: bpy.props.StringProperty() # type: ignore
 
 
 class BBPL_OT_TemplateButtonDuplicate (BBPL_OT_TemplateButtonBase):

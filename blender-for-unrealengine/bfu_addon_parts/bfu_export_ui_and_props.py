@@ -288,13 +288,13 @@ class BFU_PT_Export(bpy.types.Panel):
         bl_label = "Open potential errors"
         bl_idname = "object.openpotentialerror"
         bl_description = "Open potential errors"
-        invoke_info: bpy.props.StringProperty(default="...")
+        invoke_info: bpy.props.StringProperty(default="...") # type: ignore
 
         class BFU_OT_FixitTarget(bpy.types.Operator):
             bl_label = "Fix it !"
             bl_idname = "object.fixit_objet"
             bl_description = "Correct target error"
-            errorIndex: bpy.props.IntProperty(default=-1)
+            errorIndex: bpy.props.IntProperty(default=-1) # type: ignore
 
             def execute(self, context):
                 result = bfu_check_potential_error.TryToCorrectPotentialError(self.errorIndex)
@@ -305,7 +305,7 @@ class BFU_PT_Export(bpy.types.Panel):
             bl_label = "Select(Object)"
             bl_idname = "object.select_error_objet"
             bl_description = "Select target Object."
-            errorIndex: bpy.props.IntProperty(default=-1)
+            errorIndex: bpy.props.IntProperty(default=-1) # type: ignore
 
             def execute(self, context):
                 bfu_check_potential_error.SelectPotentialErrorObject(self.errorIndex)
@@ -315,7 +315,7 @@ class BFU_PT_Export(bpy.types.Panel):
             bl_label = "Select(Vertex)"
             bl_idname = "object.select_error_vertex"
             bl_description = "Select target Vertex."
-            errorIndex: bpy.props.IntProperty(default=-1)
+            errorIndex: bpy.props.IntProperty(default=-1) # type: ignore
 
             def execute(self, context):
                 bfu_check_potential_error.SelectPotentialErrorVertex(self.errorIndex)
@@ -325,7 +325,7 @@ class BFU_PT_Export(bpy.types.Panel):
             bl_label = "Select(PoseBone)"
             bl_idname = "object.select_error_posebone"
             bl_description = "Select target Pose Bone."
-            errorIndex: bpy.props.IntProperty(default=-1)
+            errorIndex: bpy.props.IntProperty(default=-1) # type: ignore
 
             def execute(self, context):
                 bfu_check_potential_error.SelectPotentialErrorPoseBone(self.errorIndex)
@@ -335,7 +335,7 @@ class BFU_PT_Export(bpy.types.Panel):
             bl_label = "Open docs"
             bl_idname = "object.open_potential_error_docs"
             bl_description = "Open potential error docs."
-            octicon: bpy.props.StringProperty(default="")
+            octicon: bpy.props.StringProperty(default="") # type: ignore
 
             def execute(self, context):
                 os.system(

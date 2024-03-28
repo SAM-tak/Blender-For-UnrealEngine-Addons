@@ -706,20 +706,20 @@ def TryToCorrectPotentialError(errorIndex):
 
 
 class BFU_OT_UnrealPotentialError(bpy.types.PropertyGroup):
-    type: bpy.props.IntProperty(default=0)  # 0:Info, 1:Warning, 2:Error
-    object: bpy.props.PointerProperty(type=bpy.types.Object)
+    type: bpy.props.IntProperty(default=0)  # 0:Info, 1:Warning, 2:Error # type: ignore
+    object: bpy.props.PointerProperty(type=bpy.types.Object) # type: ignore
     ###
-    selectObjectButton: bpy.props.BoolProperty(default=True)
-    selectVertexButton: bpy.props.BoolProperty(default=False)
-    selectPoseBoneButton: bpy.props.BoolProperty(default=False)
+    selectObjectButton: bpy.props.BoolProperty(default=True) # type: ignore
+    selectVertexButton: bpy.props.BoolProperty(default=False) # type: ignore
+    selectPoseBoneButton: bpy.props.BoolProperty(default=False) # type: ignore
     ###
-    selectOption: bpy.props.StringProperty(default="None")  # 0:VertexWithZeroWeight
-    itemName: bpy.props.StringProperty(default="None")
-    text: bpy.props.StringProperty(default="Unknown")
-    correctRef: bpy.props.StringProperty(default="None")
-    correctlabel: bpy.props.StringProperty(default="Fix it !")
-    correctDesc: bpy.props.StringProperty(default="Correct target error")
-    docsOcticon: bpy.props.StringProperty(default="None")
+    selectOption: bpy.props.StringProperty(default="None")  # 0:VertexWithZeroWeight # type: ignore
+    itemName: bpy.props.StringProperty(default="None") # type: ignore
+    text: bpy.props.StringProperty(default="Unknown") # type: ignore
+    correctRef: bpy.props.StringProperty(default="None") # type: ignore
+    correctlabel: bpy.props.StringProperty(default="Fix it !") # type: ignore
+    correctDesc: bpy.props.StringProperty(default="Correct target error") # type: ignore
+    docsOcticon: bpy.props.StringProperty(default="None") # type: ignore
 
 
 classes = (

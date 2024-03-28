@@ -42,7 +42,7 @@ def create_ui_accordion_class():
             description="Click to expand / collapse",
             default=False,
             options={"HIDDEN", "SKIP_SAVE"}
-        )
+        ) # type: ignore
         
         def get_name(self):
             if bpy.app.version >= (3, 0, 0):

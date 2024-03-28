@@ -132,7 +132,7 @@ class BFUCachedAction(bpy.types.PropertyGroup):
     """
     Represents a cached action for Blender File Utils (BFU).
     """
-    name: bpy.props.StringProperty()
+    name: bpy.props.StringProperty() # type: ignore
 
 
 classes = (

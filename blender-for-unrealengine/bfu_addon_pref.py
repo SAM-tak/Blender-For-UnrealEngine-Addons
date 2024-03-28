@@ -33,19 +33,19 @@ class BFU_AP_AddonPreferences(bpy.types.AddonPreferences):
         name=(languages.ti('bake_armature_action_name')),
         description=(languages.tt('bake_armature_action_desc')),
         default=False,
-        )
+        ) # type: ignore
 
     add_skeleton_root_bone: bpy.props.BoolProperty(
         name=(languages.ti('add_skeleton_root_bone_name')),
         description=(languages.tt('add_skeleton_root_bone_desc')),
         default=False,
-        )
+        ) # type: ignore
 
     skeleton_root_bone_name: bpy.props.StringProperty(
         name=(languages.ti('skeleton_root_bone_name_name')),
         description=(languages.tt('skeleton_root_bone_name_desc')),
         default="ArmatureRoot",
-        )
+        ) # type: ignore
 
     rescaleFullRigAtExport: bpy.props.EnumProperty(
         name=(languages.ti('rescale_full_rig_at_export_name')),
@@ -67,19 +67,19 @@ class BFU_AP_AddonPreferences(bpy.types.AddonPreferences):
                 "CANCEL",
                 3)
             ]
-        )
+        ) # type: ignore
 
     newRigScale: bpy.props.FloatProperty(
         name=(languages.ti('new_rig_scale_name')),
         description=(languages.tt('new_rig_scale_desc')),
         default=100,
-        )
+        ) # type: ignore
 
     staticSocketsAdd90X: bpy.props.BoolProperty(
         name=(languages.ti('static_sockets_add_90_x_name')),
         description=(languages.tt('static_sockets_add_90_x_desc')),
         default=True,
-        )
+        ) # type: ignore
 
     rescaleSocketsAtExport: bpy.props.EnumProperty(
         name=(languages.ti('rescale_sockets_at_export_name')),
@@ -101,37 +101,37 @@ class BFU_AP_AddonPreferences(bpy.types.AddonPreferences):
                 "CANCEL",
                 3)
             ]
-        )
+        ) # type: ignore
 
     staticSocketsImportedSize: bpy.props.FloatProperty(
         name=(languages.ti('static_sockets_imported_size_name')),
         description=(languages.tt('static_sockets_imported_size_desc')),
         default=1,
-        )
+        ) # type: ignore
 
     skeletalSocketsImportedSize: bpy.props.FloatProperty(
         name=(languages.ti('skeletal_sockets_imported_size_name')),
         description=(languages.tt('skeletal_sockets_imported_size_desc')),
         default=1,
-        )
+        ) # type: ignore
 
     ignoreNLAForAction: bpy.props.BoolProperty(
         name=(languages.ti('ignore_nla_for_action_name')),
         description=(languages.tt('ignore_nla_for_action_desc')),
         default=False,
-        )
+        ) # type: ignore
 
     revertExportPath: bpy.props.BoolProperty(
         name=(languages.ti('revert_export_path_name')),
         description=(languages.tt('revert_export_path_desc')),
         default=False,
-        )
+        ) # type: ignore
 
     useGeneratedScripts: bpy.props.BoolProperty(
         name=(languages.ti('use_generated_scripts_name')),
         description=(languages.tt('use_generated_scripts_desc')),
         default=True,
-        )
+        ) # type: ignore
 
     collisionColor:  bpy.props.FloatVectorProperty(
         name=languages.ti('collision_color_name'),
@@ -140,7 +140,7 @@ class BFU_AP_AddonPreferences(bpy.types.AddonPreferences):
         size=4,
         default=(0, 0.6, 0, 0.11),
         min=0.0, max=1.0,
-        )
+        ) # type: ignore
 
     notifyUnitScalePotentialError: bpy.props.BoolProperty(
         name=languages.ti('notify_unit_scale_potential_error_name'),
@@ -149,7 +149,7 @@ class BFU_AP_AddonPreferences(bpy.types.AddonPreferences):
             ' if the unit scale is not equal to 0.01.'
             ),
         default=True,
-        )
+        ) # type: ignore
     
     #CAMERA
 
@@ -157,19 +157,19 @@ class BFU_AP_AddonPreferences(bpy.types.AddonPreferences):
         name=(languages.ti('bake_only_key_visible_in_cut_name')),
         description=(languages.tt('bake_only_key_visible_in_cut_desc')),
         default=True,
-        )
+        ) # type: ignore
     
     scale_camera_fstop_with_unit_scale: bpy.props.BoolProperty(
         name="Scale F-Stop by Unit Scale",
         description="Scale camera F-Stop with Unit Scale.",
         default=True,
-        )
+        ) # type: ignore
     
     scale_camera_focus_distance_with_unit_scale: bpy.props.BoolProperty(
         name="Scale focus distance by Unit Scale",
         description="Scale camera focus distance with Unit Scale.",
         default=True,
-        )
+        ) # type: ignore
     
     class BFU_OT_NewReleaseInfo(bpy.types.Operator):
         """Open last release page"""

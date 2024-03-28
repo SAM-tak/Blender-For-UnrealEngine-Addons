@@ -121,7 +121,7 @@ class BFU_OT_ConvertAnyCurveToBezier(bpy.types.Operator):
         default=12,
         min=1,
         max=64
-    )
+    ) # type: ignore
 
     def execute(self, context):
         print(f"Resolution set to: {self.resolution}")

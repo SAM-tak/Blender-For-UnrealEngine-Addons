@@ -7,10 +7,10 @@ from . import bfu_export_logs
 
 
 class BFU_OT_FileExport(bpy.types.PropertyGroup):
-    file_name: bpy.props.StringProperty()
-    file_extension: bpy.props.StringProperty()
-    file_path: bpy.props.StringProperty()
-    file_type: bpy.props.StringProperty()  # FBX, AdditionalTrack
+    file_name: bpy.props.StringProperty() # type: ignore
+    file_extension: bpy.props.StringProperty() # type: ignore
+    file_path: bpy.props.StringProperty() # type: ignore
+    file_type: bpy.props.StringProperty()  # FBX, AdditionalTrack # type: ignore
 
     def __init__(self, name):
         pass
@@ -28,19 +28,19 @@ class BFU_OT_FileExport(bpy.types.PropertyGroup):
 class BFU_OT_UnrealExportedAsset(bpy.types.PropertyGroup):
     # [AssetName , AssetType , ExportPath, ExportTime]
 
-    asset_name: bpy.props.StringProperty(default="None")
-    asset_global_scale: bpy.props.FloatProperty(default=1.0)
-    skeleton_name: bpy.props.StringProperty(default="None")
-    asset_type: bpy.props.StringProperty(default="None")  # return from bfu_utils.GetAssetType()
-    folder_name: bpy.props.StringProperty(default="")
-    files: bpy.props.CollectionProperty(type=BFU_OT_FileExport)
-    object: bpy.props.PointerProperty(type=bpy.types.Object)
-    collection: bpy.props.PointerProperty(type=bpy.types.Collection)
-    export_start_time: bpy.props.FloatProperty(default=0.0)
-    export_end_time: bpy.props.FloatProperty(default=0.0)
-    export_success: bpy.props.BoolProperty(default=False)
-    animation_start_frame: bpy.props.IntProperty(default=0)
-    animation_end_frame: bpy.props.IntProperty(default=0)
+    asset_name: bpy.props.StringProperty(default="None") # type: ignore
+    asset_global_scale: bpy.props.FloatProperty(default=1.0) # type: ignore
+    skeleton_name: bpy.props.StringProperty(default="None") # type: ignore
+    asset_type: bpy.props.StringProperty(default="None")  # return from bfu_utils.GetAssetType() # type: ignore
+    folder_name: bpy.props.StringProperty(default="") # type: ignore
+    files: bpy.props.CollectionProperty(type=BFU_OT_FileExport) # type: ignore
+    object: bpy.props.PointerProperty(type=bpy.types.Object) # type: ignore
+    collection: bpy.props.PointerProperty(type=bpy.types.Collection) # type: ignore
+    export_start_time: bpy.props.FloatProperty(default=0.0) # type: ignore
+    export_end_time: bpy.props.FloatProperty(default=0.0) # type: ignore
+    export_success: bpy.props.BoolProperty(default=False) # type: ignore
+    animation_start_frame: bpy.props.IntProperty(default=0) # type: ignore
+    animation_end_frame: bpy.props.IntProperty(default=0) # type: ignore
 
     def StartAssetExport(self):
         self.export_start_time = time.perf_counter()
