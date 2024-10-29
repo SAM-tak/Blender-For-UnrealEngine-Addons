@@ -223,7 +223,7 @@ def ConvertSelectedCurveToMesh():
     
     for selected_obj in select.user_selecteds:
         if selected_obj.type == "CURVE":
-            selected_obj.select_set(True)
+            selected_obj.select_set(False)
 
     # Save object list
     previous_objects = []
