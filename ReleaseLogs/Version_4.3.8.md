@@ -5,3 +5,4 @@ Release Logs: https://github.com/xavier150/Blender-For-UnrealEngine-Addons/wiki/
 
 - Fixed: Custom Skeletal Mesh Ref not well used.
 - Fixed: Skeleton search use only loaded assets.
+- Fixed: Export curve as static mesh do export fail.
