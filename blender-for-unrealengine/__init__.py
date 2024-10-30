@@ -137,18 +137,7 @@ if "bfu_backward_compatibility" in locals():
 if "bfu_cached_asset_list" in locals():
     importlib.reload(bfu_cached_asset_list)
 
-bl_info = {
-    'name': 'Unreal Engine Assets Exporter',
-    'author': 'Loux Xavier (BleuRaven)',
-    'version': (4, 3, 8),
-    'blender': (2, 80, 0),
-    'location': 'View3D > UI > Unreal Engine',
-    'description': "This add-ons allows to easily export several objects at the same time and import in Unreal Engine.",
-    'warning': '',
-    "wiki_url": "https://github.com/xavier150/Blender-For-UnrealEngine-Addons/wiki",
-    'tracker_url': 'https://github.com/xavier150/Blender-For-UnrealEngine-Addons/issues',
-    'support': 'COMMUNITY',
-    'category': 'Import-Export'}
+bl_info = {}
 
 class BFUCachedAction(bpy.types.PropertyGroup):
     """
