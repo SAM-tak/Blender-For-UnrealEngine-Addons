@@ -1,10 +1,13 @@
-# Blender-For-UnrealEngine-Addons
+# Docs exported files
+ExportedFbx/
+
+# BleuRaven Blender Addons
+/generated_builds
 **.zip
-**.blend[1-9]*
+**.blend[1-32]*
 .git/
 .vscode/
 .vs/
-ExportedFbx/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
