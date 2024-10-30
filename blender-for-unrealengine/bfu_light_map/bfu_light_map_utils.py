@@ -18,7 +18,7 @@
 
 import bpy
 import fnmatch
-from .. import bps
+from .. import bpl
 from .. import bbpl
 from .. import bfu_basics
 from .. import bfu_utils
@@ -95,7 +95,7 @@ def GetCompuntedLightMap(obj):
         area *= obj.bfu_static_mesh_light_map_surface_scale/2
         if obj.bfu_static_mesh_light_map_round_power_of_two:
 
-            return bps.math.nearest_power_of_two(int(round(area)))
+            return bpl.math.nearest_power_of_two(int(round(area)))
         return int(round(area))
 
 def UpdateAreaLightMapList(objects_to_update=None):
@@ -113,7 +113,7 @@ def UpdateAreaLightMapList(objects_to_update=None):
 
     UpdatedRes = 0
 
-    counter = bps.utils.CounterTimer()
+    counter = bpl.utils.CounterTimer()
     for obj in objs:
         obj.computedStaticMeshLightMapRes = GetExportRealSurfaceArea(obj)
         UpdatedRes += 1

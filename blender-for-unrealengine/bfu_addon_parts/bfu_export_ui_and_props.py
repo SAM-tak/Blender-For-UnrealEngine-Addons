@@ -8,7 +8,7 @@ from .. import bfu_check_potential_error
 from .. import bfu_cached_asset_list
 from .. import bfu_ui
 from .. import bbpl
-from .. import bps
+from .. import bpl
 from .. import bfu_collision
 from .. import bfu_socket
 from .. import bfu_assets_manager
@@ -515,7 +515,7 @@ class BFU_PT_Export(bpy.types.Panel):
                 return {'FINISHED'}
 
             scene.UnrealExportedAssetsList.clear()
-            counter = bps.utils.CounterTimer()
+            counter = bpl.utils.CounterTimer()
             bfu_check_potential_error.process_general_fix()
             bfu_export.bfu_export_asset.process_export(self)
             bfu_write_text.WriteAllTextFiles()

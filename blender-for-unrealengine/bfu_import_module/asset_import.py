@@ -18,7 +18,7 @@
 
 
 import os.path
-from . import bps
+from . import bpl
 from . import import_module_utils
 from . import import_module_unreal_utils
 from . import import_module_post_treatment
@@ -485,7 +485,7 @@ def ImportAllAssets(assets_data, show_finished_popup=True):
 
     # Process import
     print('========================= Import started ! =========================')
-    counter = bps.utils.CounterTimer()
+    counter = bpl.utils.CounterTimer()
 
     # Import assets with a specific order
 

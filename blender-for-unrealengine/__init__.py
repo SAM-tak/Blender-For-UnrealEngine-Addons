@@ -32,7 +32,7 @@ xavierloux.loux@gmail.com
 
 import bpy
 import importlib
-from . import bps
+from . import bpl
 from . import bbpl
 from . import bfu_assets_manager
 from . import bfu_propertys
@@ -68,8 +68,8 @@ from . import bfu_backward_compatibility
 from . import bfu_cached_asset_list
 
 
-if "bps" in locals():
-    importlib.reload(bps)
+if "bpl" in locals():
+    importlib.reload(bpl)
 if "bbpl" in locals():
     importlib.reload(bbpl)
 if "bfu_assets_manager" in locals():

@@ -21,7 +21,7 @@ try:
     import unreal
 except ImportError:
     import unreal_engine as unreal
-from . import bps
+from . import bpl
 from . import import_module_utils
 from . import import_module_unreal_utils
 from . import sequencer_utils

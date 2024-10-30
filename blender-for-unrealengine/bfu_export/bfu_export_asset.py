@@ -28,7 +28,7 @@ from . import bfu_export_single_static_mesh
 from . import bfu_export_single_static_mesh_collection
 from . import bfu_export_single_groom_simulation
 from .. import bfu_cached_asset_list
-from .. import bps
+from .. import bpl
 from .. import bbpl
 from .. import bfu_assets_manager
 from .. import bfu_basics

@@ -18,7 +18,7 @@
 
 import importlib
 
-from . import bps
+from . import bpl
 from . import config
 from . import import_module_utils
 from . import import_module_unreal_utils
@@ -34,8 +34,8 @@ from . import bfu_import_sequencer
 from . import import_module_tasks_class
 from . import import_module_tasks_helper
 
-if "bps" in locals():
-    importlib.reload(bps)
+if "bpl" in locals():
+    importlib.reload(bpl)
 if "config" in locals():
     importlib.reload(config)
 if "import_module_utils" in locals():

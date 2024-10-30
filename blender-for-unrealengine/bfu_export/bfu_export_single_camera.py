@@ -21,7 +21,7 @@ import bpy
 from . import bfu_fbx_export
 from . import bfu_export_utils
 from .. import bfu_camera
-from .. import bps
+from .. import bpl
 from .. import bbpl
 from .. import bfu_basics
 from .. import bfu_utils

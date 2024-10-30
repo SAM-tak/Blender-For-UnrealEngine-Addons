@@ -17,7 +17,8 @@
 # ======================= END GPL LICENSE BLOCK =============================
 
 # ----------------------------------------------
-#  BPS -> BleuRaven Python Script
+#  BPL -> BleuRaven Python Library
+#  https://github.com/xavier150/BPL
 #  BleuRaven.fr
 #  XavierLoux.com
 # ----------------------------------------------

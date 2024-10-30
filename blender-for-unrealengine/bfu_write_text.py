@@ -22,7 +22,7 @@ from shutil import copyfile
 import bpy
 import math
 
-from . import bps
+from . import bpl
 from . import bbpl
 from . import languages
 from . import bfu_basics
@@ -42,7 +42,7 @@ from . import bfu_skeletal_mesh
 def ExportSingleText(text, dirpath, filename):
     # Export single text
 
-    counter = bps.utils.CounterTimer()
+    counter = bpl.utils.CounterTimer()
 
     absdirpath = bpy.path.abspath(dirpath)
     bfu_basics.VerifiDirs(absdirpath)
@@ -59,7 +59,7 @@ def ExportSingleText(text, dirpath, filename):
 def ExportSingleJson(json_data, dirpath, filename):
     # Export single Json
 
-    counter = bps.utils.CounterTimer()
+    counter = bpl.utils.CounterTimer()
 
     absdirpath = bpy.path.abspath(dirpath)
     bfu_basics.VerifiDirs(absdirpath)
