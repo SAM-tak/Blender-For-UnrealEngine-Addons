@@ -109,8 +109,8 @@ def process_export(op):
 
     local_view_areas = bbpl.scene_utils.move_to_global_view()
 
-    MyCurrentDataSave = bbpl.utils.UserSceneSave()
-    MyCurrentDataSave.save_current_scene()
+    user_scene_save = bbpl.save_data.scene_save.UserSceneSave()
+    user_scene_save.save_current_scene()
     
     if export_filter == "default":
         PrepareSceneForExport()
@@ -123,7 +123,7 @@ def process_export(op):
         PrepareSceneForExport()
 
 
-    bbpl.utils.safe_mode_set('OBJECT', MyCurrentDataSave.user_select_class.user_active)
+    bbpl.utils.safe_mode_set('OBJECT', user_scene_save.user_select_class.user_active)
 
     if addon_prefs.revertExportPath:
         bfu_basics.RemoveFolderTree(bpy.path.abspath(scene.bfu_export_static_file_path))
@@ -155,12 +155,12 @@ def process_export(op):
             if Asset.obj not in obj_list:
                 obj_list.append(Asset.obj)
 
-    MyCurrentDataSave.reset_select_by_name()
-    MyCurrentDataSave.reset_scene_at_save(print_removed_items = True)
+    user_scene_save.reset_select(use_names = True)
+    user_scene_save.reset_scene_at_save(print_removed_items = True)
 
     # Clean actions
     for action in bpy.data.actions:
-        if action.name not in MyCurrentDataSave.action_names:
+        if action.name not in user_scene_save.action_names:
             bpy.data.actions.remove(action)
 
     bbpl.scene_utils.move_to_local_view(local_view_areas)

@@ -414,19 +414,22 @@ def update_unreal_potential_error():
         # Check if the skeleton has multiple root bones
         for obj in obj_to_check:
             if bfu_skeletal_mesh.bfu_skeletal_mesh_utils.is_skeletal_mesh(obj):
-                root_bones = bfu_utils.GetArmatureRootBones(obj)
+                root_bones = bfu_utils.get_armature_root_bones(obj)
+
+                root_bones_str = ""
+                for bone in root_bones:
+                    if bone.use_deform:
+                        root_bones_str += bone.name + "(def), "
+                    else:
+                        root_bones_str += bone.name + "(def child(s)), "
 
                 if len(root_bones) > 1:
                     my_po_error = potential_errors.add()
                     my_po_error.name = obj.name
                     my_po_error.type = 1
-                    my_po_error.text = (
-                        f'Object "{obj.name}" has multiple root bones. '
-                        'Unreal only supports a single root bone.'
-                    )
-                    my_po_error.text += '\nA custom root bone will be added at export.'
-                    my_po_error.text += f' {len(root_bones)} root bones found: '
-                    my_po_error.text += ', '.join(root_bone.name for root_bone in root_bones)
+                    my_po_error.text = f'Object "{obj.name}" has multiple root bones. Unreal only supports a single root bone.'
+                    my_po_error.text += '\n' + f' {len(root_bones)} root bone(s) found: {root_bones_str}'
+                    my_po_error.text += '\n' + 'A custom root bone will be added at export.'
                     my_po_error.object = obj
 
     def check_armature_no_deform_bone():
@@ -602,7 +605,7 @@ def TryToCorrectPotentialError(errorIndex):
 
     local_view_areas = bbpl.scene_utils.move_to_global_view()
 
-    MyCurrentDataSave = bbpl.utils.UserSceneSave()
+    MyCurrentDataSave = bbpl.save_data.scene_save.UserSceneSave()
     MyCurrentDataSave.save_current_scene()
 
     bbpl.utils.safe_mode_set('OBJECT', MyCurrentDataSave.user_select_class.user_active)
@@ -672,7 +675,7 @@ def TryToCorrectPotentialError(errorIndex):
         successCorrect = True
 
     # ----------------------------------------Reset data
-    MyCurrentDataSave.reset_select_by_name()
+    MyCurrentDataSave.reset_select(use_names = True)
     MyCurrentDataSave.reset_scene_at_save()
     bbpl.scene_utils.move_to_local_view(local_view_areas)
 

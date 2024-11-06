@@ -362,8 +362,9 @@ def ImportTask(asset_data):
     if asset_type == "SkeletalMesh":
         if origin_skeleton is None:
             # Unreal create a new skeleton when no skeleton was selected, so addon rename it.
-            Skeleton = itask.get_imported_skeleton()
-            unreal.EditorAssetLibrary.rename_asset(Skeleton.get_path_name(), asset_data["target_skeleton_ref"])
+            skeleton = itask.get_imported_skeleton()
+            if skeleton:
+                unreal.EditorAssetLibrary.rename_asset(skeleton.get_path_name(), asset_data["target_skeleton_ref"])
 
     print("S13.5")
     if itask.use_interchange:

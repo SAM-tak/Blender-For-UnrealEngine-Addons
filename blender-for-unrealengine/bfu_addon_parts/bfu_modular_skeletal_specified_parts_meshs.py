@@ -29,10 +29,10 @@ def get_preset_values():
     return preset_values
 
 BBPL_UI_TemplateItem = bbpl.blender_layout.layout_template_list.types.create_template_item_class()
-BBPL_UI_TemplateItemDraw = bbpl.blender_layout.layout_template_list.types.create_template_item_draw_class()
-BBPL_UI_TemplateList = bbpl.blender_layout.layout_template_list.types.create_template_list_class(BBPL_UI_TemplateItem, BBPL_UI_TemplateItemDraw)
+BBPL_UL_TemplateItemDraw = bbpl.blender_layout.layout_template_list.types.create_template_item_draw_class()
+BBPL_UI_TemplateList = bbpl.blender_layout.layout_template_list.types.create_template_list_class(BBPL_UI_TemplateItem, BBPL_UL_TemplateItemDraw)
 
-class BFU_UL_ModularSkeletalSpecifiedPartsTargetItem(BBPL_UI_TemplateItem):
+class BFU_UI_ModularSkeletalSpecifiedPartsTargetItem(BBPL_UI_TemplateItem): # Item class (bpy.types.PropertyGroup)
     enabled: bpy.props.BoolProperty(
         name="Use",
         default=True
@@ -60,8 +60,7 @@ class BFU_UL_ModularSkeletalSpecifiedPartsTargetItem(BBPL_UI_TemplateItem):
         type=bpy.types.Collection,
     )
 
-
-class BFU_UL_ModularSkeletalSpecifiedPartsTargetItemDraw(BBPL_UI_TemplateItemDraw):
+class BFU_UL_ModularSkeletalSpecifiedPartsTargetItemDraw(BBPL_UL_TemplateItemDraw): # Draw Item class (bpy.types.UIList)
     def draw_item(self, context, layout, data, item, icon, active_data, active_propname, index):
 
         prop_line = layout
@@ -86,18 +85,15 @@ class BFU_UL_ModularSkeletalSpecifiedPartsTargetItemDraw(BBPL_UI_TemplateItemDra
         elif item.target_type == "COLLECTION":
             prop_data.prop(item, "collection", text="")
         prop_data.enabled = item.enabled
-
     
-class BFU_ModularSkeletalSpecifiedPartsTargetList(BBPL_UI_TemplateList):
-    template_collection: bpy.props.CollectionProperty(type=BFU_UL_ModularSkeletalSpecifiedPartsTargetItem)
-    template_collection_uilist_class: bpy.props.StringProperty(default = "BFU_UL_ModularSkeletalSpecifiedPartsTargetItemDraw")
+class BFU_UI_ModularSkeletalSpecifiedPartsTargetList(BBPL_UI_TemplateList): # Draw Item class (bpy.types.UIList)
+    template_collection: bpy.props.CollectionProperty(type=BFU_UI_ModularSkeletalSpecifiedPartsTargetItem)
+    template_collection_uilist_class_name = "BFU_UL_ModularSkeletalSpecifiedPartsTargetItemDraw"
     rows: bpy.props.IntProperty(default = 3)
     maxrows: bpy.props.IntProperty(default = 3)
 
 
-
-
-class BFU_UL_ModularSkeletalSpecifiedPartsMeshItem(BBPL_UI_TemplateItem):
+class BFU_UI_ModularSkeletalSpecifiedPartsMeshItem(BBPL_UI_TemplateItem): # Item class (bpy.types.PropertyGroup)
     enabled: bpy.props.BoolProperty(
         name="Use",
         default=True
@@ -110,10 +106,10 @@ class BFU_UL_ModularSkeletalSpecifiedPartsMeshItem(BBPL_UI_TemplateItem):
         )
     
     skeletal_parts: bpy.props.PointerProperty(
-       type=BFU_ModularSkeletalSpecifiedPartsTargetList
+       type=BFU_UI_ModularSkeletalSpecifiedPartsTargetList
        )
 
-class BFU_UL_ModularSkeletalSpecifiedPartsMeshItemDraw(BBPL_UI_TemplateItemDraw):
+class BFU_UL_ModularSkeletalSpecifiedPartsMeshItemDraw(BBPL_UL_TemplateItemDraw): # Draw Item class (bpy.types.UIList)
     def draw_item(self, context, layout, data, item, icon, active_data, active_propname, index):
 
         prop_line = layout
@@ -144,11 +140,10 @@ class BFU_UL_ModularSkeletalSpecifiedPartsMeshItemDraw(BBPL_UI_TemplateItemDraw)
             if obj_len+col_len == 0:
                 prop_data.label(text="", icon="ERROR")
         prop_data.enabled = item.enabled
-
     
-class BFU_ModularSkeletalSpecifiedPartsMeshs(BBPL_UI_TemplateList):
-    template_collection: bpy.props.CollectionProperty(type=BFU_UL_ModularSkeletalSpecifiedPartsMeshItem)
-    template_collection_uilist_class: bpy.props.StringProperty(default = "BFU_UL_ModularSkeletalSpecifiedPartsMeshItemDraw")
+class BFU_UI_ModularSkeletalSpecifiedPartsMeshs(BBPL_UI_TemplateList): # Draw Item class (bpy.types.UIList)
+    template_collection: bpy.props.CollectionProperty(type=BFU_UI_ModularSkeletalSpecifiedPartsMeshItem)
+    template_collection_uilist_class_name = "BFU_UL_ModularSkeletalSpecifiedPartsMeshItemDraw"
     def draw(self, layout: bpy.types.UILayout):
         super().draw(layout)
 
@@ -171,12 +166,13 @@ class BFU_ModularSkeletalSpecifiedPartsMeshs(BBPL_UI_TemplateList):
 
 
 classes = (
-    BFU_UL_ModularSkeletalSpecifiedPartsTargetItem,
+    BFU_UI_ModularSkeletalSpecifiedPartsTargetItem,
     BFU_UL_ModularSkeletalSpecifiedPartsTargetItemDraw,
-    BFU_ModularSkeletalSpecifiedPartsTargetList,
-    BFU_UL_ModularSkeletalSpecifiedPartsMeshItem,
+    BFU_UI_ModularSkeletalSpecifiedPartsTargetList,
+
+    BFU_UI_ModularSkeletalSpecifiedPartsMeshItem,
     BFU_UL_ModularSkeletalSpecifiedPartsMeshItemDraw,
-    BFU_ModularSkeletalSpecifiedPartsMeshs,
+    BFU_UI_ModularSkeletalSpecifiedPartsMeshs,
 )
 
 
@@ -212,7 +208,7 @@ def register():
         )
 
 
-    bpy.types.Object.bfu_modular_skeletal_specified_parts_meshs_template = bpy.props.PointerProperty(type=BFU_ModularSkeletalSpecifiedPartsMeshs)
+    bpy.types.Object.bfu_modular_skeletal_specified_parts_meshs_template = bpy.props.PointerProperty(type=BFU_UI_ModularSkeletalSpecifiedPartsMeshs)
 
 
 def unregister():
