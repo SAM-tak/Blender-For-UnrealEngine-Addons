@@ -64,7 +64,7 @@ class BFU_PT_BlenderForUnrealTool(bpy.types.Panel):
         scene.bfu_lightmap_expanded.draw(layout)
         if scene.bfu_lightmap_expanded.is_expend():
             checkButton = layout.column()
-            checkButton.operator("object.computalllightmap", icon='TEXTURE')
+            checkButton.operator("object.comput_all_lightmap", icon='TEXTURE')
 
 # -------------------------------------------------------------------
 #   Register & Unregister

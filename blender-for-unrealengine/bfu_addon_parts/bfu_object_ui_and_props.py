@@ -1527,8 +1527,8 @@ class BFU_PT_BlenderForUnrealObject(bpy.types.Panel):
                             if obj.bfu_static_mesh_light_map_mode == "SurfaceArea":
                                 SurfaceAreaLightMap = StaticMeshLightMapRes.column()
                                 SurfaceAreaLightMapButton = SurfaceAreaLightMap.row()
-                                SurfaceAreaLightMapButton.operator("object.computlightmap", icon='TEXTURE')
-                                SurfaceAreaLightMapButton.operator("object.computalllightmap", icon='TEXTURE')
+                                SurfaceAreaLightMapButton.operator("object.comput_lightmap", icon='TEXTURE')
+                                SurfaceAreaLightMapButton.operator("object.comput_all_lightmap", icon='TEXTURE')
                                 SurfaceAreaLightMap.prop(obj, 'bfu_use_static_mesh_light_map_world_scale')
                                 SurfaceAreaLightMap.prop(obj, 'bfu_static_mesh_light_map_surface_scale')
                                 SurfaceAreaLightMap.prop(obj, 'bfu_static_mesh_light_map_round_power_of_two')

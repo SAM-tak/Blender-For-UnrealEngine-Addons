@@ -29,7 +29,7 @@ from .. import bbpl
 
 class BFU_OT_ComputLightMap(bpy.types.Operator):
     bl_label = "Calculate surface area"
-    bl_idname = "object.computlightmap"
+    bl_idname = "object.comput_lightmap"
     bl_description = "Click to calculate the surface of the object"
 
     def execute(self, context):
@@ -43,7 +43,7 @@ class BFU_OT_ComputLightMap(bpy.types.Operator):
 
 class BFU_OT_ComputAllLightMap(bpy.types.Operator):
     bl_label = "Calculate all surface area"
-    bl_idname = "object.computalllightmap"
+    bl_idname = "object.comput_all_lightmap"
     bl_description = (
         "Click to calculate the surface of the all object in the scene"
         )
