@@ -28,9 +28,9 @@ from .. import bbpl
 
 def get_preset_values():
     preset_values = [
-            'obj.bfu_export_type',
-            'obj.bfu_export_folder_name',
-        ]
+        'obj.bfu_sample_anim_for_export',
+        'obj.bfu_simplify_anim_for_export',
+    ]
     return preset_values
 
 # -------------------------------------------------------------------
@@ -47,9 +47,43 @@ def register():
 
     bpy.types.Scene.bfu_animation_advanced_properties_expanded = bbpl.blender_layout.layout_accordion.add_ui_accordion(name="Animation Advanced Properties")
 
+    bpy.types.Object.bfu_sample_anim_for_export = bpy.props.FloatProperty(
+        name="Sampling Rate",
+        description="How often to evaluate animated values (in frames)",
+        override={'LIBRARY_OVERRIDABLE'},
+        min=0.01, max=100.0,
+        soft_min=0.01, soft_max=100.0,
+        default=1.0,
+        )
+
+    bpy.types.Object.bfu_simplify_anim_for_export = bpy.props.FloatProperty(
+        name="Simplify animations",
+        description=(
+            "How much to simplify baked values" +
+            " (0.0 to disable, the higher the more simplified)"
+            ),
+        override={'LIBRARY_OVERRIDABLE'},
+        # No simplification to up to 10% of current magnitude tolerance.
+        min=0.0, max=100.0,
+        soft_min=0.0, soft_max=10.0,
+        default=0.0,
+        )
+    
+    bpy.types.Object.bfu_disable_free_scale_animation = bpy.props.BoolProperty(
+        name="Disable non-uniform scale animation.",
+        description=(
+            "If checked, scale animation track's elements always have same value. " + 
+            "This applies basic bones only."
+        ),
+        override={'LIBRARY_OVERRIDABLE'},
+        default=False
+    )
 
 def unregister():
     for cls in reversed(classes):
         bpy.utils.unregister_class(cls)
 
+    del bpy.types.Object.bfu_disable_free_scale_animation
+    del bpy.types.Object.bfu_simplify_anim_for_export
+    del bpy.types.Object.bfu_sample_anim_for_export
     del bpy.types.Scene.bfu_animation_advanced_properties_expanded

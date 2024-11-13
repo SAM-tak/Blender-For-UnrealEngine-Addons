@@ -28,9 +28,9 @@ from .. import bbpl
 
 def get_preset_values():
     preset_values = [
-            'obj.bfu_export_type',
-            'obj.bfu_export_folder_name',
-        ]
+        'obj.bfu_move_nla_to_center_for_export',
+        'obj.bfu_rotate_nla_to_zero_for_export',
+    ]
     return preset_values
 
 # -------------------------------------------------------------------
@@ -47,9 +47,35 @@ def register():
 
     bpy.types.Scene.bfu_animation_nla_advanced_properties_expanded = bbpl.blender_layout.layout_accordion.add_ui_accordion(name="NLA Advanced Properties")
 
+    bpy.types.Object.bfu_move_nla_to_center_for_export = bpy.props.BoolProperty(
+        name="Move NLA to center",
+        description=(
+            "(Non linear animation only) If true use object origin else use scene origin." +
+            " | If true the mesh will be moved to the center" +
+            " of the scene for export." +
+            " (This is used so that the origin of the fbx file" +
+            " is the same as the mesh in blender)" +
+            " Note: Unreal Engine ignore the position of the skeleton at the import."
+            ),
+        override={'LIBRARY_OVERRIDABLE'},
+        default=True
+        )
+
+    bpy.types.Object.bfu_rotate_nla_to_zero_for_export = bpy.props.BoolProperty(
+        name="Rotate NLA to zero",
+        description=(
+            "(Non linear animation only) If true use object rotation else use scene rotation." +
+            " | If true the mesh will use zero rotation for export."
+            ),
+        override={'LIBRARY_OVERRIDABLE'},
+        default=False
+        )
 
 def unregister():
     for cls in reversed(classes):
         bpy.utils.unregister_class(cls)
+
+    del bpy.types.Object.bfu_rotate_nla_to_zero_for_export
+    del bpy.types.Object.bfu_move_nla_to_center_for_export
 
     del bpy.types.Scene.bfu_animation_nla_advanced_properties_expanded

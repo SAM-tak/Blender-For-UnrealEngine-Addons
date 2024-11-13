@@ -81,7 +81,7 @@ def unregister():
     for cls in reversed(classes):
         bpy.utils.unregister_class(cls)
 
-    del bpy.types.Scene.bfu_export_folder_name
+    del bpy.types.Collection.bfu_export_folder_name
 
     del bpy.types.Scene.bfu_active_collection_asset_list
     del bpy.types.Scene.bfu_collection_asset_list
