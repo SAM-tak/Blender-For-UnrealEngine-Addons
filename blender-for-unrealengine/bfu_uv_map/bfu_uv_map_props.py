@@ -28,8 +28,6 @@ from .. import bbpl
 
 def get_preset_values():
     preset_values = [
-            'obj.bfu_export_type',
-            'obj.bfu_export_folder_name',
         ]
     return preset_values
 

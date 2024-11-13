@@ -1471,8 +1471,8 @@ class BFU_PT_BlenderForUnrealObject(bpy.types.Panel):
         bfu_camera.bfu_camera_ui_and_props.draw_ui_object_camera(layout, obj)
         bfu_spline.bfu_spline_ui_and_props.draw_ui_object_spline(layout, obj)
         bfu_lod.bfu_lod_ui.draw_ui(layout, obj)
-        bfu_uv_map.bfu_uv_map_ui.draw_ui(layout, obj)
-        bfu_light_map.bfu_light_map_ui.draw_ui(layout, obj)
+        bfu_uv_map.bfu_uv_map_ui.draw_obj_ui(layout, obj)
+        bfu_light_map.bfu_light_map_ui.draw_obj_ui(layout, obj)
         bfu_assets_references.bfu_asset_ref_ui.draw_ui(layout, obj)
 
         # Animations

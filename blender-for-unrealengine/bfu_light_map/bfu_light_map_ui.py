@@ -24,7 +24,7 @@ from .. import bfu_ui
 from .. import bbpl
 
 
-def draw_ui(layout: bpy.types.UILayout, obj: bpy.types.Object):
+def draw_obj_ui(layout: bpy.types.UILayout, obj: bpy.types.Object):
 
     if obj is None:
         return
@@ -44,3 +44,10 @@ def draw_ui(layout: bpy.types.UILayout, obj: bpy.types.Object):
         scene.bfu_object_light_map_properties_expanded.draw(layout)
         if scene.bfu_object_light_map_properties_expanded.is_expend():
             pass
+
+def draw_tools_ui(layout: bpy.types.UILayout, context: bpy.types.Context):
+    scene = context.scene
+    scene.bfu_tools_light_map_properties_expanded.draw(layout)
+    if scene.bfu_tools_light_map_properties_expanded.is_expend():
+        checkButton = layout.column()
+        checkButton.operator("object.comput_all_lightmap", icon='TEXTURE')
