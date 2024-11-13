@@ -9,9 +9,10 @@ from .. import bfu_cached_asset_list
 from .. import bfu_ui
 from .. import bbpl
 from .. import bpl
-from .. import bfu_collision
-from .. import bfu_socket
 from .. import bfu_assets_manager
+from .. import bfu_export_nomenclature
+from .. import bfu_export_filter
+from .. import bfu_export_process
 
 
 
@@ -185,6 +186,37 @@ class BFU_PT_Export(bpy.types.Panel):
         bl_description = 'Add or remove a preset for Nomenclature'
         preset_menu = 'BFU_MT_NomenclaturePresets'
 
+        def get_export_global_preset_propertys():
+            preset_values = [
+                'scene.bfu_static_mesh_prefix_export_name',
+                'scene.bfu_skeletal_mesh_prefix_export_name',
+                'scene.bfu_skeleton_prefix_export_name',
+                'scene.bfu_alembic_animation_prefix_export_name',
+                'scene.bfu_groom_simulation_prefix_export_name',
+                'scene.bfu_anim_prefix_export_name',
+                'scene.bfu_pose_prefix_export_name',
+                'scene.bfu_camera_prefix_export_name',
+                'scene.bfu_spline_prefix_export_name',
+                'scene.bfu_anim_subfolder_name',
+                'scene.bfu_export_static_file_path',
+                'scene.bfu_export_skeletal_file_path',
+                'scene.bfu_export_alembic_file_path',
+                'scene.bfu_export_groom_file_path',
+                'scene.bfu_export_camera_file_path',
+                'scene.bfu_export_spline_file_path',
+                'scene.bfu_export_other_file_path',
+                'scene.bfu_file_export_log_name',
+                'scene.bfu_file_import_asset_script_name',
+                'scene.bfu_file_import_sequencer_script_name',
+                # Import location:
+                'scene.bfu_unreal_import_module',
+                'scene.bfu_unreal_import_location',
+            ]
+            preset_values += bfu_export_nomenclature.bfu_export_nomenclature_props.get_preset_values()
+            preset_values += bfu_export_filter.bfu_export_filter_props.get_preset_values()
+            preset_values += bfu_export_process.bfu_export_process_props.get_preset_values()
+            return preset_values
+
         # Common variable used for all preset values
         preset_defines = [
                             'obj = bpy.context.object',
@@ -192,31 +224,7 @@ class BFU_PT_Export(bpy.types.Panel):
                          ]
 
         # Properties to store in the preset
-        preset_values = [
-                            'scene.bfu_static_mesh_prefix_export_name',
-                            'scene.bfu_skeletal_mesh_prefix_export_name',
-                            'scene.bfu_skeleton_prefix_export_name',
-                            'scene.bfu_alembic_animation_prefix_export_name',
-                            'scene.bfu_groom_simulation_prefix_export_name',
-                            'scene.bfu_anim_prefix_export_name',
-                            'scene.bfu_pose_prefix_export_name',
-                            'scene.bfu_camera_prefix_export_name',
-                            'scene.bfu_spline_prefix_export_name',
-                            'scene.bfu_anim_subfolder_name',
-                            'scene.bfu_export_static_file_path',
-                            'scene.bfu_export_skeletal_file_path',
-                            'scene.bfu_export_alembic_file_path',
-                            'scene.bfu_export_groom_file_path',
-                            'scene.bfu_export_camera_file_path',
-                            'scene.bfu_export_spline_file_path',
-                            'scene.bfu_export_other_file_path',
-                            'scene.bfu_file_export_log_name',
-                            'scene.bfu_file_import_asset_script_name',
-                            'scene.bfu_file_import_sequencer_script_name',
-                            # Import location:
-                            'scene.bfu_unreal_import_module',
-                            'scene.bfu_unreal_import_location',
-                        ]
+        preset_values = get_export_global_preset_propertys()
 
         # Directory to store the presets
         preset_subdir = 'blender-for-unrealengine/nomenclature-presets'
@@ -795,6 +803,10 @@ class BFU_PT_Export(bpy.types.Panel):
 
             else:
                 layout.label(text='(Generated scripts are deactivated.)')
+
+        bfu_export_nomenclature.bfu_export_nomenclature_ui.draw_ui(layout)
+        bfu_export_filter.bfu_export_filter_ui.draw_ui(layout)
+        bfu_export_process.bfu_export_process_ui.draw_ui(layout)
 
 # -------------------------------------------------------------------
 #   Register & Unregister

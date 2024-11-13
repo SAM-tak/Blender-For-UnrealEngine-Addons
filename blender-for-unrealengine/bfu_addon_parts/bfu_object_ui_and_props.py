@@ -1484,6 +1484,8 @@ class BFU_PT_BlenderForUnrealObject(bpy.types.Panel):
         bfu_anim_nla.bfu_anim_nla_ui.draw_ui(layout, obj)
         bfu_anim_nla_adv.bfu_anim_nla_adv_ui.draw_ui(layout, obj)
 
+        
+
 class BFU_OT_SceneCollectionExport(bpy.types.PropertyGroup):
     name: bpy.props.StringProperty(name="collection data name", default="Unknown", override={'LIBRARY_OVERRIDABLE'})
     use: bpy.props.BoolProperty(name="export this collection", default=False, override={'LIBRARY_OVERRIDABLE'})

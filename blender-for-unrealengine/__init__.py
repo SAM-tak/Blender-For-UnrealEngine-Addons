@@ -60,6 +60,9 @@ from . import bfu_light_map
 from . import bfu_assets_references
 from . import bfu_custom_property
 from . import bfu_addon_parts
+from . import bfu_export_nomenclature
+from . import bfu_export_filter
+from . import bfu_export_process
 from . import bfu_export_procedure
 from . import bfu_addon_pref
 from . import bfu_export_logs
@@ -136,6 +139,12 @@ if "bfu_custom_property" in locals():
     importlib.reload(bfu_custom_property)
 if "bfu_addon_parts" in locals():
     importlib.reload(bfu_addon_parts)
+if "bfu_export_nomenclature" in locals():
+    importlib.reload(bfu_export_nomenclature)
+if "bfu_export_filter" in locals():
+    importlib.reload(bfu_export_filter)
+if "bfu_export_process" in locals():
+    importlib.reload(bfu_export_process)
 if "bfu_export_procedure" in locals():
     importlib.reload(bfu_export_procedure)
 if "bfu_addon_pref" in locals():
@@ -214,6 +223,9 @@ def register():
     bfu_assets_references.register()
     bfu_custom_property.register()
     bfu_addon_parts.register()
+    bfu_export_nomenclature.register()
+    bfu_export_filter.register()
+    bfu_export_process.register()
     bfu_export_procedure.register()
     bfu_addon_pref.register()
     bfu_export_logs.register()
@@ -233,6 +245,9 @@ def unregister():
     bfu_export_logs.unregister()
     bfu_addon_pref.unregister()
     bfu_export_procedure.unregister()
+    bfu_export_process.unregister()
+    bfu_export_filter.unregister()
+    bfu_export_nomenclature.unregister()
     bfu_addon_parts.unregister()
     bfu_custom_property.unregister()
     bfu_assets_references.unregister()

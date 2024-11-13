@@ -191,7 +191,5 @@ def unregister():
     for cls in reversed(classes):
         bpy.utils.unregister_class(cls)
 
-
-
     del bpy.types.Scene.bfu_tools_collision_properties_expanded
     del bpy.types.Scene.bfu_object_collision_properties_expanded
