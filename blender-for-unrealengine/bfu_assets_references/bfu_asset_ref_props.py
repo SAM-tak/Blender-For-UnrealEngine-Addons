@@ -16,35 +16,14 @@
 #
 # ======================= END GPL LICENSE BLOCK =============================
 
+
 import bpy
-
-classes = (
-)
-
-def draw_skeleton_prop(layout: bpy.types.UILayout, obj: bpy.types.Object):
-    layout.prop(obj, "bfu_engine_ref_skeleton_search_mode")
-    if obj.bfu_engine_ref_skeleton_search_mode == "auto":
-        pass
-    if obj.bfu_engine_ref_skeleton_search_mode == "custom_name":
-        layout.prop(obj, "bfu_engine_ref_skeleton_custom_name")
-    if obj.bfu_engine_ref_skeleton_search_mode == "custom_path_name":
-        layout.prop(obj, "bfu_engine_ref_skeleton_custom_path")
-        layout.prop(obj, "bfu_engine_ref_skeleton_custom_name")
-    if obj.bfu_engine_ref_skeleton_search_mode == "custom_reference":
-        layout.prop(obj, "bfu_engine_ref_skeleton_custom_ref")
+from .. import bfu_basics
+from .. import bfu_utils
+from .. import bfu_ui
+from .. import bbpl
 
 
-def draw_skeletal_mesh_prop(layout: bpy.types.UILayout, obj: bpy.types.Object):
-    layout.prop(obj, "bfu_engine_ref_skeletal_mesh_search_mode")
-    if obj.bfu_engine_ref_skeletal_mesh_search_mode == "auto":
-        pass
-    if obj.bfu_engine_ref_skeletal_mesh_search_mode == "custom_name":
-        layout.prop(obj, "bfu_engine_ref_skeletal_mesh_custom_name")
-    if obj.bfu_engine_ref_skeletal_mesh_search_mode == "custom_path_name":
-        layout.prop(obj, "bfu_engine_ref_skeletal_mesh_custom_path")
-        layout.prop(obj, "bfu_engine_ref_skeletal_mesh_custom_name")
-    if obj.bfu_engine_ref_skeletal_mesh_search_mode == "custom_reference":
-        layout.prop(obj, "bfu_engine_ref_skeletal_mesh_custom_ref")
 
 
 def get_preset_values():
@@ -61,10 +40,20 @@ def get_preset_values():
         ]
     return preset_values
 
+# -------------------------------------------------------------------
+#   Register & Unregister
+# -------------------------------------------------------------------
+
+classes = (
+)
+
 
 def register():
     for cls in classes:
         bpy.utils.register_class(cls)
+
+    bpy.types.Scene.bfu_engine_ref_properties_expanded = bbpl.blender_layout.layout_accordion.add_ui_accordion(name="Engine Refs")
+
 
     bpy.types.Object.bfu_engine_ref_skeleton_search_mode = bpy.props.EnumProperty(
         name="Skeleton Ref",
@@ -163,8 +152,6 @@ def register():
         default="SkeletalMesh'/Game/ImportedFbx/SKM_MySkeletalMesh.SKM_MySkeletalMesh'"
         )
 
-
-
 def unregister():
     for cls in reversed(classes):
         bpy.utils.unregister_class(cls)
@@ -178,3 +165,5 @@ def unregister():
     del bpy.types.Object.bfu_engine_ref_skeletal_mesh_custom_name
     del bpy.types.Object.bfu_engine_ref_skeletal_mesh_custom_path
     del bpy.types.Object.bfu_engine_ref_skeletal_mesh_search_mode
+
+    del bpy.types.Scene.bfu_engine_ref_properties_expanded

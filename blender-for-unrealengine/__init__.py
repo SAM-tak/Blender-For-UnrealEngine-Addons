@@ -47,6 +47,7 @@ from . import bfu_socket
 from . import bfu_material
 from . import bfu_vertex_color
 from . import bfu_lod
+from . import bfu_assets_references
 from . import bfu_custom_property
 from . import bfu_addon_parts
 from . import bfu_export_procedure
@@ -66,6 +67,7 @@ from . import fbxio
 from . import bfu_export
 from . import bfu_backward_compatibility
 from . import bfu_cached_asset_list
+
 
 
 if "bpl" in locals():
@@ -98,6 +100,8 @@ if "bfu_vertex_color" in locals():
     importlib.reload(bfu_vertex_color)
 if "bfu_lod" in locals():
     importlib.reload(bfu_lod)
+if "bfu_assets_references" in locals():
+    importlib.reload(bfu_assets_references)
 if "bfu_custom_property" in locals():
     importlib.reload(bfu_custom_property)
 if "bfu_addon_parts" in locals():
@@ -167,6 +171,7 @@ def register():
     bfu_material.register()
     bfu_vertex_color.register()
     bfu_lod.register()
+    bfu_assets_references.register()
     bfu_custom_property.register()
     bfu_addon_parts.register()
     bfu_export_procedure.register()
@@ -190,6 +195,7 @@ def unregister():
     bfu_export_procedure.unregister()
     bfu_addon_parts.unregister()
     bfu_custom_property.unregister()
+    bfu_assets_references.unregister()
     bfu_lod.unregister()
     bfu_vertex_color.unregister()
     bfu_material.unregister()

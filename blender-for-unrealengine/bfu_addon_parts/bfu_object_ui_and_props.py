@@ -21,7 +21,6 @@ import os
 import bpy
 import addon_utils
 from . import bfu_modular_skeletal_specified_parts_meshs
-from . import bfu_unreal_engine_refs_props
 from .. import bbpl
 from .. import bpl
 from .. import bfu_export_procedure
@@ -43,6 +42,7 @@ from .. import bfu_alembic_animation
 from .. import bfu_groom
 from .. import bfu_assets_manager
 from .. import bfu_light_map
+from .. import bfu_assets_references
 
 
 class BFU_PT_BlenderForUnrealObject(bpy.types.Panel):
@@ -954,7 +954,6 @@ class BFU_PT_BlenderForUnrealObject(bpy.types.Panel):
                 'obj.bfu_additional_rotation_for_export',
                 ]
             preset_values += bfu_modular_skeletal_specified_parts_meshs.get_preset_values()
-            preset_values += bfu_unreal_engine_refs_props.get_preset_values()
             preset_values += bfu_custom_property.bfu_custom_property_props.get_preset_values()
             preset_values += bfu_material.bfu_material_props.get_preset_values()
             preset_values += bfu_camera.bfu_camera_ui_and_props.get_preset_values()
@@ -964,6 +963,7 @@ class BFU_PT_BlenderForUnrealObject(bpy.types.Panel):
             preset_values += bfu_alembic_animation.bfu_alembic_animation_props.get_preset_values()
             preset_values += bfu_vertex_color.bfu_vertex_color_props.get_preset_values()
             preset_values += bfu_lod.bfu_lod_props.get_preset_values()
+            preset_values += bfu_assets_references.bfu_asset_ref_props.get_preset_values()
             return preset_values
 
         # Common variable used for all preset values
@@ -1219,21 +1219,6 @@ class BFU_PT_BlenderForUnrealObject(bpy.types.Panel):
                 else:
                     layout.label(text='(No properties to show.)')
 
-
-
-            scene.bfu_engine_ref_properties_expanded.draw(layout)
-            if scene.bfu_engine_ref_properties_expanded.is_expend():
-                if addon_prefs.useGeneratedScripts and obj is not None:
-                    if obj.bfu_export_type == "export_recursive":
-
-                        # SkeletalMesh prop
-                        if bfu_skeletal_mesh.bfu_skeletal_mesh_utils.is_skeletal_mesh(obj):
-                            if not obj.bfu_export_as_lod_mesh:
-                                unreal_engine_refs = layout.column()
-                                bfu_unreal_engine_refs_props.draw_skeleton_prop(unreal_engine_refs, obj)
-                                bfu_unreal_engine_refs_props.draw_skeletal_mesh_prop(unreal_engine_refs, obj)
-                else:
-                    layout.label(text='(No properties to show.)')
 
         if bfu_ui.bfu_ui_utils.DisplayPropertyFilter("OBJECT", "ANIM"):
             if obj is not None:
@@ -1504,6 +1489,7 @@ class BFU_PT_BlenderForUnrealObject(bpy.types.Panel):
 
 
         bfu_lod.bfu_lod_ui.draw_ui(layout, obj)
+        bfu_assets_references.bfu_asset_ref_ui.draw_ui(layout, obj)
 
 class BFU_OT_SceneCollectionExport(bpy.types.PropertyGroup):
     name: bpy.props.StringProperty(name="collection data name", default="Unknown", override={'LIBRARY_OVERRIDABLE'})

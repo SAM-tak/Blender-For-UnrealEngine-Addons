@@ -39,8 +39,6 @@ def register():
     bpy.types.Scene.bfu_animation_nla_advanced_properties_expanded = bbpl.blender_layout.layout_accordion.add_ui_accordion(name="NLA Advanced Properties")
     bpy.types.Scene.bfu_animation_advanced_properties_expanded = bbpl.blender_layout.layout_accordion.add_ui_accordion(name="Animation Advanced Properties")
 
-    bpy.types.Scene.bfu_engine_ref_properties_expanded = bbpl.blender_layout.layout_accordion.add_ui_accordion(name="Engine Refs")
-
     bpy.types.Scene.bfu_collection_properties_expanded = bbpl.blender_layout.layout_accordion.add_ui_accordion(name="Collection Properties")
     bpy.types.Scene.bfu_object_advanced_properties_expanded = bbpl.blender_layout.layout_accordion.add_ui_accordion(name="Object advanced Properties")
     bpy.types.Scene.bfu_collision_expanded = bbpl.blender_layout.layout_accordion.add_ui_accordion(name="Collision")
@@ -90,8 +88,6 @@ def unregister():
     del bpy.types.Scene.bfu_animation_nla_properties_expanded
     del bpy.types.Scene.bfu_animation_nla_advanced_properties_expanded
     del bpy.types.Scene.bfu_animation_advanced_properties_expanded
-
-    del bpy.types.Scene.bfu_engine_ref_properties_expanded
 
     del bpy.types.Scene.bfu_collection_properties_expanded
     del bpy.types.Scene.bfu_object_advanced_properties_expanded
