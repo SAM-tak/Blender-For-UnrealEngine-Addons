@@ -72,10 +72,11 @@ def register():
         bpy.utils.register_class(cls)
 
     bpy.types.Scene.bfu_object_light_map_properties_expanded = bbpl.blender_layout.layout_accordion.add_ui_accordion(name="Light map")
-
+    bpy.types.Scene.bfu_tools_light_map_properties_expanded = bbpl.blender_layout.layout_accordion.add_ui_accordion(name="Light Map")
 
 def unregister():
     for cls in reversed(classes):
         bpy.utils.unregister_class(cls)
 
+    del bpy.types.Scene.bfu_tools_light_map_properties_expanded
     del bpy.types.Scene.bfu_object_light_map_properties_expanded

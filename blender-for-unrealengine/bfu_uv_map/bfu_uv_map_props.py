@@ -46,9 +46,11 @@ def register():
         bpy.utils.register_class(cls)
 
     bpy.types.Scene.bfu_object_uv_map_properties_expanded = bbpl.blender_layout.layout_accordion.add_ui_accordion(name="UV map")
+    bpy.types.Scene.bfu_tools_uv_map_properties_expanded = bbpl.blender_layout.layout_accordion.add_ui_accordion(name="UV Map")
 
 def unregister():
     for cls in reversed(classes):
         bpy.utils.unregister_class(cls)
 
+    del bpy.types.Scene.bfu_tools_uv_map_properties_expanded
     del bpy.types.Scene.bfu_object_uv_map_properties_expanded

@@ -41,6 +41,6 @@ def draw_ui(layout: bpy.types.UILayout, obj: bpy.types.Object):
         return
     
     if bfu_ui.bfu_ui_utils.DisplayPropertyFilter("OBJECT", "GENERAL"):
-        scene.bfu_object_advanced_properties_expanded.draw(layout)
-        if scene.bfu_object_advanced_properties_expanded.is_expend():
+        scene.bfu_object_light_map_properties_expanded.draw(layout)
+        if scene.bfu_object_light_map_properties_expanded.is_expend():
             pass

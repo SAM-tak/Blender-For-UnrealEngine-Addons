@@ -41,8 +41,8 @@ class BFU_PT_BlenderForUnrealTool(bpy.types.Panel):
         bfu_collision.bfu_collision_ui_and_props.draw_ui_scene_collision(layout)
         bfu_socket.bfu_socket_ui_and_props.draw_ui_scene_socket(layout)
 
-        scene.bfu_uvmap_expanded.draw(layout)
-        if scene.bfu_uvmap_expanded.is_expend():
+        scene.bfu_tools_uv_map_properties_expanded.draw(layout)
+        if scene.bfu_tools_uv_map_properties_expanded.is_expend():
             ready_for_correct_extrem_uv_scale = False
             obj = bpy.context.object
             if obj and obj.type == "MESH":
@@ -61,8 +61,8 @@ class BFU_PT_BlenderForUnrealTool(bpy.types.Panel):
             Button_correct_extrem_uv_scale.operator("object.correct_extrem_uv", icon='UV')
             bbpl.blender_layout.layout_doc_button.add_doc_page_operator(Buttons_correct_extrem_uv_scale, url="https://github.com/xavier150/Blender-For-UnrealEngine-Addons/wiki/UV-Maps#extreme-uv-scale")
 
-        scene.bfu_lightmap_expanded.draw(layout)
-        if scene.bfu_lightmap_expanded.is_expend():
+        scene.bfu_tools_light_map_properties_expanded.draw(layout)
+        if scene.bfu_tools_light_map_properties_expanded.is_expend():
             checkButton = layout.column()
             checkButton.operator("object.comput_all_lightmap", icon='TEXTURE')
 
