@@ -46,7 +46,7 @@ class BFU_OT_ShowAssetToExport(bpy.types.Operator):
         else:
             popup_title = 'No exportable assets were found.'
 
-        def draw(self, context):
+        def draw(self, context: bpy.types.Context):
             col = self.layout.column()
             for asset in final_asset_list_to_export:
                 asset :bfu_cached_asset_list.AssetToExport
@@ -175,7 +175,7 @@ class BFU_OT_OpenPotentialErrorPopup(bpy.types.Operator):
     def check(self, context):
         return True
 
-    def draw(self, context):
+    def draw(self, context: bpy.types.Context):
 
         layout = self.layout
         if len(bpy.context.scene.potentialErrorList) > 0:

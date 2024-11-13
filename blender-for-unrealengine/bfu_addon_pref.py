@@ -184,7 +184,7 @@ class BFU_AP_AddonPreferences(bpy.types.AddonPreferences):
                 )
             return {'FINISHED'}
 
-    def draw(self, context):
+    def draw(self, context: bpy.types.Context):
         layout: bpy.types.UILayout = self.layout
 
         boxColumn = layout.column().split(

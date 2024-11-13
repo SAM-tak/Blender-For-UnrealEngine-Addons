@@ -34,16 +34,16 @@ class BFU_PT_BlenderForUnrealTool(bpy.types.Panel):
     bl_region_type = "UI"
     bl_category = "Unreal Engine"
 
-    def draw(self, context):
+    def draw(self, context: bpy.types.Context):
 
         layout = self.layout
         scene = bpy.context.scene
 
-        bfu_camera.bfu_camera_ui_and_props.draw_ui_scene_camera(layout)
-        bfu_spline.bfu_spline_ui_and_props.draw_ui_scene_spline(layout)
+        bfu_camera.bfu_camera_ui_and_props.draw_tools_ui(layout, context)
+        bfu_spline.bfu_spline_ui_and_props.draw_tools_ui(layout, context)
 
-        bfu_collision.bfu_collision_ui_and_props.draw_ui_scene_collision(layout)
-        bfu_socket.bfu_socket_ui_and_props.draw_ui_scene_socket(layout)
+        bfu_collision.bfu_collision_ui_and_props.draw_tools_ui(layout, context)
+        bfu_socket.bfu_socket_ui_and_props.draw_tools_ui(layout, context)
 
         bfu_uv_map.bfu_uv_map_ui.draw_tools_ui(layout, context)
         bfu_light_map.bfu_light_map_ui.draw_tools_ui(layout, context)

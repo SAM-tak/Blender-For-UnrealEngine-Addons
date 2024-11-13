@@ -816,7 +816,7 @@ class BFU_PT_BlenderForUnrealObject(bpy.types.Panel):
                     'No action found for obj named "' +
                     obj.name+'".')
 
-            def draw(self, context):
+            def draw(self, context: bpy.types.Context):
                 col = self.layout.column()
 
                 def addAnimRow(
@@ -1033,7 +1033,7 @@ class BFU_PT_BlenderForUnrealObject(bpy.types.Panel):
             else:
                 popup_title = 'No collection to export found.'
 
-            def draw(self, context):
+            def draw(self, context: bpy.types.Context):
                 col = self.layout.column()
                 for collection in collection_export_asset_list:
                     row = col.row()
@@ -1044,7 +1044,7 @@ class BFU_PT_BlenderForUnrealObject(bpy.types.Panel):
                 icon='GROUP')
             return {'FINISHED'}
 
-    def draw(self, context):
+    def draw(self, context: bpy.types.Context):
         
         scene = bpy.context.scene
         obj = bpy.context.object

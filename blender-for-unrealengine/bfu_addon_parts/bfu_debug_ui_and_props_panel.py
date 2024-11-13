@@ -24,7 +24,7 @@ class BFU_PT_BlenderForUnrealDebug(bpy.types.Panel):
         default="MySocket"
         )
 
-    def draw(self, context):
+    def draw(self, context: bpy.types.Context):
         
         layout = self.layout
         obj = context.object

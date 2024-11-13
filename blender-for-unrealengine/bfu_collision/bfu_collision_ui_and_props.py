@@ -132,9 +132,9 @@ class BFU_OT_ToggleCollisionVisibility(bpy.types.Operator):
 
         return {'FINISHED'}
 
-def draw_ui_scene_collision(layout: bpy.types.UILayout):
-    #@TODO Move in bfu_collision_ui.py
-    scene = bpy.context.scene
+def draw_tools_ui(layout: bpy.types.UILayout, context: bpy.types.Context):
+    scene = context.scene
+    
     scene.bfu_tools_collision_properties_expanded.draw(layout)
     if scene.bfu_tools_collision_properties_expanded.is_expend():
 

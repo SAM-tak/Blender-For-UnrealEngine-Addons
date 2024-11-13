@@ -67,7 +67,7 @@ class BFU_PT_Export(bpy.types.Panel):
         preset_subdir = 'blender-for-unrealengine/nomenclature-presets'
 
 
-    def draw(self, context):
+    def draw(self, context: bpy.types.Context):
         
         layout = self.layout
 

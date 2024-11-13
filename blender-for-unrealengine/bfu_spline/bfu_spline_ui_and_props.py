@@ -69,10 +69,10 @@ def draw_ui_object_spline(layout: bpy.types.UILayout, obj: bpy.types.Object):
                 spline_ui.operator("object.bfu_copy_active_spline_data", icon="COPYDOWN")
 
 
-def draw_ui_scene_spline(layout: bpy.types.UILayout):
+def draw_tools_ui(layout: bpy.types.UILayout, context: bpy.types.Context):
+    scene = context.scene
 
     spline_ui = layout.column()
-    scene = bpy.context.scene  
     scene.bfu_spline_tools_expanded.draw(spline_ui)
     if scene.bfu_spline_tools_expanded.is_expend():
         spline_ui.operator("object.copy_selected_splines_data", icon="COPYDOWN")
