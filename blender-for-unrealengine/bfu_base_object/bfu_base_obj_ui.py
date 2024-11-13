@@ -40,3 +40,7 @@ def draw_ui(layout: bpy.types.UILayout, obj: bpy.types.Object):
     if obj.bfu_export_type != "export_recursive":
         return
     
+    if bfu_ui.bfu_ui_utils.DisplayPropertyFilter("OBJECT", "GENERAL"):
+        scene.bfu_object_advanced_properties_expanded.draw(layout)
+        if scene.bfu_object_advanced_properties_expanded.is_expend():
+            pass

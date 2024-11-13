@@ -56,41 +56,6 @@ class BFU_PT_BlenderForUnrealObject(bpy.types.Panel):
     bl_region_type = "UI"
     bl_category = "Unreal Engine"
 
-    # Object Properties
-    bpy.types.Object.bfu_export_type = bpy.props.EnumProperty(
-        name="Export type",
-        description="Export procedure",
-        override={'LIBRARY_OVERRIDABLE'},
-        items=[
-            ("auto",
-                "Auto",
-                "Export with the parent if the parents is \"Export recursive\"",
-                "BOIDS",
-                1),
-            ("export_recursive",
-                "Export recursive",
-                "Export self object and all children",
-                "KEYINGSET",
-                2),
-            ("dont_export",
-                "Not exported",
-                "Will never export",
-                "CANCEL",
-                3)
-            ]
-        )
-
-    bpy.types.Object.bfu_export_folder_name = bpy.props.StringProperty(
-        name="Sub folder name",
-        description=(
-            'The name of sub folder.' +
-            ' You can now use ../ for up one directory.'
-            ),
-        override={'LIBRARY_OVERRIDABLE'},
-        maxlen=64,
-        default="",
-        subtype='FILE_NAME'
-        )
 
     # Collection Properties
     bpy.types.Collection.bfu_export_folder_name = bpy.props.StringProperty(
@@ -895,9 +860,6 @@ class BFU_PT_BlenderForUnrealObject(bpy.types.Panel):
 
         def get_object_global_preset_propertys():
             preset_values = [
-                'obj.bfu_export_type',
-                'obj.bfu_export_folder_name',
-                'col.bfu_export_folder_name',
                 'obj.bfu_export_deform_only',
                 'obj.bfu_create_physics_asset',
                 'obj.bfu_static_mesh_light_map_mode',
@@ -1165,11 +1127,7 @@ class BFU_PT_BlenderForUnrealObject(bpy.types.Panel):
 
 
 
-
-            bfu_camera.bfu_camera_ui_and_props.draw_ui_object_camera(layout, obj)
-            bfu_spline.bfu_spline_ui_and_props.draw_ui_object_spline(layout, obj)
-            bfu_skeletal_mesh.bfu_skeletal_mesh_ui.draw_ui_object(layout, obj)
-            bfu_static_mesh.bfu_static_mesh_ui.draw_ui_object(layout, obj)
+            
 
 
             bfu_alembic_animation.bfu_alembic_animation_ui.draw_ui_object(layout, obj)
@@ -1494,6 +1452,10 @@ class BFU_PT_BlenderForUnrealObject(bpy.types.Panel):
 
         bfu_base_object.bfu_base_obj_ui.draw_ui(layout, obj)
         bfu_adv_object.bfu_adv_obj_ui.draw_ui(layout, obj)
+        bfu_static_mesh.bfu_static_mesh_ui.draw_ui_object(layout, obj)
+        bfu_skeletal_mesh.bfu_skeletal_mesh_ui.draw_ui_object(layout, obj)
+        bfu_camera.bfu_camera_ui_and_props.draw_ui_object_camera(layout, obj)
+        bfu_spline.bfu_spline_ui_and_props.draw_ui_object_spline(layout, obj)
         bfu_lod.bfu_lod_ui.draw_ui(layout, obj)
         bfu_assets_references.bfu_asset_ref_ui.draw_ui(layout, obj)
 

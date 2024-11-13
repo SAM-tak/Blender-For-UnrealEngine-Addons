@@ -28,7 +28,7 @@ def register():
     for cls in classes:
         bpy.utils.register_class(cls)
 
-    bpy.types.Scene.bfu_object_properties_expanded = bbpl.blender_layout.layout_accordion.add_ui_accordion(name="Object Properties")
+
     bpy.types.Scene.bfu_object_collision_properties_expanded = bbpl.blender_layout.layout_accordion.add_ui_accordion(name="Collision")
     bpy.types.Scene.bfu_object_light_map_properties_expanded = bbpl.blender_layout.layout_accordion.add_ui_accordion(name="Light map")
     bpy.types.Scene.bfu_object_uv_map_properties_expanded = bbpl.blender_layout.layout_accordion.add_ui_accordion(name="UV map")
@@ -40,7 +40,6 @@ def register():
     bpy.types.Scene.bfu_animation_advanced_properties_expanded = bbpl.blender_layout.layout_accordion.add_ui_accordion(name="Animation Advanced Properties")
 
     bpy.types.Scene.bfu_collection_properties_expanded = bbpl.blender_layout.layout_accordion.add_ui_accordion(name="Collection Properties")
-    bpy.types.Scene.bfu_object_advanced_properties_expanded = bbpl.blender_layout.layout_accordion.add_ui_accordion(name="Object Advanced Properties")
     bpy.types.Scene.bfu_collision_expanded = bbpl.blender_layout.layout_accordion.add_ui_accordion(name="Collision")
     bpy.types.Scene.bfu_socket_expanded = bbpl.blender_layout.layout_accordion.add_ui_accordion(name="Socket")
     bpy.types.Scene.bfu_uvmap_expanded = bbpl.blender_layout.layout_accordion.add_ui_accordion(name="UV Map")
@@ -78,7 +77,6 @@ def unregister():
     for cls in reversed(classes):
         bpy.utils.unregister_class(cls)
 
-    del bpy.types.Scene.bfu_object_properties_expanded
     del bpy.types.Scene.bfu_object_collision_properties_expanded
     del bpy.types.Scene.bfu_object_light_map_properties_expanded
     del bpy.types.Scene.bfu_object_uv_map_properties_expanded
@@ -90,7 +88,7 @@ def unregister():
     del bpy.types.Scene.bfu_animation_advanced_properties_expanded
 
     del bpy.types.Scene.bfu_collection_properties_expanded
-    del bpy.types.Scene.bfu_object_advanced_properties_expanded
+
     del bpy.types.Scene.bfu_collision_expanded
     del bpy.types.Scene.bfu_uvmap_expanded
     del bpy.types.Scene.bfu_socket_expanded

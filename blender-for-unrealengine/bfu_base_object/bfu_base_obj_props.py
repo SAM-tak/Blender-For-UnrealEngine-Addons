@@ -28,6 +28,8 @@ from .. import bbpl
 
 def get_preset_values():
     preset_values = [
+            'obj.bfu_export_type',
+            'obj.bfu_export_folder_name',
         ]
     return preset_values
 
@@ -43,9 +45,48 @@ def register():
     for cls in classes:
         bpy.utils.register_class(cls)
 
+    bpy.types.Scene.bfu_object_properties_expanded = bbpl.blender_layout.layout_accordion.add_ui_accordion(name="Object Properties")
 
+    bpy.types.Object.bfu_export_type = bpy.props.EnumProperty(
+        name="Export type",
+        description="Export procedure",
+        override={'LIBRARY_OVERRIDABLE'},
+        items=[
+            ("auto",
+                "Auto",
+                "Export with the parent if the parents is \"Export recursive\"",
+                "BOIDS",
+                1),
+            ("export_recursive",
+                "Export recursive",
+                "Export self object and all children",
+                "KEYINGSET",
+                2),
+            ("dont_export",
+                "Not exported",
+                "Will never export",
+                "CANCEL",
+                3)
+            ]
+        )
+    
+    bpy.types.Object.bfu_export_folder_name = bpy.props.StringProperty(
+        name="Sub folder name",
+        description=(
+            'The name of sub folder.' +
+            ' You can now use ../ for up one directory.'
+            ),
+        override={'LIBRARY_OVERRIDABLE'},
+        maxlen=64,
+        default="",
+        subtype='FILE_NAME'
+        )
 
 def unregister():
     for cls in reversed(classes):
         bpy.utils.unregister_class(cls)
 
+    del bpy.types.Object.bfu_export_folder_name
+    del bpy.types.Object.bfu_export_type
+
+    del bpy.types.Scene.bfu_object_properties_expanded
