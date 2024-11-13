@@ -31,6 +31,8 @@ from .. import bfu_export
 from .. import bfu_ui
 from .. import languages
 from .. import bfu_custom_property
+from .. import bfu_base_object
+from .. import bfu_adv_object
 from .. import bfu_material
 from .. import bfu_camera
 from .. import bfu_spline
@@ -953,6 +955,8 @@ class BFU_PT_BlenderForUnrealObject(bpy.types.Panel):
                 'obj.bfu_additional_location_for_export',
                 'obj.bfu_additional_rotation_for_export',
                 ]
+            preset_values += bfu_base_object.bfu_base_obj_props.get_preset_values()
+            preset_values += bfu_adv_object.bfu_adv_obj_props.get_preset_values()
             preset_values += bfu_modular_skeletal_specified_parts_meshs.get_preset_values()
             preset_values += bfu_custom_property.bfu_custom_property_props.get_preset_values()
             preset_values += bfu_material.bfu_material_props.get_preset_values()
@@ -1488,6 +1492,8 @@ class BFU_PT_BlenderForUnrealObject(bpy.types.Panel):
                 layout.label(text='Note: The collection are exported like StaticMesh.')
 
 
+        bfu_base_object.bfu_base_obj_ui.draw_ui(layout, obj)
+        bfu_adv_object.bfu_adv_obj_ui.draw_ui(layout, obj)
         bfu_lod.bfu_lod_ui.draw_ui(layout, obj)
         bfu_assets_references.bfu_asset_ref_ui.draw_ui(layout, obj)
 
