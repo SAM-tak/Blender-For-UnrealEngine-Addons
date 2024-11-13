@@ -52,6 +52,7 @@ from .. import bfu_assets_manager
 from .. import bfu_uv_map
 from .. import bfu_light_map
 from .. import bfu_assets_references
+from .. import bfu_collision
 
 
 class BFU_PT_BlenderForUnrealObject(bpy.types.Panel):
@@ -62,232 +63,6 @@ class BFU_PT_BlenderForUnrealObject(bpy.types.Panel):
     bl_space_type = "VIEW_3D"
     bl_region_type = "UI"
     bl_category = "Unreal Engine"
-
-
-    # Collection Properties
-    bpy.types.Collection.bfu_export_folder_name = bpy.props.StringProperty(
-        name="Sub folder name",
-        description=(
-            'The name of sub folder.' +
-            ' You can now use ../ for up one directory.'
-            ),
-        override={'LIBRARY_OVERRIDABLE'},
-        maxlen=64,
-        default="",
-        subtype='FILE_NAME'
-        )
-
-    bpy.types.Object.bfu_export_deform_only = bpy.props.BoolProperty(
-        name="Export only deform bones",
-        description=(
-            "Only write deforming bones" +
-            " (and non-deforming ones when they have deforming children)"
-            ),
-        override={'LIBRARY_OVERRIDABLE'},
-        default=True
-        )
-
-    bpy.types.Object.bfu_use_custom_export_name = bpy.props.BoolProperty(
-        name="Export with custom name",
-        description=("Specify a custom name for the exported file"),
-        override={'LIBRARY_OVERRIDABLE'},
-        default=False
-        )
-
-    bpy.types.Object.bfu_custom_export_name = bpy.props.StringProperty(
-        name="",
-        description="The name of exported file",
-        override={'LIBRARY_OVERRIDABLE'},
-        default="MyObjectExportName.fbx"
-        )
-
-    # Object Import Properties
-
-
-
-    # ImportUI
-    # https://api.unrealengine.com/INT/API/Editor/UnrealEd/Factories/UFbxImportUI/index.html
-
-    bpy.types.Object.bfu_create_physics_asset = bpy.props.BoolProperty(
-        name="Create PhysicsAsset",
-        description="If checked, create a PhysicsAsset when is imported",
-        override={'LIBRARY_OVERRIDABLE'},
-        default=True
-        )
-
-
-    # StaticMeshImportData
-    # https://api.unrealengine.com/INT/API/Editor/UnrealEd/Factories/UFbxStaticMeshImportData/index.html
-
-
-    bpy.types.Object.bfu_static_mesh_light_map_mode = bpy.props.EnumProperty(
-        name="Light Map",
-        description='Specify how the light map resolution will be generated',
-        override={'LIBRARY_OVERRIDABLE'},
-        items=[
-            ("Default",
-                "Default",
-                "Has no effect on light maps",
-                1),
-            ("CustomMap",
-                "Custom map",
-                "Set the custom light map resolution",
-                2),
-            ("SurfaceArea",
-                "Surface Area",
-                "Set light map resolution depending on the surface Area",
-                3)
-            ]
-        )
-
-    bpy.types.Object.bfu_static_mesh_custom_light_map_res = bpy.props.IntProperty(
-        name="Light Map Resolution",
-        description="This is the resolution of the light map",
-        override={'LIBRARY_OVERRIDABLE'},
-        soft_max=2048,
-        soft_min=16,
-        max=4096,  # Max for unreal
-        min=4,  # Min for unreal
-        default=64
-        )
-
-    bpy.types.Object.computedStaticMeshLightMapRes = bpy.props.FloatProperty(
-        name="Computed Light Map Resolution",
-        description="This is the computed resolution of the light map",
-        override={'LIBRARY_OVERRIDABLE'},
-        default=64.0
-        )
-
-    bpy.types.Object.bfu_static_mesh_light_map_surface_scale = bpy.props.FloatProperty(
-        name="Surface scale",
-        description="This is for resacle the surface Area value",
-        override={'LIBRARY_OVERRIDABLE'},
-        min=0.00001,  # Min for unreal
-        default=64
-        )
-
-    bpy.types.Object.bfu_static_mesh_light_map_round_power_of_two = bpy.props.BoolProperty(
-        name="Round power of 2",
-        description=(
-            "round Light Map resolution to nearest power of 2"
-            ),
-        default=True
-        )
-
-    bpy.types.Object.bfu_use_static_mesh_light_map_world_scale = bpy.props.BoolProperty(
-        name="Use world scale",
-        description=(
-            "If not that will use the object scale."
-            ),
-        override={'LIBRARY_OVERRIDABLE'},
-        default=False
-        )
-
-    bpy.types.Object.bfu_generate_light_map_uvs = bpy.props.BoolProperty(
-        name="Generate LightmapUVs",
-        description=(
-            "If checked, UVs for Lightmap will automatically be generated."
-            ),
-        override={'LIBRARY_OVERRIDABLE'},
-        default=True,
-        )
-
-    bpy.types.Object.bfu_convert_geometry_node_attribute_to_uv = bpy.props.BoolProperty(
-        name="Convert Attribute To Uv",
-        description=(
-            "convert target geometry node attribute to UV when found."
-            ),
-        override={'LIBRARY_OVERRIDABLE'},
-        default=False,
-        )
-
-    bpy.types.Object.bfu_convert_geometry_node_attribute_to_uv_name = bpy.props.StringProperty(
-        name="Attribute name",
-        description=(
-            "Name of the Attribute to convert"
-            ),
-        override={'LIBRARY_OVERRIDABLE'},
-        default="UVMap",
-        )
-
-    bpy.types.Object.bfu_use_correct_extrem_uv_scale = bpy.props.BoolProperty(
-        name=(languages.ti('correct_use_extrem_uv_scale_name')),
-        description=(languages.tt('correct_use_extrem_uv_scale_desc')),
-        override={'LIBRARY_OVERRIDABLE'},
-        default=False,
-        )
-    
-    bpy.types.Object.bfu_correct_extrem_uv_scale_step_scale = bpy.props.IntProperty(
-        name=(languages.ti('correct_extrem_uv_scale_step_scale_name')),
-        description=(languages.tt('correct_extrem_uv_scale_step_scale_desc')),
-        override={'LIBRARY_OVERRIDABLE'},
-        default=2,
-        min=1,
-        max=100,
-        )
-    
-    bpy.types.Object.bfu_correct_extrem_uv_scale_use_absolute = bpy.props.BoolProperty(
-        name=(languages.ti('correct_extrem_uv_scale_use_absolute_name')),
-        description=(languages.tt('correct_extrem_uv_scale_use_absolute_desc')),
-        override={'LIBRARY_OVERRIDABLE'},
-        default=False,
-        )
-
-    bpy.types.Object.bfu_auto_generate_collision = bpy.props.BoolProperty(
-        name="Auto Generate Collision",
-        description=(
-            "If checked, collision will automatically be generated" +
-            " (ignored if custom collision is imported or used)."
-            ),
-        override={'LIBRARY_OVERRIDABLE'},
-        default=True,
-        )
-
-
-    bpy.types.Object.bfu_collision_trace_flag = bpy.props.EnumProperty(
-        name="Collision Complexity",
-        description="Collision Trace Flag",
-        override={'LIBRARY_OVERRIDABLE'},
-        # Vania python
-        # https://docs.unrealengine.com/en-US/PythonAPI/class/CollisionTraceFlag.html
-        # C++ API
-        # https://api.unrealengine.com/INT/API/Runtime/Engine/PhysicsEngine/ECollisionTraceFlag/index.html
-        items=[
-            ("CTF_UseDefault",
-                "Project Default",
-                "Create only complex shapes (per poly)." +
-                " Use complex shapes for all scene queries" +
-                " and collision tests." +
-                " Can be used in simulation for" +
-                " static shapes only" +
-                " (i.e can be collided against but not moved" +
-                " through forces or velocity.",
-                1),
-            ("CTF_UseSimpleAndComplex",
-                "Use Simple And Complex",
-                "Use project physics settings (DefaultShapeComplexity)",
-                2),
-            ("CTF_UseSimpleAsComplex",
-                "Use Simple as Complex",
-                "Create both simple and complex shapes." +
-                " Simple shapes are used for regular scene queries" +
-                " and collision tests. Complex shape (per poly)" +
-                " is used for complex scene queries.",
-                3),
-            ("CTF_UseComplexAsSimple",
-                "Use Complex as Simple",
-                "Create only simple shapes." +
-                " Use simple shapes for all scene" +
-                " queries and collision tests.",
-                4)
-            ]
-        )
-    
-    bpy.types.Object.bfu_enable_skeletal_mesh_per_poly_collision = bpy.props.BoolProperty(
-        name="Enable Per-Poly Collision",
-        description="Enable per-polygon collision for Skeletal Mesh",
-        default=False
-    )
 
 
 
@@ -865,22 +640,7 @@ class BFU_PT_BlenderForUnrealObject(bpy.types.Panel):
 
         def get_object_global_preset_propertys():
             preset_values = [
-                'obj.bfu_export_deform_only',
-                'obj.bfu_create_physics_asset',
-                'obj.bfu_static_mesh_light_map_mode',
-                'obj.bfu_static_mesh_custom_light_map_res',
-                'obj.bfu_static_mesh_light_map_surface_scale',
-                'obj.bfu_static_mesh_light_map_round_power_of_two',
-                'obj.bfu_use_static_mesh_light_map_world_scale',
-                'obj.bfu_generate_light_map_uvs',
-                'obj.bfu_convert_geometry_node_attribute_to_uv',
-                'obj.bfu_convert_geometry_node_attribute_to_uv_name',
-                'obj.bfu_use_correct_extrem_uv_scale',
-                'obj.bfu_correct_extrem_uv_scale_step_scale',
-                'obj.bfu_correct_extrem_uv_scale_use_absolute',
-                'obj.bfu_auto_generate_collision',
-                'obj.bfu_collision_trace_flag',
-                'obj.bfu_enable_skeletal_mesh_per_poly_collision',
+
                 'obj.bfu_anim_action_export_enum',
                 'obj.bfu_prefix_name_to_export',
                 'obj.bfu_anim_action_start_end_time_enum',
@@ -943,6 +703,7 @@ class BFU_PT_BlenderForUnrealObject(bpy.types.Panel):
             preset_values += bfu_uv_map.bfu_uv_map_props.get_preset_values()
             preset_values += bfu_light_map.bfu_light_map_props.get_preset_values()
             preset_values += bfu_assets_references.bfu_asset_ref_props.get_preset_values()
+            preset_values += bfu_collision.bfu_collision_ui_and_props.get_preset_values()
             return preset_values
 
         # Common variable used for all preset values

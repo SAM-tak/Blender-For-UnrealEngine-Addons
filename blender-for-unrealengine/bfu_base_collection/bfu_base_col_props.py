@@ -28,8 +28,6 @@ from .. import bbpl
 
 def get_preset_values():
     preset_values = [
-            'obj.bfu_export_type',
-            'obj.bfu_export_folder_name',
         ]
     return preset_values
 
@@ -65,10 +63,25 @@ def register():
         override={'LIBRARY_OVERRIDABLE'},
         default=0
         )
+    
+    bpy.types.Collection.bfu_export_folder_name = bpy.props.StringProperty(
+        name="Sub folder name",
+        description=(
+            'The name of sub folder.' +
+            ' You can now use ../ for up one directory.'
+            ),
+        override={'LIBRARY_OVERRIDABLE'},
+        maxlen=64,
+        default="",
+        subtype='FILE_NAME'
+        )
+
 
 def unregister():
     for cls in reversed(classes):
         bpy.utils.unregister_class(cls)
+
+    del bpy.types.Scene.bfu_export_folder_name
 
     del bpy.types.Scene.bfu_active_collection_asset_list
     del bpy.types.Scene.bfu_collection_asset_list

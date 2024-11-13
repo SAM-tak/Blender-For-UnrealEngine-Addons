@@ -30,6 +30,8 @@ def get_preset_values():
     preset_values = [
             'obj.bfu_export_type',
             'obj.bfu_export_folder_name',
+            'obj.bfu_use_custom_export_name',
+            'obj.bfu_custom_export_name',       
         ]
     return preset_values
 
@@ -81,10 +83,27 @@ def register():
         default="",
         subtype='FILE_NAME'
         )
+    
+    bpy.types.Object.bfu_use_custom_export_name = bpy.props.BoolProperty(
+        name="Export with custom name",
+        description=("Specify a custom name for the exported file"),
+        override={'LIBRARY_OVERRIDABLE'},
+        default=False
+        )
+
+    bpy.types.Object.bfu_custom_export_name = bpy.props.StringProperty(
+        name="",
+        description="The name of exported file",
+        override={'LIBRARY_OVERRIDABLE'},
+        default="MyObjectExportName.fbx"
+        )
 
 def unregister():
     for cls in reversed(classes):
         bpy.utils.unregister_class(cls)
+
+    del bpy.types.Object.bfu_custom_export_name
+    del bpy.types.Object.bfu_use_custom_export_name
 
     del bpy.types.Object.bfu_export_folder_name
     del bpy.types.Object.bfu_export_type

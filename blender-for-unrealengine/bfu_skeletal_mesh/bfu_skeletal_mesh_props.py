@@ -27,6 +27,7 @@ from .. import bbpl
 
 def get_preset_values():
     preset_values = [
+        'obj.bfu_export_deform_only',
         'obj.bfu_export_skeletal_mesh_as_static_mesh',
         'obj.bfu_create_sub_folder_with_skeletal_mesh_name'
         ]
@@ -43,6 +44,16 @@ classes = (
 def register():
     for cls in classes:
         bpy.utils.register_class(cls)
+
+    bpy.types.Object.bfu_export_deform_only = bpy.props.BoolProperty(
+        name="Export only deform bones",
+        description=(
+            "Only write deforming bones" +
+            " (and non-deforming ones when they have deforming children)"
+            ),
+        override={'LIBRARY_OVERRIDABLE'},
+        default=True
+        )
 
     bpy.types.Object.bfu_export_skeletal_mesh_as_static_mesh = bpy.props.BoolProperty(
         name="Export as Static Mesh",
@@ -72,3 +83,5 @@ def unregister():
     
     del bpy.types.Object.bfu_create_sub_folder_with_skeletal_mesh_name
     del bpy.types.Object.bfu_export_skeletal_mesh_as_static_mesh
+
+    del bpy.types.Object.bfu_export_deform_only
