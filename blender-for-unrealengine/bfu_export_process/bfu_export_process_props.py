@@ -24,8 +24,6 @@ from .. import bfu_ui
 from .. import bbpl
 
 
-
-
 def get_preset_values():
     preset_values = [
         ]
