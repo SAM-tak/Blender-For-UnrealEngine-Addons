@@ -666,11 +666,7 @@ class BFU_PT_Export(bpy.types.Panel):
         )
 
     def draw(self, context):
-        scene = context.scene
-        scene = context.scene
-        addon_prefs = bfu_basics.GetAddonPrefs()
-
-        # Categories :
+        
         layout = self.layout
 
         # Presets
@@ -682,131 +678,10 @@ class BFU_PT_Export(bpy.types.Panel):
             text='',
             icon='REMOVE').remove_active = True
 
-        scene.bfu_nomenclature_properties_expanded.draw(layout)
-        if scene.bfu_nomenclature_properties_expanded.is_expend():
-
-            # Prefix
-            propsPrefix = self.layout.row()
-            propsPrefix = propsPrefix.column()
-            propsPrefix.prop(scene, 'bfu_static_mesh_prefix_export_name', icon='OBJECT_DATA')
-            propsPrefix.prop(scene, 'bfu_skeletal_mesh_prefix_export_name', icon='OBJECT_DATA')
-            propsPrefix.prop(scene, 'bfu_skeleton_prefix_export_name', icon='OBJECT_DATA')
-            propsPrefix.prop(scene, 'bfu_alembic_animation_prefix_export_name', icon='OBJECT_DATA')
-            propsPrefix.prop(scene, 'bfu_groom_simulation_prefix_export_name', icon='OBJECT_DATA')
-            propsPrefix.prop(scene, 'bfu_anim_prefix_export_name', icon='OBJECT_DATA')
-            propsPrefix.prop(scene, 'bfu_pose_prefix_export_name', icon='OBJECT_DATA')
-            propsPrefix.prop(scene, 'bfu_camera_prefix_export_name', icon='OBJECT_DATA')
-            propsPrefix.prop(scene, 'bfu_spline_prefix_export_name', icon='OBJECT_DATA')
-
-            # Sub folder
-            propsSub = self.layout.row()
-            propsSub = propsSub.column()
-            propsSub.prop(scene, 'bfu_anim_subfolder_name', icon='FILE_FOLDER')
-
-            if addon_prefs.useGeneratedScripts:
-                bfu_unreal_import_module = propsSub.column()
-                bfu_unreal_import_module.prop(
-                    scene,
-                    'bfu_unreal_import_module',
-                    icon='FILE_FOLDER')
-                bfu_unreal_import_location = propsSub.column()
-                bfu_unreal_import_location.prop(
-                    scene,
-                    'bfu_unreal_import_location',
-                    icon='FILE_FOLDER')
-
-            # File path
-            filePath = self.layout.row()
-            filePath = filePath.column()
-            filePath.prop(scene, 'bfu_export_static_file_path')
-            filePath.prop(scene, 'bfu_export_skeletal_file_path')
-            filePath.prop(scene, 'bfu_export_alembic_file_path')
-            filePath.prop(scene, 'bfu_export_groom_file_path')
-            filePath.prop(scene, 'bfu_export_camera_file_path')
-            filePath.prop(scene, 'bfu_export_spline_file_path')
-            filePath.prop(scene, 'bfu_export_other_file_path')
-
-            # File name
-            fileName = self.layout.row()
-            fileName = fileName.column()
-            fileName.prop(scene, 'bfu_file_export_log_name', icon='FILE')
-            if addon_prefs.useGeneratedScripts:
-                fileName.prop(
-                    scene,
-                    'bfu_file_import_asset_script_name',
-                    icon='FILE')
-                fileName.prop(
-                    scene,
-                    'bfu_file_import_sequencer_script_name',
-                    icon='FILE')
-
-        scene.bfu_export_filter_properties_expanded.draw(layout)
-        if scene.bfu_export_filter_properties_expanded.is_expend():
-
-            # Assets
-            row = layout.row()
-            AssetsCol = row.column()
-            AssetsCol.label(text="Asset types to export", icon='PACKAGE')
-            AssetsCol.prop(scene, 'static_export')
-            AssetsCol.prop(scene, 'static_collection_export')
-            AssetsCol.prop(scene, 'skeletal_export')
-            AssetsCol.prop(scene, 'anin_export')
-            AssetsCol.prop(scene, 'alembic_export')
-            AssetsCol.prop(scene, 'groom_simulation_export')
-            AssetsCol.prop(scene, 'camera_export')
-            AssetsCol.prop(scene, 'spline_export')
-            layout.separator()
-
-            # Additional file
-            FileCol = row.column()
-            FileCol.label(text="Additional file", icon='PACKAGE')
-            FileCol.prop(scene, 'text_ExportLog')
-            FileCol.prop(scene, 'text_ImportAssetScript')
-            FileCol.prop(scene, 'text_ImportSequenceScript')
-            if addon_prefs.useGeneratedScripts:
-                FileCol.prop(scene, 'text_AdditionalData')
-
-            # exportProperty
-            export_by_select = layout.row()
-            export_by_select.prop(scene, 'bfu_export_selection_filter')
-
-        scene.bfu_export_process_properties_expanded.draw(layout)
-        if scene.bfu_export_process_properties_expanded.is_expend():
-
-            # Feedback info :
-            final_asset_cache = bfu_cached_asset_list.GetfinalAssetCache()
-            final_asset_list_to_export = final_asset_cache.GetFinalAssetList()
-            AssetNum = len(final_asset_list_to_export)
-            AssetInfo = layout.row().box().split(factor=0.75)
-            AssetFeedback = str(AssetNum) + " Asset(s) will be exported."
-            AssetInfo.label(text=AssetFeedback, icon='INFO')
-            AssetInfo.operator("object.showasset")
-
-            # Export button :
-            checkButton = layout.row(align=True)
-            checkButton.operator("object.checkpotentialerror", icon='FILE_TICK')
-            checkButton.operator("object.openpotentialerror", icon='LOOP_BACK', text="")
-
-            exportButton = layout.row()
-            exportButton.scale_y = 2.0
-            exportButton.operator("object.exportforunreal", icon='EXPORT')
-
-        scene.bfu_script_tool_expanded.draw(layout)
-        if scene.bfu_script_tool_expanded.is_expend():
-            if addon_prefs.useGeneratedScripts:
-                copyButton = layout.row()
-                copyButton.operator("object.copy_importassetscript_command")
-                copyButton.operator("object.copy_importsequencerscript_command")
-                layout.label(text="Click on one of the buttons to copy the import command.", icon='INFO')
-                layout.label(text="Then paste it into the cmd console of unreal.")
-                layout.label(text="You need activate python plugins in Unreal Engine.")
-
-            else:
-                layout.label(text='(Generated scripts are deactivated.)')
-
-        bfu_export_nomenclature.bfu_export_nomenclature_ui.draw_ui(layout)
-        bfu_export_filter.bfu_export_filter_ui.draw_ui(layout)
-        bfu_export_process.bfu_export_process_ui.draw_ui(layout)
+        # Export sections
+        bfu_export_nomenclature.bfu_export_nomenclature_ui.draw_ui(layout, context)
+        bfu_export_filter.bfu_export_filter_ui.draw_ui(layout, context)
+        bfu_export_process.bfu_export_process_ui.draw_ui(layout, context)
 
 # -------------------------------------------------------------------
 #   Register & Unregister

@@ -58,5 +58,5 @@ def unregister():
     for cls in reversed(classes):
         bpy.utils.unregister_class(cls)
 
-    del bpy.types.Scene.bfu_export_with_meta_data
+    del bpy.types.Object.bfu_export_with_meta_data
     del bpy.types.Scene.bfu_object_advanced_properties_expanded

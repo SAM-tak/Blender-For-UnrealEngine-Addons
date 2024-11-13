@@ -24,5 +24,5 @@ from .. import bfu_ui
 from .. import bbpl
 
 
-def draw_ui(layout: bpy.types.UILayout):
-    pass
+def draw_ui(layout: bpy.types.UILayout, context: bpy.types.Context):
+    scene = context.scene

@@ -22,7 +22,43 @@ from .. import bfu_basics
 from .. import bfu_utils
 from .. import bfu_ui
 from .. import bbpl
+from .. import bfu_cached_asset_list
 
 
-def draw_ui(layout: bpy.types.UILayout):
-    pass
+def draw_ui(layout: bpy.types.UILayout, context: bpy.types.Context):
+    scene = context.scene
+    addon_prefs = bfu_basics.GetAddonPrefs()
+
+    scene.bfu_export_process_properties_expanded.draw(layout)
+    if scene.bfu_export_process_properties_expanded.is_expend():
+
+        # Feedback info :
+        final_asset_cache = bfu_cached_asset_list.GetfinalAssetCache()
+        final_asset_list_to_export = final_asset_cache.GetFinalAssetList()
+        AssetNum = len(final_asset_list_to_export)
+        AssetInfo = layout.row().box().split(factor=0.75)
+        AssetFeedback = str(AssetNum) + " Asset(s) will be exported."
+        AssetInfo.label(text=AssetFeedback, icon='INFO')
+        AssetInfo.operator("object.showasset")
+
+        # Export button :
+        checkButton = layout.row(align=True)
+        checkButton.operator("object.checkpotentialerror", icon='FILE_TICK')
+        checkButton.operator("object.openpotentialerror", icon='LOOP_BACK', text="")
+
+        exportButton = layout.row()
+        exportButton.scale_y = 2.0
+        exportButton.operator("object.exportforunreal", icon='EXPORT')
+
+    scene.bfu_script_tool_expanded.draw(layout)
+    if scene.bfu_script_tool_expanded.is_expend():
+        if addon_prefs.useGeneratedScripts:
+            copyButton = layout.row()
+            copyButton.operator("object.copy_importassetscript_command")
+            copyButton.operator("object.copy_importsequencerscript_command")
+            layout.label(text="Click on one of the buttons to copy the import command.", icon='INFO')
+            layout.label(text="Then paste it into the cmd console of unreal.")
+            layout.label(text="You need activate python plugins in Unreal Engine.")
+
+        else:
+            layout.label(text='(Generated scripts are deactivated.)')
