@@ -1,13 +1,9 @@
 import bpy
-from .. import bfu_basics
-from .. import bfu_utils
-from .. import bfu_ui
 from .. import bfu_camera
 from .. import bfu_spline
 from .. import bfu_collision
 from .. import bfu_socket
 from .. import bbpl
-
 
 class BFU_PT_BlenderForUnrealTool(bpy.types.Panel):
     # Tool panel
@@ -18,22 +14,10 @@ class BFU_PT_BlenderForUnrealTool(bpy.types.Panel):
     bl_region_type = "UI"
     bl_category = "Unreal Engine"
 
-
-
-
-
-
-
-
     def draw(self, context):
 
-        
         layout = self.layout
         scene = bpy.context.scene
-
-
-        
-        
 
         bfu_camera.bfu_camera_ui_and_props.draw_ui_scene_camera(layout)
         bfu_spline.bfu_spline_ui_and_props.draw_ui_scene_spline(layout)
