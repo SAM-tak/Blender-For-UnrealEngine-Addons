@@ -28,6 +28,7 @@ from .. import bbpl
 
 def get_preset_values():
     preset_values = [
+        'obj.bfu_disable_free_scale_animation',
         'obj.bfu_sample_anim_for_export',
         'obj.bfu_simplify_anim_for_export',
     ]

@@ -64,160 +64,7 @@ class BFU_PT_BlenderForUnrealObject(bpy.types.Panel):
     bl_region_type = "UI"
     bl_category = "Unreal Engine"
 
-
-    bpy.types.Object.bfu_export_global_scale = bpy.props.FloatProperty(
-        name="Global scale",
-        description="Scale, change is not recommended with SkeletalMesh.",
-        override={'LIBRARY_OVERRIDABLE'},
-        default=1.0
-        )
-
-    bpy.types.Object.bfu_override_procedure_preset = bpy.props.BoolProperty(
-        name="Override Export Preset",
-        description="If true override the export precedure preset.",
-        override={'LIBRARY_OVERRIDABLE'},
-        default=False,
-        )
-
-    bpy.types.Object.bfu_export_use_space_transform = bpy.props.BoolProperty(
-        name="Use Space Transform",
-        default=True,
-        )
-
-    bpy.types.Object.bfu_export_axis_forward = bpy.props.EnumProperty(
-        name="Axis Forward",
-        override={'LIBRARY_OVERRIDABLE'},
-        items=[
-            ('X', "X Forward", ""),
-            ('Y', "Y Forward", ""),
-            ('Z', "Z Forward", ""),
-            ('-X', "-X Forward", ""),
-            ('-Y', "-Y Forward", ""),
-            ('-Z', "-Z Forward", ""),
-            ],
-        default='-Z',
-        )
-
-    bpy.types.Object.bfu_export_axis_up = bpy.props.EnumProperty(
-        name="Axis Up",
-        override={'LIBRARY_OVERRIDABLE'},
-        items=[
-            ('X', "X Up", ""),
-            ('Y', "Y Up", ""),
-            ('Z', "Z Up", ""),
-            ('-X', "-X Up", ""),
-            ('-Y', "-Y Up", ""),
-            ('-Z', "-Z Up", ""),
-            ],
-        default='Y',
-        )
-
-    bpy.types.Object.bfu_export_primary_bone_axis = bpy.props.EnumProperty(
-        name="Primary Axis Bone",
-        override={'LIBRARY_OVERRIDABLE'},
-        items=[
-            ('X', "X", ""),
-            ('Y', "Y", ""),
-            ('Z', "Z", ""),
-            ('-X', "-X", ""),
-            ('-Y', "-Y", ""),
-            ('-Z', "-Z", ""),
-            ],
-        default='Y',
-        )
-
-    bpy.types.Object.bfu_export_secondary_bone_axis = bpy.props.EnumProperty(
-        name="Secondary Axis Bone",
-        override={'LIBRARY_OVERRIDABLE'},
-        items=[
-            ('X', "X", ""),
-            ('Y', "Y", ""),
-            ('Z', "Z", ""),
-            ('-X', "-X", ""),
-            ('-Y', "-Y", ""),
-            ('-Z', "-Z", ""),
-            ],
-        default='X',
-        )
-
-    bpy.types.Object.bfu_export_animation_without_mesh = bpy.props.BoolProperty(
-        name="Export animation without mesh",
-        description=(
-            "If checked, When exporting animation, do not include mesh data in the FBX file."
-            ),
-        override={'LIBRARY_OVERRIDABLE'},
-        default=True
-        )
-
-    bpy.types.Object.bfu_mirror_symmetry_right_side_bones = bpy.props.BoolProperty(
-        name="Revert direction of symmetry right side bones",
-        description=(
-            "If checked, The right-side bones will be mirrored for mirroring physic object in UE PhysicAsset Editor."
-            ),
-        override={'LIBRARY_OVERRIDABLE'},
-        default=True
-        )
-
-    bpy.types.Object.bfu_use_ue_mannequin_bone_alignment = bpy.props.BoolProperty(
-        name="Apply bone alignments similar to UE Mannequin.",
-        description=(
-            "If checked, similar to the UE Mannequin, the leg bones will be oriented upwards, and the pelvis and feet bone will be aligned facing upwards during export."
-        ),
-        override={'LIBRARY_OVERRIDABLE'},
-        default=False
-    )
-
-    bpy.types.Object.bfu_move_to_center_for_export = bpy.props.BoolProperty(
-        name="Move to center",
-        description=(
-            "If true use object origin else use scene origin." +
-            " | If true the mesh will be moved to the center" +
-            " of the scene for export." +
-            " (This is used so that the origin of the fbx file" +
-            " is the same as the mesh in blender)"
-            ),
-        override={'LIBRARY_OVERRIDABLE'},
-        default=True
-        )
-
-    bpy.types.Object.bfu_rotate_to_zero_for_export = bpy.props.BoolProperty(
-        name="Rotate to zero",
-        description=(
-            "If true use object rotation else use scene rotation." +
-            " | If true the mesh will use zero rotation for export."
-            ),
-        override={'LIBRARY_OVERRIDABLE'},
-        default=False
-        )
-
-
-
-
-
-    bpy.types.Object.bfu_additional_location_for_export = bpy.props.FloatVectorProperty(
-        name="Additional location",
-        description=(
-            "This will add a additional absolute location to the mesh"
-            ),
-        override={'LIBRARY_OVERRIDABLE'},
-        subtype="TRANSLATION",
-        default=(0, 0, 0)
-        )
-
-    bpy.types.Object.bfu_additional_rotation_for_export = bpy.props.FloatVectorProperty(
-        name="Additional rotation",
-        description=(
-            "This will add a additional absolute rotation to the mesh"
-            ),
-        override={'LIBRARY_OVERRIDABLE'},
-        subtype="EULER",
-        default=(0, 0, 0)
-        )
-
     # Scene and global
-
-
-
     class BFU_OT_OpenDocumentationPage(bpy.types.Operator):
         bl_label = "Documentation"
         bl_idname = "object.bfu_open_documentation_page"
@@ -230,10 +77,7 @@ class BFU_PT_BlenderForUnrealObject(bpy.types.Panel):
                 )
             return {'FINISHED'}
 
-
-
     # Animation :
-
     class BFU_UL_ActionExportTarget(bpy.types.UIList):
         def draw_item(self, context, layout, data, item, icon, active_data, active_property, index):
             action_is_valid = False
@@ -366,26 +210,7 @@ class BFU_PT_BlenderForUnrealObject(bpy.types.Panel):
         preset_menu = 'BFU_MT_ObjectGlobalPropertiesPresets'
 
         def get_object_global_preset_propertys():
-            preset_values = [
-                'obj.bfu_export_global_scale',
-                'obj.bfu_override_procedure_preset',
-                'obj.bfu_export_use_space_transform',
-                'obj.bfu_export_axis_forward',
-                'obj.bfu_export_axis_up',
-                'obj.bfu_export_with_meta_data',
-                'obj.bfu_export_axis_forward',
-                'obj.bfu_export_axis_up',
-                'obj.bfu_export_primary_bone_axis',
-                'obj.bfu_export_secondary_bone_axis',
-                'obj.bfu_export_animation_without_mesh',
-                'obj.bfu_mirror_symmetry_right_side_bones',
-                'obj.bfu_use_ue_mannequin_bone_alignment',
-                'obj.bfu_disable_free_scale_animation',
-                'obj.bfu_move_to_center_for_export',
-                'obj.bfu_rotate_to_zero_for_export',
-                'obj.bfu_additional_location_for_export',
-                'obj.bfu_additional_rotation_for_export',
-                ]
+            preset_values = []
             preset_values += bfu_base_object.bfu_base_obj_props.get_preset_values()
             preset_values += bfu_adv_object.bfu_adv_obj_props.get_preset_values()
             preset_values += bfu_base_collection.bfu_base_col_props.get_preset_values()

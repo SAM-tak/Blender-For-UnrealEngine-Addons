@@ -29,8 +29,11 @@ def get_preset_values():
     preset_values = [
         'obj.bfu_export_deform_only',
         'obj.bfu_export_skeletal_mesh_as_static_mesh',
-        'obj.bfu_create_sub_folder_with_skeletal_mesh_name'
-        ]
+        'obj.bfu_create_sub_folder_with_skeletal_mesh_name',
+        'obj.bfu_export_animation_without_mesh',
+        'obj.bfu_mirror_symmetry_right_side_bones',
+        'obj.bfu_use_ue_mannequin_bone_alignment',
+    ]
     return preset_values
 
 # -------------------------------------------------------------------
@@ -44,6 +47,9 @@ classes = (
 def register():
     for cls in classes:
         bpy.utils.register_class(cls)
+
+    bpy.types.Scene.bfu_skeleton_properties_expanded = bbpl.blender_layout.layout_accordion.add_ui_accordion(name="Skeleton")
+    bpy.types.Scene.bfu_modular_skeletal_mesh_properties_expanded = bbpl.blender_layout.layout_accordion.add_ui_accordion(name="Modular Skeletal Mesh")
 
     bpy.types.Object.bfu_export_deform_only = bpy.props.BoolProperty(
         name="Export only deform bones",
@@ -69,19 +75,46 @@ def register():
         default=True
         )
 
-    bpy.types.Scene.bfu_skeleton_properties_expanded = bbpl.blender_layout.layout_accordion.add_ui_accordion(name="Skeleton")
-    bpy.types.Scene.bfu_modular_skeletal_mesh_properties_expanded = bbpl.blender_layout.layout_accordion.add_ui_accordion(name="Modular Skeletal Mesh")
+    bpy.types.Object.bfu_export_animation_without_mesh = bpy.props.BoolProperty(
+        name="Export animation without mesh",
+        description=(
+            "If checked, When exporting animation, do not include mesh data in the FBX file."
+            ),
+        override={'LIBRARY_OVERRIDABLE'},
+        default=True
+        )
 
+    bpy.types.Object.bfu_mirror_symmetry_right_side_bones = bpy.props.BoolProperty(
+        name="Revert direction of symmetry right side bones",
+        description=(
+            "If checked, The right-side bones will be mirrored for mirroring physic object in UE PhysicAsset Editor."
+            ),
+        override={'LIBRARY_OVERRIDABLE'},
+        default=True
+        )
+
+    bpy.types.Object.bfu_use_ue_mannequin_bone_alignment = bpy.props.BoolProperty(
+        name="Apply bone alignments similar to UE Mannequin.",
+        description=(
+            "If checked, similar to the UE Mannequin, the leg bones will be oriented upwards, and the pelvis and feet bone will be aligned facing upwards during export."
+        ),
+        override={'LIBRARY_OVERRIDABLE'},
+        default=False
+    )
 
 
 def unregister():
     for cls in reversed(classes):
         bpy.utils.unregister_class(cls)
 
-    del bpy.types.Scene.bfu_modular_skeletal_mesh_properties_expanded
-    del bpy.types.Scene.bfu_skeleton_properties_expanded
+    del bpy.types.Object.bfu_use_ue_mannequin_bone_alignment
+    del bpy.types.Object.bfu_mirror_symmetry_right_side_bones
+    del bpy.types.Object.bfu_export_animation_without_mesh
     
     del bpy.types.Object.bfu_create_sub_folder_with_skeletal_mesh_name
     del bpy.types.Object.bfu_export_skeletal_mesh_as_static_mesh
 
     del bpy.types.Object.bfu_export_deform_only
+
+    del bpy.types.Scene.bfu_modular_skeletal_mesh_properties_expanded
+    del bpy.types.Scene.bfu_skeleton_properties_expanded
