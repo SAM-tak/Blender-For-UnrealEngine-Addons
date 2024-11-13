@@ -16,26 +16,19 @@
 #
 # ======================= END GPL LICENSE BLOCK =============================
 
-
 import bpy
-from .. import bfu_basics
-from .. import bfu_utils
-from .. import bfu_ui
-from .. import bbpl
+import importlib
 
+from . import bfu_anim_base_props
+from . import bfu_anim_base_ui
+from . import bfu_anim_base_utils
 
-
-
-def get_preset_values():
-    preset_values = [
-            'obj.bfu_export_type',
-            'obj.bfu_export_folder_name',
-        ]
-    return preset_values
-
-# -------------------------------------------------------------------
-#   Register & Unregister
-# -------------------------------------------------------------------
+if "bfu_anim_base_props" in locals():
+    importlib.reload(bfu_anim_base_props)
+if "bfu_anim_base_ui" in locals():
+    importlib.reload(bfu_anim_base_ui)
+if "bfu_anim_base_utils" in locals():
+    importlib.reload(bfu_anim_base_utils)
 
 classes = (
 )
@@ -45,10 +38,10 @@ def register():
     for cls in classes:
         bpy.utils.register_class(cls)
 
-    bpy.types.Scene.bfu_collection_properties_expanded = bbpl.blender_layout.layout_accordion.add_ui_accordion(name="Collection Properties")
+    bfu_anim_base_props.register()
 
 def unregister():
     for cls in reversed(classes):
         bpy.utils.unregister_class(cls)
 
-    del bpy.types.Scene.bfu_collection_properties_expanded
+    bfu_anim_base_props.unregister()

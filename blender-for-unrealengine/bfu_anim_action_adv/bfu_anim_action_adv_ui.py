@@ -24,31 +24,23 @@ from .. import bfu_ui
 from .. import bbpl
 
 
+def draw_ui(layout: bpy.types.UILayout, obj: bpy.types.Object):
 
+    if obj is None:
+        return
+    
+    scene = bpy.context.scene 
+    addon_prefs = bfu_basics.GetAddonPrefs()
 
-def get_preset_values():
-    preset_values = [
-            'obj.bfu_export_type',
-            'obj.bfu_export_folder_name',
-        ]
-    return preset_values
-
-# -------------------------------------------------------------------
-#   Register & Unregister
-# -------------------------------------------------------------------
-
-classes = (
-)
-
-
-def register():
-    for cls in classes:
-        bpy.utils.register_class(cls)
-
-    bpy.types.Scene.bfu_collection_properties_expanded = bbpl.blender_layout.layout_accordion.add_ui_accordion(name="Collection Properties")
-
-def unregister():
-    for cls in reversed(classes):
-        bpy.utils.unregister_class(cls)
-
-    del bpy.types.Scene.bfu_collection_properties_expanded
+    # Hide filters
+    if obj is None:
+        return
+    if bfu_utils.GetExportAsProxy(obj):
+        return
+    if obj.bfu_export_type != "export_recursive":
+        return
+    
+    if bfu_ui.bfu_ui_utils.DisplayPropertyFilter("OBJECT", "GENERAL"):
+        scene.bfu_object_advanced_properties_expanded.draw(layout)
+        if scene.bfu_object_advanced_properties_expanded.is_expend():
+            pass

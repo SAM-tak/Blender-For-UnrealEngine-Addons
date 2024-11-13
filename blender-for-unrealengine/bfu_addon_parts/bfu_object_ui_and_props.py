@@ -42,6 +42,11 @@ from .. import bfu_static_mesh
 from .. import bfu_skeletal_mesh
 from .. import bfu_lod
 from .. import bfu_alembic_animation
+from .. import bfu_anim_base
+from .. import bfu_anim_action
+from .. import bfu_anim_action_adv
+from .. import bfu_anim_nla
+from .. import bfu_anim_nla_adv
 from .. import bfu_groom
 from .. import bfu_assets_manager
 from .. import bfu_uv_map
@@ -930,6 +935,11 @@ class BFU_PT_BlenderForUnrealObject(bpy.types.Panel):
             preset_values += bfu_static_mesh.bfu_static_mesh_props.get_preset_values()
             preset_values += bfu_skeletal_mesh.bfu_skeletal_mesh_props.get_preset_values()
             preset_values += bfu_alembic_animation.bfu_alembic_animation_props.get_preset_values()
+            preset_values += bfu_anim_base.bfu_anim_base_props.get_preset_values()
+            preset_values += bfu_anim_action.bfu_anim_action_props.get_preset_values()
+            preset_values += bfu_anim_action_adv.bfu_anim_action_adv_props.get_preset_values()
+            preset_values += bfu_anim_nla.bfu_anim_nla_props.get_preset_values()
+            preset_values += bfu_anim_nla_adv.bfu_anim_nla_adv_props.get_preset_values()
             preset_values += bfu_vertex_color.bfu_vertex_color_props.get_preset_values()
             preset_values += bfu_lod.bfu_lod_props.get_preset_values()
             preset_values += bfu_uv_map.bfu_uv_map_props.get_preset_values()
@@ -1466,6 +1476,13 @@ class BFU_PT_BlenderForUnrealObject(bpy.types.Panel):
         bfu_uv_map.bfu_uv_map_ui.draw_ui(layout, obj)
         bfu_light_map.bfu_light_map_ui.draw_ui(layout, obj)
         bfu_assets_references.bfu_asset_ref_ui.draw_ui(layout, obj)
+
+        # Animations
+        bfu_anim_base.bfu_anim_base_ui.draw_ui(layout, obj)
+        bfu_anim_action.bfu_anim_action_ui.draw_ui(layout, obj)
+        bfu_anim_action_adv.bfu_anim_action_adv_ui.draw_ui(layout, obj)
+        bfu_anim_nla.bfu_anim_nla_ui.draw_ui(layout, obj)
+        bfu_anim_nla_adv.bfu_anim_nla_adv_ui.draw_ui(layout, obj)
 
 class BFU_OT_SceneCollectionExport(bpy.types.PropertyGroup):
     name: bpy.props.StringProperty(name="collection data name", default="Unknown", override={'LIBRARY_OVERRIDABLE'})

@@ -29,16 +29,6 @@ def register():
         bpy.utils.register_class(cls)
 
 
-
-
-    bpy.types.Scene.bfu_animation_action_properties_expanded = bbpl.blender_layout.layout_accordion.add_ui_accordion(name="Actions Properties")
-    bpy.types.Scene.bfu_animation_action_advanced_properties_expanded = bbpl.blender_layout.layout_accordion.add_ui_accordion(name="Actions Advanced Properties")
-    bpy.types.Scene.bfu_animation_nla_properties_expanded = bbpl.blender_layout.layout_accordion.add_ui_accordion(name="NLA Properties")
-    bpy.types.Scene.bfu_animation_nla_advanced_properties_expanded = bbpl.blender_layout.layout_accordion.add_ui_accordion(name="NLA Advanced Properties")
-    bpy.types.Scene.bfu_animation_advanced_properties_expanded = bbpl.blender_layout.layout_accordion.add_ui_accordion(name="Animation Advanced Properties")
-
-    bpy.types.Scene.bfu_collection_properties_expanded = bbpl.blender_layout.layout_accordion.add_ui_accordion(name="Collection Properties")
-    bpy.types.Scene.bfu_collision_expanded = bbpl.blender_layout.layout_accordion.add_ui_accordion(name="Collision")
     bpy.types.Scene.bfu_socket_expanded = bbpl.blender_layout.layout_accordion.add_ui_accordion(name="Socket")
     
 
@@ -75,17 +65,6 @@ def unregister():
     for cls in reversed(classes):
         bpy.utils.unregister_class(cls)
 
-
-
-    del bpy.types.Scene.bfu_animation_action_properties_expanded
-    del bpy.types.Scene.bfu_animation_action_advanced_properties_expanded
-    del bpy.types.Scene.bfu_animation_nla_properties_expanded
-    del bpy.types.Scene.bfu_animation_nla_advanced_properties_expanded
-    del bpy.types.Scene.bfu_animation_advanced_properties_expanded
-
-    del bpy.types.Scene.bfu_collection_properties_expanded
-
-    del bpy.types.Scene.bfu_collision_expanded
     
     del bpy.types.Scene.bfu_socket_expanded
     

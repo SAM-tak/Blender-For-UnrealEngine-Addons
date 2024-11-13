@@ -135,8 +135,8 @@ class BFU_OT_ToggleCollisionVisibility(bpy.types.Operator):
 def draw_ui_scene_collision(layout: bpy.types.UILayout):
     #@TODO Move in bfu_collision_ui.py
     scene = bpy.context.scene
-    scene.bfu_collision_expanded.draw(layout)
-    if scene.bfu_collision_expanded.is_expend():
+    scene.bfu_tools_collision_properties_expanded.draw(layout)
+    if scene.bfu_tools_collision_properties_expanded.is_expend():
 
         # Draw user tips and check can use buttons
         ready_for_convert_collider = False
@@ -184,7 +184,14 @@ def register():
     for cls in classes:
         bpy.utils.register_class(cls)
 
+    bpy.types.Scene.bfu_object_collision_properties_expanded = bbpl.blender_layout.layout_accordion.add_ui_accordion(name="Collision")
+    bpy.types.Scene.bfu_tools_collision_properties_expanded = bbpl.blender_layout.layout_accordion.add_ui_accordion(name="Collision")
 
 def unregister():
     for cls in reversed(classes):
         bpy.utils.unregister_class(cls)
+
+
+
+    del bpy.types.Scene.bfu_tools_collision_properties_expanded
+    del bpy.types.Scene.bfu_object_collision_properties_expanded

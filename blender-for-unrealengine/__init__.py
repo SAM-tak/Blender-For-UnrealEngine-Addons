@@ -42,6 +42,11 @@ from . import bfu_base_collection
 from . import bfu_static_mesh
 from . import bfu_skeletal_mesh
 from . import bfu_alembic_animation
+from . import bfu_anim_base
+from . import bfu_anim_action
+from . import bfu_anim_action_adv
+from . import bfu_anim_nla
+from . import bfu_anim_nla_adv
 from . import bfu_groom
 from . import bfu_camera
 from . import bfu_spline
@@ -95,6 +100,16 @@ if "bfu_skeletal_mesh" in locals():
     importlib.reload(bfu_skeletal_mesh)
 if "bfu_alembic_animation" in locals():
     importlib.reload(bfu_alembic_animation)
+if "bfu_anim_base" in locals():
+    importlib.reload(bfu_anim_base)
+if "bfu_anim_action" in locals():
+    importlib.reload(bfu_anim_action)
+if "bfu_anim_action_adv" in locals():
+    importlib.reload(bfu_anim_action_adv)
+if "bfu_anim_nla" in locals():
+    importlib.reload(bfu_anim_nla)
+if "bfu_anim_nla_adv" in locals():
+    importlib.reload(bfu_anim_nla_adv)
 if "bfu_groom" in locals():
     importlib.reload(bfu_groom)
 if "bfu_camera" in locals():
@@ -181,6 +196,11 @@ def register():
     bfu_static_mesh.register()
     bfu_skeletal_mesh.register()
     bfu_alembic_animation.register()
+    bfu_anim_base.register()
+    bfu_anim_action.register()
+    bfu_anim_action_adv.register()
+    bfu_anim_nla.register()
+    bfu_anim_nla_adv.register()
     bfu_groom.register()
     bfu_camera.register()
     bfu_spline.register()
@@ -225,6 +245,11 @@ def unregister():
     bfu_collision.unregister()
     bfu_spline.unregister()
     bfu_camera.unregister()
+    bfu_anim_nla_adv.unregister()
+    bfu_anim_nla.unregister()
+    bfu_anim_action_adv.unregister()
+    bfu_anim_action.unregister()
+    bfu_anim_base.unregister()
     bfu_alembic_animation.unregister()
     bfu_groom.unregister()
     bfu_skeletal_mesh.unregister()
