@@ -17,6 +17,7 @@
 # ======================= END GPL LICENSE BLOCK =============================
 
 import string
+from typing import List, Tuple
 from . import import_module_unreal_utils
 
 try:
@@ -32,11 +33,11 @@ def load_asset(name):
     return find_asset
      
 
-def get_selected_level_actors() -> list[unreal.Actor]:
+def get_selected_level_actors() -> List[unreal.Actor]:
     """Returns a list of selected actors in the level."""
     return unreal.EditorLevelLibrary.get_selected_level_actors()
 
-def get_unreal_version() -> tuple[int, int, int]:
+def get_unreal_version() -> Tuple[int, int, int]:
     """Returns the Unreal Engine version as a tuple of (major, minor, patch)."""
     version_info = unreal.SystemLibrary.get_engine_version().split('-')[0]
     major, minor, patch = map(int, version_info.split('.'))
@@ -65,11 +66,28 @@ def valid_unreal_asset_name(filename):
 
 def show_simple_message(title: str, message: str) -> unreal.AppReturnType:
     """Displays a simple message dialog in Unreal Editor."""
-    return unreal.EditorDialog.show_message(title, message, unreal.AppMsgType.OK)
+    if hasattr(unreal, 'EditorDialog'):
+        return unreal.EditorDialog.show_message(title, message, unreal.AppMsgType.OK)
+    else:
+        print('--------------------------------------------------')
+        print(message)
 
 def show_warning_message(title: str, message: str) -> unreal.AppReturnType:
     """Displays a warning message in Unreal Editor and prints it to the console."""
-    print('--------------------------------------------------')
-    print(message)
-    return unreal.EditorDialog.show_message(title, message, unreal.AppMsgType.OK)
+    if hasattr(unreal, 'EditorDialog'):
+        unreal.EditorDialog.show_message(title, message, unreal.AppMsgType.OK)
+    else:
+        print('--------------------------------------------------')
+        print(message)
 
+def get_support_interchange() -> bool:
+    return import_module_unreal_utils.is_unreal_version_greater_or_equal(5, 0)
+
+def editor_scripting_utilities_active() -> bool:
+    if is_unreal_version_greater_or_equal(4,20):
+        if hasattr(unreal, 'EditorAssetLibrary'):
+            return True
+    return False
+
+def sequencer_scripting_active() -> bool:
+    return hasattr(unreal.MovieSceneSequence, 'set_display_rate')

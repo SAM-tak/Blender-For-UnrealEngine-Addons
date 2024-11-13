@@ -17,6 +17,7 @@
 # ======================= END GPL LICENSE BLOCK =============================
 
 
+from typing import List, Optional
 from . import import_module_unreal_utils
 from . import config
 
@@ -24,6 +25,8 @@ try:
     import unreal
 except ImportError:
     import unreal_engine as unreal
+
+support_interchange = import_module_unreal_utils.get_support_interchange()
 
 class ImportTaks():
 
@@ -38,7 +41,9 @@ class ImportTaks():
             self.use_interchange = False
 
         else:
-            if import_module_unreal_utils.is_unreal_version_greater_or_equal(5,5):
+            # Interchange is avaliable since 5.0,
+            #  but I preffer start to use at 5.5 to avoid issue with previous versions.
+            if support_interchange and import_module_unreal_utils.is_unreal_version_greater_or_equal(5,5):
                 # Set values inside unreal.InterchangeGenericAssetsPipeline (unreal.InterchangeGenericCommonMeshesProperties or ...)
                 self.use_interchange = True
             else:
@@ -71,35 +76,36 @@ class ImportTaks():
 
 
 
-    def get_igap(self) -> unreal.InterchangeGenericAssetsPipeline:
-        # unreal.InterchangeGenericAssetsPipeline
-        return self.task_option
+    if support_interchange:
+        def get_igap(self) -> unreal.InterchangeGenericAssetsPipeline:
+            # unreal.InterchangeGenericAssetsPipeline
+            return self.task_option
 
-    def get_igap_mesh(self) -> unreal.InterchangeGenericMeshPipeline:
-        # unreal.InterchangeGenericMeshPipeline
-        return self.task_option.get_editor_property('mesh_pipeline')
+        def get_igap_mesh(self) -> unreal.InterchangeGenericMeshPipeline:
+            # unreal.InterchangeGenericMeshPipeline
+            return self.task_option.get_editor_property('mesh_pipeline')
 
-    def get_igap_skeletal_mesh(self) -> unreal.InterchangeGenericCommonSkeletalMeshesAndAnimationsProperties:
-        # unreal.InterchangeGenericCommonSkeletalMeshesAndAnimationsProperties
-        return self.task_option.get_editor_property('common_skeletal_meshes_and_animations_properties')
+        def get_igap_skeletal_mesh(self) -> unreal.InterchangeGenericCommonSkeletalMeshesAndAnimationsProperties:
+            # unreal.InterchangeGenericCommonSkeletalMeshesAndAnimationsProperties
+            return self.task_option.get_editor_property('common_skeletal_meshes_and_animations_properties')
 
-    def get_igap_common_mesh(self) -> unreal.InterchangeGenericCommonMeshesProperties:
-        # unreal.InterchangeGenericCommonMeshesProperties
-        return self.task_option.get_editor_property('common_meshes_properties')
+        def get_igap_common_mesh(self) -> unreal.InterchangeGenericCommonMeshesProperties:
+            # unreal.InterchangeGenericCommonMeshesProperties
+            return self.task_option.get_editor_property('common_meshes_properties')
 
-    def get_igap_material(self) -> unreal.InterchangeGenericMaterialPipeline:
-        # unreal.InterchangeGenericMaterialPipeline
-        return self.task_option.get_editor_property('material_pipeline')
+        def get_igap_material(self) -> unreal.InterchangeGenericMaterialPipeline:
+            # unreal.InterchangeGenericMaterialPipeline
+            return self.task_option.get_editor_property('material_pipeline')
 
-    def get_igap_texture(self) -> unreal.InterchangeGenericTexturePipeline:
-        # unreal.InterchangeGenericTexturePipeline
-        return self.task_option.get_editor_property('material_pipeline').get_editor_property('texture_pipeline')
+        def get_igap_texture(self) -> unreal.InterchangeGenericTexturePipeline:
+            # unreal.InterchangeGenericTexturePipeline
+            return self.task_option.get_editor_property('material_pipeline').get_editor_property('texture_pipeline')
 
-    def get_igap_animation(self) -> unreal.InterchangeGenericAnimationPipeline:
-        # unreal.InterchangeGenericAnimationPipeline
-        return self.task_option.get_editor_property('animation_pipeline')
+        def get_igap_animation(self) -> unreal.InterchangeGenericAnimationPipeline:
+            # unreal.InterchangeGenericAnimationPipeline
+            return self.task_option.get_editor_property('animation_pipeline')
     
-    def get_imported_assets(self) -> list[unreal.Object]:
+    def get_imported_assets(self) -> List[unreal.Object]:
         assets = []
         for path in self.task.imported_object_paths:
             search_asset = import_module_unreal_utils.load_asset(path)
@@ -107,16 +113,16 @@ class ImportTaks():
                 assets.append(search_asset)
         return assets
 
-    def get_imported_static_mesh(self) -> unreal.StaticMesh | None:
+    def get_imported_static_mesh(self) -> Optional[unreal.StaticMesh]:
         return next((asset for asset in self.get_imported_assets() if isinstance(asset, unreal.StaticMesh)), None)
 
-    def get_imported_skeleton(self) -> unreal.Skeleton | None:
+    def get_imported_skeleton(self) -> Optional[unreal.Skeleton]:
         return next((asset for asset in self.get_imported_assets() if isinstance(asset, unreal.Skeleton)), None)
 
-    def get_imported_skeletal_mesh(self) -> unreal.SkeletalMesh | None:
+    def get_imported_skeletal_mesh(self) -> Optional[unreal.SkeletalMesh]:
         return next((asset for asset in self.get_imported_assets() if isinstance(asset, unreal.SkeletalMesh)), None)
 
-    def get_imported_anim_sequence(self) -> unreal.AnimSequence | None:
+    def get_imported_anim_sequence(self) -> Optional[unreal.AnimSequence]:
         return next((asset for asset in self.get_imported_assets() if isinstance(asset, unreal.AnimSequence)), None)
     
     def import_asset_task(self):

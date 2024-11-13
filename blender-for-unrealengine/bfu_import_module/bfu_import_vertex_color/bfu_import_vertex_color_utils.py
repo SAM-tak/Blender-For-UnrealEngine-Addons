@@ -16,6 +16,7 @@
 #
 # ======================= END GPL LICENSE BLOCK =============================
 
+from typing import Optional
 from .. import import_module_unreal_utils
 from .. import import_module_tasks_class
 
@@ -24,7 +25,9 @@ try:
 except ImportError:
     import unreal_engine as unreal
 
-def get_vertex_override_color(asset_additional_data: dict) -> unreal.LinearColor | None:
+support_interchange = import_module_unreal_utils.get_support_interchange()
+
+def get_vertex_override_color(asset_additional_data: dict) -> Optional[unreal.LinearColor]:
     """Retrieves the vertex override color from the asset data, if available."""
     if asset_additional_data is None:
         return None
@@ -38,15 +41,15 @@ def get_vertex_override_color(asset_additional_data: dict) -> unreal.LinearColor
 
     return None
 
-def get_vertex_color_import_option(asset_additional_data: dict, use_interchange: bool = True) -> unreal.InterchangeVertexColorImportOption | unreal.VertexColorImportOption | None:
-    """Retrieves the vertex color import option based on the asset data and pipeline."""
-    if asset_additional_data is None:
-        return None
+if support_interchange:
+    def get_interchange_vertex_color_import_option(asset_additional_data: dict) -> Optional[unreal.InterchangeVertexColorImportOption]:
+        """Retrieves the vertex color import option based on the asset data and pipeline."""
+        if asset_additional_data is None:
+            return None
 
-    key = "vertex_color_import_option"
-    option_value = asset_additional_data.get(key)
+        key = "vertex_color_import_option"
+        option_value = asset_additional_data.get(key)
 
-    if use_interchange:
         # For unreal.InterchangeGenericCommonMeshesProperties
         if option_value == "IGNORE":
             return unreal.InterchangeVertexColorImportOption.IVCIO_IGNORE
@@ -55,20 +58,34 @@ def get_vertex_color_import_option(asset_additional_data: dict, use_interchange:
         elif option_value == "REPLACE":
             return unreal.InterchangeVertexColorImportOption.IVCIO_REPLACE
         return unreal.InterchangeVertexColorImportOption.IVCIO_REPLACE  # Default
-    else:
-        # For unreal.FbxStaticMeshImportData
-        if option_value == "IGNORE":
-            return unreal.VertexColorImportOption.IGNORE
-        elif option_value == "OVERRIDE":
-            return unreal.VertexColorImportOption.OVERRIDE
-        elif option_value == "REPLACE":
-            return unreal.VertexColorImportOption.REPLACE
-        return unreal.VertexColorImportOption.REPLACE  # Default
+
+
+def get_vertex_color_import_option(asset_additional_data: dict) -> Optional[unreal.VertexColorImportOption]:
+    """Retrieves the vertex color import option based on the asset data and pipeline."""
+    if asset_additional_data is None:
+        return None
+
+    key = "vertex_color_import_option"
+    option_value = asset_additional_data.get(key)
+
+    # For unreal.FbxStaticMeshImportData
+    if option_value == "IGNORE":
+        return unreal.VertexColorImportOption.IGNORE
+    elif option_value == "OVERRIDE":
+        return unreal.VertexColorImportOption.OVERRIDE
+    elif option_value == "REPLACE":
+        return unreal.VertexColorImportOption.REPLACE
+    return unreal.VertexColorImportOption.REPLACE  # Default
+    
+
 
 def apply_import_settings(itask: import_module_tasks_class.ImportTaks, asset_type: str, asset_additional_data: dict) -> None:
     """Applies vertex color settings during the import process."""
     vertex_override_color = get_vertex_override_color(asset_additional_data)
-    vertex_color_import_option = get_vertex_color_import_option(asset_additional_data, itask.use_interchange)
+    if itask.use_interchange:
+        vertex_color_import_option = get_interchange_vertex_color_import_option(asset_additional_data)
+    else:
+        vertex_color_import_option = get_vertex_color_import_option(asset_additional_data)
 
     if itask.use_interchange:
         itask.get_igap_common_mesh().set_editor_property('vertex_color_import_option', vertex_color_import_option)
@@ -92,7 +109,10 @@ def apply_asset_settings(itask: import_module_tasks_class.ImportTaks, asset: unr
         return
 
     vertex_override_color = get_vertex_override_color(asset_additional_data)
-    vertex_color_import_option = get_vertex_color_import_option(asset_additional_data, itask.use_interchange)
+    if itask.use_interchange:
+        vertex_color_import_option = get_interchange_vertex_color_import_option(asset_additional_data)
+    else:
+        vertex_color_import_option = get_vertex_color_import_option(asset_additional_data)
 
     if itask.use_interchange:
         common_meshes_properties = asset.get_editor_property('asset_import_data').get_pipelines()[0].get_editor_property('common_meshes_properties')

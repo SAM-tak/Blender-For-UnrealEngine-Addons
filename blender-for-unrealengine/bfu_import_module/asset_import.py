@@ -38,12 +38,11 @@ except ImportError:
 
 
 def ready_for_asset_import():
-    if import_module_unreal_utils.is_unreal_version_greater_or_equal(4,20):  # TO DO: EditorAssetLibrary was added in witch version exactly?
-        if not hasattr(unreal, 'EditorAssetLibrary'):
-            message = 'WARNING: Editor Scripting Utilities should be activated.' + "\n"
-            message += 'Edit > Plugin > Scripting > Editor Scripting Utilities.'
-            import_module_unreal_utils.show_warning_message("Editor Scripting Utilities not activated.", message)
-            return False
+    if not import_module_unreal_utils.editor_scripting_utilities_active():
+        message = 'WARNING: Editor Scripting Utilities Plugin should be activated.' + "\n"
+        message += 'Edit > Plugin > Scripting > Editor Scripting Utilities.'
+        import_module_unreal_utils.show_warning_message("Editor Scripting Utilities not activated.", message)
+        return False
     return True
 
 
