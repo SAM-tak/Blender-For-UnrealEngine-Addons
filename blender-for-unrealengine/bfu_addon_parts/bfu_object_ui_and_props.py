@@ -103,15 +103,7 @@ class BFU_PT_BlenderForUnrealObject(bpy.types.Panel):
         subtype='FILE_NAME'
         )
 
-    bpy.types.Object.bfu_export_as_lod_mesh = bpy.props.BoolProperty(
-        name="Export as lod?",
-        description=(
-            "If true this mesh will be exported" +
-            " as a level of detail for another mesh"
-            ),
-        override={'LIBRARY_OVERRIDABLE'},
-        default=False
-        )
+
 
     bpy.types.Object.bfu_export_deform_only = bpy.props.BoolProperty(
         name="Export only deform bones",
@@ -139,41 +131,7 @@ class BFU_PT_BlenderForUnrealObject(bpy.types.Panel):
 
     # Object Import Properties
 
-    # Lod list
-    bpy.types.Object.bfu_lod_target1 = bpy.props.PointerProperty(
-        name="LOD1",
-        description="Target objet for level of detail 01",
-        override={'LIBRARY_OVERRIDABLE'},
-        type=bpy.types.Object
-        )
 
-    bpy.types.Object.bfu_lod_target2 = bpy.props.PointerProperty(
-        name="LOD2",
-        description="Target objet for level of detail 02",
-        override={'LIBRARY_OVERRIDABLE'},
-        type=bpy.types.Object
-        )
-
-    bpy.types.Object.bfu_lod_target3 = bpy.props.PointerProperty(
-        name="LOD3",
-        description="Target objet for level of detail 03",
-        override={'LIBRARY_OVERRIDABLE'},
-        type=bpy.types.Object
-        )
-
-    bpy.types.Object.bfu_lod_target4 = bpy.props.PointerProperty(
-        name="LOD4",
-        description="Target objet for level of detail 04",
-        override={'LIBRARY_OVERRIDABLE'},
-        type=bpy.types.Object
-        )
-
-    bpy.types.Object.bfu_lod_target5 = bpy.props.PointerProperty(
-        name="LOD5",
-        description="Target objet for level of detail 05",
-        override={'LIBRARY_OVERRIDABLE'},
-        type=bpy.types.Object
-        )
 
     # ImportUI
     # https://api.unrealengine.com/INT/API/Editor/UnrealEd/Factories/UFbxImportUI/index.html
@@ -189,24 +147,6 @@ class BFU_PT_BlenderForUnrealObject(bpy.types.Panel):
     # StaticMeshImportData
     # https://api.unrealengine.com/INT/API/Editor/UnrealEd/Factories/UFbxStaticMeshImportData/index.html
 
-    bpy.types.Object.bfu_use_static_mesh_lod_group = bpy.props.BoolProperty(
-        name="",
-        description='',
-        override={'LIBRARY_OVERRIDABLE'},
-        default=False
-        )
-
-    bpy.types.Object.bfu_static_mesh_lod_group = bpy.props.StringProperty(
-        name="LOD Group",
-        description=(
-            "The LODGroup to associate with this mesh when it is imported." +
-            " Default: LevelArchitecture, SmallProp, " +
-            "LargeProp, Deco, Vista, Foliage, HighDetail"
-            ),
-        override={'LIBRARY_OVERRIDABLE'},
-        maxlen=32,
-        default="SmallProp"
-        )
 
     bpy.types.Object.bfu_static_mesh_light_map_mode = bpy.props.EnumProperty(
         name="Light Map",
@@ -956,16 +896,8 @@ class BFU_PT_BlenderForUnrealObject(bpy.types.Panel):
                 'obj.bfu_export_type',
                 'obj.bfu_export_folder_name',
                 'col.bfu_export_folder_name',
-                'obj.bfu_export_as_lod_mesh',
                 'obj.bfu_export_deform_only',
-                'obj.bfu_lod_target1',
-                'obj.bfu_lod_target2',
-                'obj.bfu_lod_target3',
-                'obj.bfu_lod_target4',
-                'obj.bfu_lod_target5',
                 'obj.bfu_create_physics_asset',
-                'obj.bfu_use_static_mesh_lod_group',
-                'obj.bfu_static_mesh_lod_group',
                 'obj.bfu_static_mesh_light_map_mode',
                 'obj.bfu_static_mesh_custom_light_map_res',
                 'obj.bfu_static_mesh_light_map_surface_scale',
@@ -1031,6 +963,7 @@ class BFU_PT_BlenderForUnrealObject(bpy.types.Panel):
             preset_values += bfu_skeletal_mesh.bfu_skeletal_mesh_props.get_preset_values()
             preset_values += bfu_alembic_animation.bfu_alembic_animation_props.get_preset_values()
             preset_values += bfu_vertex_color.bfu_vertex_color_props.get_preset_values()
+            preset_values += bfu_lod.bfu_lod_props.get_preset_values()
             return preset_values
 
         # Common variable used for all preset values
@@ -1174,6 +1107,7 @@ class BFU_PT_BlenderForUnrealObject(bpy.types.Panel):
         bfu_material.bfu_material_ui.draw_ui_object_collision(layout)
         bfu_vertex_color.bfu_vertex_color_ui.draw_ui_object_collision(layout)
 
+
         if bfu_ui.bfu_ui_utils.DisplayPropertyFilter("OBJECT", "GENERAL"):
             
             scene.bfu_object_properties_expanded.draw(layout)
@@ -1232,7 +1166,8 @@ class BFU_PT_BlenderForUnrealObject(bpy.types.Panel):
             bfu_spline.bfu_spline_ui_and_props.draw_ui_object_spline(layout, obj)
             bfu_skeletal_mesh.bfu_skeletal_mesh_ui.draw_ui_object(layout, obj)
             bfu_static_mesh.bfu_static_mesh_ui.draw_ui_object(layout, obj)
-            bfu_lod.bfu_lod_ui.draw_ui_object(layout, obj)
+
+
             bfu_alembic_animation.bfu_alembic_animation_ui.draw_ui_object(layout, obj)
             bfu_groom.bfu_groom_ui.draw_ui_object(layout, obj)
 
@@ -1299,9 +1234,6 @@ class BFU_PT_BlenderForUnrealObject(bpy.types.Panel):
                                 bfu_unreal_engine_refs_props.draw_skeletal_mesh_prop(unreal_engine_refs, obj)
                 else:
                     layout.label(text='(No properties to show.)')
-
-
-
 
         if bfu_ui.bfu_ui_utils.DisplayPropertyFilter("OBJECT", "ANIM"):
             if obj is not None:
@@ -1454,36 +1386,7 @@ class BFU_PT_BlenderForUnrealObject(bpy.types.Panel):
 
         if bfu_ui.bfu_ui_utils.DisplayPropertyFilter("OBJECT", "MISC"):
 
-            scene.bfu_object_lod_properties_expanded.draw(layout)
-            if scene.bfu_object_lod_properties_expanded.is_expend():
-                if addon_prefs.useGeneratedScripts and obj is not None:
-                    if obj.bfu_export_type == "export_recursive":
 
-                        # Lod selection
-                        if not obj.bfu_export_as_lod_mesh:
-                            # Unreal python no longer support Skeletal mesh LODS import.
-                            if (bfu_static_mesh.bfu_static_mesh_utils.is_static_mesh(obj)):
-                                LodList = layout.column()
-                                LodList.prop(obj, 'bfu_lod_target1')
-                                LodList.prop(obj, 'bfu_lod_target2')
-                                LodList.prop(obj, 'bfu_lod_target3')
-                                LodList.prop(obj, 'bfu_lod_target4')
-                                LodList.prop(obj, 'bfu_lod_target5')
-
-                        # StaticMesh prop
-                        if bfu_static_mesh.bfu_static_mesh_utils.is_static_mesh(obj):
-                            if not obj.bfu_export_as_lod_mesh:
-                                bfu_static_mesh_lod_group = layout.row()
-                                bfu_static_mesh_lod_group.prop(
-                                    obj,
-                                    'bfu_use_static_mesh_lod_group',
-                                    text="")
-                                SMLODGroupChild = bfu_static_mesh_lod_group.column()
-                                SMLODGroupChild.enabled = obj.bfu_use_static_mesh_lod_group
-                                SMLODGroupChild.prop(
-                                    obj,
-                                    'bfu_static_mesh_lod_group'
-                                    )
             scene.bfu_object_collision_properties_expanded.draw(layout)
             if scene.bfu_object_collision_properties_expanded.is_expend():
                 if addon_prefs.useGeneratedScripts and obj is not None:
@@ -1600,6 +1503,7 @@ class BFU_PT_BlenderForUnrealObject(bpy.types.Panel):
                 layout.label(text='Note: The collection are exported like StaticMesh.')
 
 
+        bfu_lod.bfu_lod_ui.draw_ui(layout, obj)
 
 class BFU_OT_SceneCollectionExport(bpy.types.PropertyGroup):
     name: bpy.props.StringProperty(name="collection data name", default="Unknown", override={'LIBRARY_OVERRIDABLE'})
