@@ -132,3 +132,11 @@ class ImportTaks():
         else:
             self.task.set_editor_property('options', self.task_option)
         unreal.AssetToolsHelpers.get_asset_tools().import_asset_tasks([self.task])
+    
+    def get_task_options(self):
+        if self.use_interchange:
+            new_option = unreal.InterchangePipelineStackOverride()
+            new_option.add_pipeline(self.task_option)
+            return new_option
+        else:
+            return self.task_option

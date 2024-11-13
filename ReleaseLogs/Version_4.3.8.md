@@ -8,3 +8,4 @@ Release Logs: https://github.com/xavier150/Blender-For-UnrealEngine-Addons/wiki/
 - Fixed: Export curve as static mesh do export fail.
 - Fixed: Script fail at import for Unreal Engine 4.27
 - Fixed: Script fail at import in Unreal Engine when python plugins is disabled.
+- Fixed: Import mesh with multiple lods may create new material slots.

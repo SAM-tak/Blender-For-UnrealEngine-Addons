@@ -420,11 +420,11 @@ def ImportTask(asset_data):
     print("S15")
     # Lod
     if asset_type == "StaticMesh":
-        import_module_post_treatment.set_static_mesh_lods(itask.get_imported_static_mesh(), asset_data, asset_additional_data)
+        import_module_post_treatment.set_static_mesh_lods(itask.get_imported_static_mesh(), itask.get_task_options(), asset_data, asset_additional_data)
 
     print("S15.1")
     if asset_type == "SkeletalMesh":
-        import_module_post_treatment.set_skeletal_mesh_lods(itask.get_imported_skeletal_mesh(), asset_data, asset_additional_data)
+        import_module_post_treatment.set_skeletal_mesh_lods(itask.get_imported_skeletal_mesh(), itask.get_task_options(), asset_data, asset_additional_data)
 
     print("S15.2")
     # Preview mesh

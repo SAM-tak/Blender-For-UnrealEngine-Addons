@@ -25,7 +25,9 @@ except ImportError:
     import unreal_engine as unreal
 
 
-def import_static_lod(asset, asset_data, asset_additional_data, lod_name, lod_number):
+def import_static_lod(asset, asset_options, asset_data, asset_additional_data, lod_name, lod_number):
+
+    print(f"Start Import Lod_{str(lod_number)} ({lod_name})")
 
     if "LevelOfDetail" in asset_additional_data:
         if lod_name in asset_additional_data["LevelOfDetail"]:
@@ -36,8 +38,12 @@ def import_static_lod(asset, asset_data, asset_additional_data, lod_name, lod_nu
             lodTask.automated = True
             lodTask.replace_existing = True
 
-            # Replicate base asset import settings
-            lodTask.set_editor_property('options', asset.get_editor_property('asset_import_data'))
+            if asset_options:
+                lodTask.set_editor_property('options', asset_options)
+            else:
+                # Replicate asset import settings when asset_options is None
+                lodTask.set_editor_property('options', asset.get_editor_property('asset_import_data'))
+
 
             unreal.AssetToolsHelpers.get_asset_tools().import_asset_tasks([lodTask])
             if len(lodTask.imported_object_paths) > 0:
@@ -51,22 +57,22 @@ def import_skeletal_lod(asset, asset_data, asset_additional_data, lod_name, lod_
             # Unreal python no longer support Skeletal mesh LODS import.
             pass
 
-def set_static_mesh_lods(asset, asset_data, asset_additional_data):
+def set_static_mesh_lods(asset, asset_options, asset_data, asset_additional_data):
     # Import the StaticMesh lod(s)
     unreal.EditorStaticMeshLibrary.remove_lods(asset)  
-    import_static_lod(asset, asset_data, asset_additional_data, "lod_1", 1)
-    import_static_lod(asset, asset_data, asset_additional_data, "lod_2", 2)
-    import_static_lod(asset, asset_data, asset_additional_data, "lod_3", 3)
-    import_static_lod(asset, asset_data, asset_additional_data, "lod_4", 4)
-    import_static_lod(asset, asset_data, asset_additional_data, "lod_5", 5)
+    import_static_lod(asset, asset_options, asset_data, asset_additional_data, "lod_1", 1)
+    import_static_lod(asset, asset_options, asset_data, asset_additional_data, "lod_2", 2)
+    import_static_lod(asset, asset_options, asset_data, asset_additional_data, "lod_3", 3)
+    import_static_lod(asset, asset_options, asset_data, asset_additional_data, "lod_4", 4)
+    import_static_lod(asset, asset_options, asset_data, asset_additional_data, "lod_5", 5)
 
-def set_skeletal_mesh_lods(asset, asset_data, asset_additional_data):
+def set_skeletal_mesh_lods(asset, asset_options, asset_data, asset_additional_data):
     # Import the SkeletalMesh lod(s)
-    import_skeletal_lod(asset, asset_data, asset_additional_data, "lod_1", 1)
-    import_skeletal_lod(asset, asset_data, asset_additional_data, "lod_2", 2)
-    import_skeletal_lod(asset, asset_data, asset_additional_data, "lod_3", 3)
-    import_skeletal_lod(asset, asset_data, asset_additional_data, "lod_4", 4)
-    import_skeletal_lod(asset, asset_data, asset_additional_data, "lod_5", 5)
+    import_skeletal_lod(asset, asset_options, asset_data, asset_additional_data, "lod_1", 1)
+    import_skeletal_lod(asset, asset_options, asset_data, asset_additional_data, "lod_2", 2)
+    import_skeletal_lod(asset, asset_options, asset_data, asset_additional_data, "lod_3", 3)
+    import_skeletal_lod(asset, asset_options, asset_data, asset_additional_data, "lod_4", 4)
+    import_skeletal_lod(asset, asset_options, asset_data, asset_additional_data, "lod_5", 5)
 
 
 def set_sequence_preview_skeletal_mesh(asset: unreal.AnimSequence, origin_skeletal_mesh):
