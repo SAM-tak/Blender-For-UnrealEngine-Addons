@@ -26,3 +26,34 @@ from .. import bbpl
 
 def draw_ui(layout: bpy.types.UILayout, context: bpy.types.Context):
     scene = context.scene
+    addon_prefs = bfu_basics.GetAddonPrefs()
+    
+    scene.bfu_export_filter_properties_expanded.draw(layout)
+    if scene.bfu_export_filter_properties_expanded.is_expend():
+
+        # Assets
+        row = layout.row()
+        AssetsCol = row.column()
+        AssetsCol.label(text="Asset types to export", icon='PACKAGE')
+        AssetsCol.prop(scene, 'static_export')
+        AssetsCol.prop(scene, 'static_collection_export')
+        AssetsCol.prop(scene, 'skeletal_export')
+        AssetsCol.prop(scene, 'anin_export')
+        AssetsCol.prop(scene, 'alembic_export')
+        AssetsCol.prop(scene, 'groom_simulation_export')
+        AssetsCol.prop(scene, 'camera_export')
+        AssetsCol.prop(scene, 'spline_export')
+        layout.separator()
+
+        # Additional file
+        FileCol = row.column()
+        FileCol.label(text="Additional file", icon='PACKAGE')
+        FileCol.prop(scene, 'text_ExportLog')
+        FileCol.prop(scene, 'text_ImportAssetScript')
+        FileCol.prop(scene, 'text_ImportSequenceScript')
+        if addon_prefs.useGeneratedScripts:
+            FileCol.prop(scene, 'text_AdditionalData')
+
+        # exportProperty
+        export_by_select = layout.row()
+        export_by_select.prop(scene, 'bfu_export_selection_filter')
