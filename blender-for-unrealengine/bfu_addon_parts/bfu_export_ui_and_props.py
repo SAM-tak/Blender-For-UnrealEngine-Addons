@@ -124,7 +124,7 @@ class BFU_PT_Export(bpy.types.Panel):
         text = "none"
 
         def execute(self, context):
-            fix_info = bfu_check_potential_error.process_general_fix()
+            fix_info = bfu_check_potential_error.bfu_check_utils.process_general_fix()
             invoke_info = ""
             for x, fix_info_key in enumerate(fix_info):
                 fix_info_data = fix_info[fix_info_key]
@@ -133,7 +133,7 @@ class BFU_PT_Export(bpy.types.Panel):
                     invoke_info += "\n"
   
             
-            bfu_check_potential_error.update_unreal_potential_error()
+            bfu_check_potential_error.bfu_check_utils.update_unreal_potential_error()
             bpy.ops.object.openpotentialerror(
                 "INVOKE_DEFAULT", 
                 invoke_info=invoke_info,
@@ -153,7 +153,7 @@ class BFU_PT_Export(bpy.types.Panel):
             errorIndex: bpy.props.IntProperty(default=-1)
 
             def execute(self, context):
-                result = bfu_check_potential_error.TryToCorrectPotentialError(self.errorIndex)
+                result = bfu_check_potential_error.bfu_check_utils.TryToCorrectPotentialError(self.errorIndex)
                 self.report({'INFO'}, result)
                 return {'FINISHED'}
 
@@ -164,7 +164,7 @@ class BFU_PT_Export(bpy.types.Panel):
             errorIndex: bpy.props.IntProperty(default=-1)
 
             def execute(self, context):
-                bfu_check_potential_error.select_potential_error_object(self.errorIndex)
+                bfu_check_potential_error.bfu_check_utils.select_potential_error_object(self.errorIndex)
                 return {'FINISHED'}
 
         class BFU_OT_SelectVertexButton(bpy.types.Operator):
@@ -174,7 +174,7 @@ class BFU_PT_Export(bpy.types.Panel):
             errorIndex: bpy.props.IntProperty(default=-1)
 
             def execute(self, context):
-                bfu_check_potential_error.SelectPotentialErrorVertex(self.errorIndex)
+                bfu_check_potential_error.bfu_check_utils.SelectPotentialErrorVertex(self.errorIndex)
                 return {'FINISHED'}
 
         class BFU_OT_SelectPoseBoneButton(bpy.types.Operator):
@@ -184,7 +184,7 @@ class BFU_PT_Export(bpy.types.Panel):
             errorIndex: bpy.props.IntProperty(default=-1)
 
             def execute(self, context):
-                bfu_check_potential_error.SelectPotentialErrorPoseBone(self.errorIndex)
+                bfu_check_potential_error.bfu_check_utils.SelectPotentialErrorPoseBone(self.errorIndex)
                 return {'FINISHED'}
 
         class BFU_OT_OpenPotentialErrorDocs(bpy.types.Operator):

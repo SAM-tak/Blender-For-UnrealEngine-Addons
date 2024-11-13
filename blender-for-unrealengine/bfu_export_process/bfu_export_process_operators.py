@@ -98,7 +98,7 @@ class BFU_OT_ExportForUnrealEngineButton(bpy.types.Operator):
 
         scene.UnrealExportedAssetsList.clear()
         counter = bpl.utils.CounterTimer()
-        bfu_check_potential_error.process_general_fix()
+        bfu_check_potential_error.bfu_check_utils.process_general_fix()
         bfu_export.bfu_export_asset.process_export(self)
         bfu_write_text.WriteAllTextFiles()
 

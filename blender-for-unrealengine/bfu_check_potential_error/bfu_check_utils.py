@@ -21,20 +21,20 @@ import bpy
 import fnmatch
 import math
 
-from . import bbpl
-from . import bfu_basics
-from . import bfu_assets_manager
-from . import bfu_utils
-from . import bfu_cached_asset_list
+from .. import bbpl
+from .. import bfu_basics
+from .. import bfu_assets_manager
+from .. import bfu_utils
+from .. import bfu_cached_asset_list
 
-from . import bfu_collision
-from . import bfu_socket
-from . import bfu_camera
-from . import bfu_alembic_animation
-from . import bfu_groom
-from . import bfu_spline
-from . import bfu_skeletal_mesh
-from . import bfu_static_mesh
+from .. import bfu_collision
+from .. import bfu_socket
+from .. import bfu_camera
+from .. import bfu_alembic_animation
+from .. import bfu_groom
+from .. import bfu_spline
+from .. import bfu_skeletal_mesh
+from .. import bfu_static_mesh
 
 
 
@@ -689,37 +689,6 @@ def TryToCorrectPotentialError(errorIndex):
     return "Correct fail"
 
 
-class BFU_OT_UnrealPotentialError(bpy.types.PropertyGroup):
-    type: bpy.props.IntProperty(default=0)  # 0:Info, 1:Warning, 2:Error
-    object: bpy.props.PointerProperty(type=bpy.types.Object)
-    ###
-    selectObjectButton: bpy.props.BoolProperty(default=True)
-    selectVertexButton: bpy.props.BoolProperty(default=False)
-    selectPoseBoneButton: bpy.props.BoolProperty(default=False)
-    ###
-    selectOption: bpy.props.StringProperty(default="None")  # 0:VertexWithZeroWeight
-    itemName: bpy.props.StringProperty(default="None")
-    text: bpy.props.StringProperty(default="Unknown")
-    correctRef: bpy.props.StringProperty(default="None")
-    correctlabel: bpy.props.StringProperty(default="Fix it !")
-    correctDesc: bpy.props.StringProperty(default="Correct target error")
-    docsOcticon: bpy.props.StringProperty(default="None")
 
 
-classes = (
-    BFU_OT_UnrealPotentialError,
-)
 
-
-def register():
-    for cls in classes:
-        bpy.utils.register_class(cls)
-
-    bpy.types.Scene.potentialErrorList = bpy.props.CollectionProperty(type=BFU_OT_UnrealPotentialError)
-
-
-def unregister():
-    for cls in reversed(classes):
-        bpy.utils.unregister_class(cls)
-
-    del bpy.types.Scene.potentialErrorList
