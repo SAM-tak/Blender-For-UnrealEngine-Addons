@@ -778,15 +778,15 @@ class BFU_PT_BlenderForUnrealObject(bpy.types.Panel):
                     return False
 
                 animSave = [["", False]]
-                for Anim in obj.bfu_animation_asset_list:  # CollectionProperty
+                for Anim in obj.bfu_action_asset_list:  # CollectionProperty
                     name = Anim.name
                     use = Anim.use
                     animSave.append([name, use])
-                obj.bfu_animation_asset_list.clear()
+                obj.bfu_action_asset_list.clear()
                 for action in bpy.data.actions:
-                    obj.bfu_animation_asset_list.add().name = action.name
+                    obj.bfu_action_asset_list.add().name = action.name
                     useFromLast = SetUseFromLast(animSave, action.name)
-                    obj.bfu_animation_asset_list[action.name].use = useFromLast
+                    obj.bfu_action_asset_list[action.name].use = useFromLast
             UpdateExportActionList(bpy.context.object)
             return {'FINISHED'}
 
@@ -1216,9 +1216,9 @@ class BFU_PT_BlenderForUnrealObject(bpy.types.Panel):
                                         # type and unique id
                                         "BFU_UL_ActionExportTarget", "",
                                         # pointer to the CollectionProperty
-                                        obj, "bfu_animation_asset_list",
+                                        obj, "bfu_action_asset_list",
                                         # pointer to the active identifier
-                                        obj, "bfu_active_animation_asset_list",
+                                        obj, "bfu_active_action_asset_list",
                                         maxrows=5,
                                         rows=5
                                     )
@@ -1486,13 +1486,6 @@ class BFU_PT_BlenderForUnrealObject(bpy.types.Panel):
 
         
 
-class BFU_OT_SceneCollectionExport(bpy.types.PropertyGroup):
-    name: bpy.props.StringProperty(name="collection data name", default="Unknown", override={'LIBRARY_OVERRIDABLE'})
-    use: bpy.props.BoolProperty(name="export this collection", default=False, override={'LIBRARY_OVERRIDABLE'})
-
-class BFU_OT_ObjExportAction(bpy.types.PropertyGroup):
-    name: bpy.props.StringProperty(name="Action data name", default="Unknown", override={'LIBRARY_OVERRIDABLE'})
-    use: bpy.props.BoolProperty(name="use this action", default=False, override={'LIBRARY_OVERRIDABLE'})
 
 
 
@@ -1512,48 +1505,12 @@ classes = (
     BFU_PT_BlenderForUnrealObject.BFU_UL_CollectionExportTarget,
     BFU_PT_BlenderForUnrealObject.BFU_OT_UpdateCollectionButton,
     BFU_PT_BlenderForUnrealObject.BFU_OT_ShowCollectionToExport,
-    BFU_OT_SceneCollectionExport,
-    BFU_OT_ObjExportAction,
 )
 
 
 def register():
     for cls in classes:
         bpy.utils.register_class(cls)
-
-    bpy.types.Scene.bfu_collection_asset_list = bpy.props.CollectionProperty(
-        type=BFU_OT_SceneCollectionExport,
-        options={'LIBRARY_EDITABLE'},
-        override={'LIBRARY_OVERRIDABLE', 'USE_INSERTION'},
-        )
-
-    bpy.types.Scene.bfu_active_collection_asset_list = bpy.props.IntProperty(
-        name="Active Collection",
-        description="Index of the currently active collection",
-        override={'LIBRARY_OVERRIDABLE'},
-        default=0
-        )
-
-    bpy.types.Object.bfu_animation_asset_list = bpy.props.CollectionProperty(
-        type=BFU_OT_ObjExportAction,
-        options={'LIBRARY_EDITABLE'},
-        override={'LIBRARY_OVERRIDABLE', 'USE_INSERTION'},
-        )
-
-    bpy.types.Object.bfu_active_animation_asset_list = bpy.props.IntProperty(
-        name="Active Scene Action",
-        description="Index of the currently active object action",
-        override={'LIBRARY_OVERRIDABLE'},
-        default=0
-        )
-    
-    bpy.types.Object.bfu_export_with_meta_data = bpy.props.BoolProperty(
-        name=(languages.ti('export_with_meta_data_name')),
-        description=(languages.tt('export_with_meta_data_desc')),
-        override={'LIBRARY_OVERRIDABLE'},
-        default=False,
-        )
-
 
 
 def unregister():

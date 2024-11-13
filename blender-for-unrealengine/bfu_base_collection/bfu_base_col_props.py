@@ -33,11 +33,17 @@ def get_preset_values():
         ]
     return preset_values
 
+class BFU_OT_SceneCollectionExport(bpy.types.PropertyGroup):
+    name: bpy.props.StringProperty(name="collection data name", default="Unknown", override={'LIBRARY_OVERRIDABLE'})
+    use: bpy.props.BoolProperty(name="export this collection", default=False, override={'LIBRARY_OVERRIDABLE'})
+
+
 # -------------------------------------------------------------------
 #   Register & Unregister
 # -------------------------------------------------------------------
 
 classes = (
+    BFU_OT_SceneCollectionExport,
 )
 
 
@@ -47,8 +53,23 @@ def register():
 
     bpy.types.Scene.bfu_collection_properties_expanded = bbpl.blender_layout.layout_accordion.add_ui_accordion(name="Collection Properties")
 
+    bpy.types.Scene.bfu_collection_asset_list = bpy.props.CollectionProperty(
+        type=BFU_OT_SceneCollectionExport,
+        options={'LIBRARY_EDITABLE'},
+        override={'LIBRARY_OVERRIDABLE', 'USE_INSERTION'},
+        )
+    
+    bpy.types.Scene.bfu_active_collection_asset_list = bpy.props.IntProperty(
+        name="Active Collection",
+        description="Index of the currently active collection",
+        override={'LIBRARY_OVERRIDABLE'},
+        default=0
+        )
+
 def unregister():
     for cls in reversed(classes):
         bpy.utils.unregister_class(cls)
 
+    del bpy.types.Scene.bfu_active_collection_asset_list
+    del bpy.types.Scene.bfu_collection_asset_list
     del bpy.types.Scene.bfu_collection_properties_expanded

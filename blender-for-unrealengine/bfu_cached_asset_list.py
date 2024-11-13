@@ -159,7 +159,7 @@ class BFU_AnimationExportAssetCache(bpy.types.PropertyGroup):
 
         elif obj.bfu_anim_action_export_enum == "export_specific_list":
             for action in bpy.data.actions:
-                for targetAction in obj.bfu_animation_asset_list:
+                for targetAction in obj.bfu_action_asset_list:
                     if targetAction.use:
                         if targetAction.name == action.name:
                             TargetActionToExport.append(action)

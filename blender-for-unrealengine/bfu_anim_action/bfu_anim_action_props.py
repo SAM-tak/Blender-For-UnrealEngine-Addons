@@ -33,11 +33,17 @@ def get_preset_values():
         ]
     return preset_values
 
+class BFU_OT_ObjExportAction(bpy.types.PropertyGroup):
+    name: bpy.props.StringProperty(name="Action data name", default="Unknown", override={'LIBRARY_OVERRIDABLE'})
+    use: bpy.props.BoolProperty(name="use this action", default=False, override={'LIBRARY_OVERRIDABLE'})
+
+
 # -------------------------------------------------------------------
 #   Register & Unregister
 # -------------------------------------------------------------------
 
 classes = (
+    BFU_OT_ObjExportAction,
 )
 
 
@@ -47,6 +53,18 @@ def register():
 
     bpy.types.Scene.bfu_animation_action_properties_expanded = bbpl.blender_layout.layout_accordion.add_ui_accordion(name="Actions Properties")
 
+    bpy.types.Object.bfu_action_asset_list = bpy.props.CollectionProperty(
+        type=BFU_OT_ObjExportAction,
+        options={'LIBRARY_EDITABLE'},
+        override={'LIBRARY_OVERRIDABLE', 'USE_INSERTION'},
+        )
+
+    bpy.types.Object.bfu_active_action_asset_list = bpy.props.IntProperty(
+        name="Active Scene Action",
+        description="Index of the currently active object action",
+        override={'LIBRARY_OVERRIDABLE'},
+        default=0
+        )
 
 def unregister():
     for cls in reversed(classes):

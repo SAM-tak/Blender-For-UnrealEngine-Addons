@@ -22,6 +22,7 @@ from .. import bfu_basics
 from .. import bfu_utils
 from .. import bfu_ui
 from .. import bbpl
+from .. import languages
 
 
 
@@ -45,10 +46,17 @@ def register():
 
     bpy.types.Scene.bfu_object_advanced_properties_expanded = bbpl.blender_layout.layout_accordion.add_ui_accordion(name="Object Advanced Properties")
 
+    bpy.types.Object.bfu_export_with_meta_data = bpy.props.BoolProperty(
+        name=(languages.ti('export_with_meta_data_name')),
+        description=(languages.tt('export_with_meta_data_desc')),
+        override={'LIBRARY_OVERRIDABLE'},
+        default=False,
+        )
 
 
 def unregister():
     for cls in reversed(classes):
         bpy.utils.unregister_class(cls)
 
+    del bpy.types.Scene.bfu_export_with_meta_data
     del bpy.types.Scene.bfu_object_advanced_properties_expanded

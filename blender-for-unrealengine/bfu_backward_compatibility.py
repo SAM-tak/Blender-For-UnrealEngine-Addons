@@ -98,8 +98,8 @@ def update_old_variables():
         update_variable(obj, ["AdditionalLocationForExport"], "bfu_additional_location_for_export")
         update_variable(obj, ["AdditionalRotationForExport"], "bfu_additional_rotation_for_export")
 
-        update_variable(obj, ["exportActionList"], "bfu_animation_asset_list")
-        update_variable(obj, ["active_ObjectAction"], "bfu_active_animation_asset_list")
+        update_variable(obj, ["exportActionList, bfu_animation_asset_list"], "bfu_action_asset_list")
+        update_variable(obj, ["active_ObjectAction, bfu_active_animation_asset_list"], "bfu_active_action_asset_list")
 
         update_variable(obj, ["ExportAsAlembic, bfu_export_as_alembic"], "bfu_export_as_alembic_animation")
         
