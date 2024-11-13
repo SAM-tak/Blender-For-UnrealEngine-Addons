@@ -77,8 +77,6 @@ class BFU_PT_BlenderForUnrealObject(bpy.types.Panel):
         subtype='FILE_NAME'
         )
 
-
-
     bpy.types.Object.bfu_export_deform_only = bpy.props.BoolProperty(
         name="Export only deform bones",
         description=(

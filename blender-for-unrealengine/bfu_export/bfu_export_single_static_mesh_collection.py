@@ -51,7 +51,7 @@ def ProcessCollectionExport(op, col):
     MyAsset.StartAssetExport()
     ExportSingleStaticMeshCollection(op, dirpath, file.GetFileWithExtension(), col.name)
 
-    if (scene.text_AdditionalData and addon_prefs.useGeneratedScripts):
+    if (scene.bfu_use_text_additional_data and addon_prefs.useGeneratedScripts):
         
         file: bfu_export_logs.BFU_OT_FileExport = MyAsset.files.add()
         file.file_name = bfu_naming.get_collection_file_name(col, col.name+"_AdditionalTrack", "")

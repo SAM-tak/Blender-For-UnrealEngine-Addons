@@ -81,7 +81,7 @@ class BFU_SkeletalMesh(bfu_assets_manager.bfu_asset_manager_type.BFU_BaseAssetCl
 
     def can_export_asset(self):
         scene = bpy.context.scene
-        return scene.skeletal_export
+        return scene.bfu_use_skeletal_export
 
     def can_export_obj_asset(self, obj):
         if self.can_export_asset():

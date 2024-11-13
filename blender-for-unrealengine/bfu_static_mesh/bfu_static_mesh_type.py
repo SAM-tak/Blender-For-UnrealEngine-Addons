@@ -71,7 +71,7 @@ class BFU_StaticMesh(bfu_assets_manager.bfu_asset_manager_type.BFU_BaseAssetClas
     
     def can_export_asset(self):
         scene = bpy.context.scene
-        return scene.static_export
+        return scene.bfu_use_static_export
 
     def can_export_obj_asset(self, obj):
         return self.can_export_asset()

@@ -61,7 +61,7 @@ class BFU_Camera(bfu_assets_manager.bfu_asset_manager_type.BFU_BaseAssetClass):
     
     def can_export_asset(self):
         scene = bpy.context.scene
-        return scene.camera_export
+        return scene.bfu_use_camera_export
 
     def can_export_obj_asset(self, obj):
         return self.can_export_asset()

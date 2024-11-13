@@ -61,7 +61,7 @@ class BFU_Spline(bfu_assets_manager.bfu_asset_manager_type.BFU_BaseAssetClass):
     
     def can_export_asset(self):
         scene = bpy.context.scene
-        return scene.spline_export
+        return scene.bfu_use_spline_export
 
     def can_export_obj_asset(self, obj):
         return self.can_export_asset()

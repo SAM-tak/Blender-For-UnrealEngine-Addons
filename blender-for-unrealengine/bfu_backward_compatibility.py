@@ -132,6 +132,20 @@ def update_old_variables():
         update_variable(scene, ["CollectionExportList"], "bfu_collection_asset_list")
         update_variable(scene, ["active_CollectionExportList"], "bfu_active_collection_asset_list")
 
+        update_variable(scene, ["static_export"], "bfu_use_static_export")
+        update_variable(scene, ["static_collection_export"], "bfu_use_static_collection_export")
+        update_variable(scene, ["skeletal_export"], "bfu_use_skeletal_export")
+        update_variable(scene, ["anin_export"], "bfu_use_anin_export")
+        update_variable(scene, ["alembic_export"], "bfu_use_alembic_export")
+        update_variable(scene, ["groom_simulation_export"], "bfu_use_groom_simulation_export")
+        update_variable(scene, ["camera_export"], "bfu_use_camera_export")
+        update_variable(scene, ["spline_export"], "bfu_use_spline_export")
+
+        update_variable(scene, ["text_ExportLog"], "bfu_use_text_export_log")
+        update_variable(scene, ["text_ImportAssetScript"], "bfu_use_text_import_asset_script")
+        update_variable(scene, ["text_ImportSequenceScript"], "bfu_use_text_import_sequence_script")
+        update_variable(scene, ["text_AdditionalData"], "bfu_use_text_additional_data")
+
 
 def enum_callback(data, old_var_name, new_var_name):
     value = data[old_var_name] # Get value ast int

@@ -45,7 +45,7 @@ from .. import bfu_groom
 
 def IsValidActionForExport(scene, obj, animType):
     if animType == "Action":
-        if scene.anin_export:
+        if scene.bfu_use_anin_export:
             if obj.bfu_skeleton_export_procedure == 'auto-rig-pro':
                 if bfu_basics.CheckPluginIsActivated('auto_rig_pro-master'):
                     return True
@@ -54,7 +54,7 @@ def IsValidActionForExport(scene, obj, animType):
         else:
             return False
     elif animType == "Pose":
-        if scene.anin_export:
+        if scene.bfu_use_anin_export:
             if obj.bfu_skeleton_export_procedure == 'auto-rig-pro':
                 if bfu_basics.CheckPluginIsActivated('auto_rig_pro-master'):
                     return True
@@ -63,7 +63,7 @@ def IsValidActionForExport(scene, obj, animType):
         else:
             return False
     elif animType == "NLA":
-        if scene.anin_export:
+        if scene.bfu_use_anin_export:
             if obj.bfu_skeleton_export_procedure == 'auto-rig-pro':
                 return False
             else:
@@ -182,7 +182,7 @@ def export_collection_from_asset_list(op, asset_list: bfu_cached_asset_list.Asse
     addon_prefs = bfu_basics.GetAddonPrefs()
     print("Start Export collection(s)")
 
-    if scene.static_collection_export:
+    if scene.bfu_use_static_collection_export:
         collection_asset_cache = bfu_cached_asset_list.GetCollectionAssetCache()
         collection_export_asset_list = collection_asset_cache.GetCollectionAssetList()
         for col in collection_export_asset_list:
@@ -204,7 +204,7 @@ def export_camera_from_asset_list(op, asset_list: bfu_cached_asset_list.AssetToE
 
     camera_list = []
 
-    use_camera_evaluate = (scene.text_AdditionalData and addon_prefs.useGeneratedScripts)
+    use_camera_evaluate = (scene.bfu_use_text_additional_data and addon_prefs.useGeneratedScripts)
     if use_camera_evaluate:
         multi_camera_tracks = bfu_camera.bfu_camera_data.BFU_MultiCameraTracks()
         multi_camera_tracks.set_start_end_frames(scene.frame_start, scene.frame_end+1)
@@ -246,7 +246,7 @@ def export_spline_from_asset_list(op, asset_list: bfu_cached_asset_list.AssetToE
 
     spline_list = []
 
-    use_spline_evaluate = (scene.text_AdditionalData and addon_prefs.useGeneratedScripts)
+    use_spline_evaluate = (scene.bfu_use_text_additional_data and addon_prefs.useGeneratedScripts)
     if use_spline_evaluate:
         multi_spline_tracks = bfu_spline.bfu_spline_data.BFU_MultiSplineTracks()
     

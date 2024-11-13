@@ -65,7 +65,7 @@ class BFU_AlembicAnimation(bfu_assets_manager.bfu_asset_manager_type.BFU_BaseAss
     
     def can_export_asset(self):
         scene = bpy.context.scene
-        return scene.alembic_export
+        return scene.bfu_use_alembic_export
 
     def can_export_obj_asset(self, obj):
         return self.can_export_asset()

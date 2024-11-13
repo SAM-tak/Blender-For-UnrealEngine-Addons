@@ -303,8 +303,8 @@ class BFU_PT_Export(bpy.types.Panel):
                         if assets.can_export_asset():
                             return True
 
-                    if (scene.static_collection_export
-                            or scene.anin_export):
+                    if (scene.bfu_use_static_collection_export
+                            or scene.bfu_use_anin_export):
                         return True
                     else:
                         return False
@@ -404,96 +404,6 @@ class BFU_PT_Export(bpy.types.Panel):
                 "command for "+scene.bfu_file_import_sequencer_script_name +
                 " copied")
             return {'FINISHED'}
-
-    # Categories :
-    bpy.types.Scene.static_export = bpy.props.BoolProperty(
-        name="StaticMesh(s)",
-        description="Check mark to export StaticMesh(s)",
-        default=True
-        )
-
-    bpy.types.Scene.static_collection_export = bpy.props.BoolProperty(
-        name="Collection(s) ",
-        description="Check mark to export Collection(s)",
-        default=True
-        )
-
-    bpy.types.Scene.skeletal_export = bpy.props.BoolProperty(
-        name="SkeletalMesh(s)",
-        description="Check mark to export SkeletalMesh(s)",
-        default=True
-        )
-
-    bpy.types.Scene.anin_export = bpy.props.BoolProperty(
-        name="Animation(s)",
-        description="Check mark to export Animation(s)",
-        default=True
-        )
-
-    bpy.types.Scene.alembic_export = bpy.props.BoolProperty(
-        name="Alembic Animation(s)",
-        description="Check mark to export Alembic animation(s)",
-        default=True
-        )
-    
-    bpy.types.Scene.groom_simulation_export = bpy.props.BoolProperty(
-        name="Groom Simulation(s)",
-        description="Check mark to export Alembic animation(s)",
-        default=True
-        )
-
-    bpy.types.Scene.camera_export = bpy.props.BoolProperty(
-        name="Camera(s)",
-        description="Check mark to export Camera(s)",
-        default=True
-        )
-    
-    bpy.types.Scene.spline_export = bpy.props.BoolProperty(
-        name="Spline(s)",
-        description="Check mark to export Spline(s)",
-        default=True
-        )
-
-    # Additional file
-    bpy.types.Scene.text_ExportLog = bpy.props.BoolProperty(
-        name="Export Log",
-        description="Check mark to write export log file",
-        default=True
-        )
-
-    bpy.types.Scene.text_ImportAssetScript = bpy.props.BoolProperty(
-        name="Import assets script",
-        description="Check mark to write import asset script file",
-        default=True
-        )
-
-    bpy.types.Scene.text_ImportSequenceScript = bpy.props.BoolProperty(
-        name="Import sequence script",
-        description="Check mark to write import sequencer script file",
-        default=True
-        )
-
-    bpy.types.Scene.text_AdditionalData = bpy.props.BoolProperty(
-        name="Additional data",
-        description=(
-            "Check mark to write additional data" +
-            " like parameter or anim tracks"),
-        default=True
-        )
-
-    # exportProperty
-    bpy.types.Scene.bfu_export_selection_filter = bpy.props.EnumProperty(
-        name="Selection filter",
-        items=[
-            ('default', "No Filter", "Export as normal all objects with the recursive export option.", 0),
-            ('only_object', "Only selected", "Export only the selected and visible object(s)", 1),
-            ('only_object_action', "Only selected and active action",
-                "Export only the selected and visible object(s) and active action on this object", 2),
-            ],
-        description=(
-            "Choose what need be export from asset list."),
-        default="default"
-        )
 
     def draw(self, context):
         

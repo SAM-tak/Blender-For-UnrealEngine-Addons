@@ -230,7 +230,7 @@ class BFU_FinalExportAssetCache(bpy.types.PropertyGroup):
 
         for collection in collectionList:
             # Collection
-            if scene.static_collection_export:
+            if scene.bfu_use_static_collection_export:
                 TargetAssetToExport.append(AssetToExport(collection, None, "Collection StaticMesh"))
 
         for obj in objList:
@@ -239,7 +239,7 @@ class BFU_FinalExportAssetCache(bpy.types.PropertyGroup):
             if bfu_skeletal_mesh.bfu_skeletal_mesh_utils.is_skeletal_mesh(obj):
 
                 # Skeletal Mesh
-                if scene.skeletal_export:
+                if scene.bfu_use_skeletal_export:
                     if obj.bfu_modular_skeletal_mesh_mode == "all_in_one":
                         asset = AssetToExport(obj, None, "SkeletalMesh")
                         asset.name = obj.name
@@ -270,7 +270,7 @@ class BFU_FinalExportAssetCache(bpy.types.PropertyGroup):
                                 TargetAssetToExport.append(asset)
 
                 # NLA
-                if scene.anin_export:
+                if scene.bfu_use_anin_export:
                     if obj.bfu_anim_nla_use:
                         TargetAssetToExport.append(AssetToExport(obj, obj.animation_data, "NlAnim"))
 
@@ -283,12 +283,12 @@ class BFU_FinalExportAssetCache(bpy.types.PropertyGroup):
                                 TargetAssetToExport.append(AssetToExport(obj, action, "Action"))
                     else:
                         # Action
-                        if scene.anin_export:
+                        if scene.bfu_use_anin_export:
                             if bfu_utils.GetActionType(action) == "Action":
                                 TargetAssetToExport.append(AssetToExport(obj, action, "Action"))
 
                         # Pose
-                        if scene.anin_export:
+                        if scene.bfu_use_anin_export:
                             if bfu_utils.GetActionType(action) == "Pose":
                                 TargetAssetToExport.append(AssetToExport(obj, action, "Pose"))
             # Others

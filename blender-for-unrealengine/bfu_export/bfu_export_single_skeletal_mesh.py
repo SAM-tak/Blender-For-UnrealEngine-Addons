@@ -65,7 +65,7 @@ def ProcessSkeletalMeshExport(op, armature, mesh_parts, desired_name=""):
     ExportSingleSkeletalMesh(op, scene, dirpath, file.GetFileWithExtension(), armature, mesh_parts)
 
     if not armature.bfu_export_as_lod_mesh:
-        if (scene.text_AdditionalData and addon_prefs.useGeneratedScripts):
+        if (scene.bfu_use_text_additional_data and addon_prefs.useGeneratedScripts):
         
             file: bfu_export_logs.BFU_OT_FileExport = MyAsset.files.add()
             file.file_name = file_name_at

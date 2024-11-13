@@ -60,7 +60,7 @@ def ProcessCameraExport(op, obj, pre_bake_camera: bfu_camera.bfu_camera_data.BFU
 
         ExportSingleFbxCamera(op, dirpath, file.GetFileWithExtension(), obj)
 
-    if scene.text_AdditionalData and addon_prefs.useGeneratedScripts:
+    if scene.bfu_use_text_additional_data and addon_prefs.useGeneratedScripts:
 
         file: bfu_export_logs.BFU_OT_FileExport = MyAsset.files.add()
         file.file_name = file_name_at

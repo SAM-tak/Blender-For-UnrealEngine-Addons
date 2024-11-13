@@ -61,7 +61,7 @@ def ProcessSplineExport(op, obj, pre_bake_spline: bfu_spline.bfu_spline_data.BFU
 
         ExportSingleFbxSpline(op, dirpath, file.GetFileWithExtension(), obj)
 
-    if scene.text_AdditionalData and addon_prefs.useGeneratedScripts:
+    if scene.bfu_use_text_additional_data and addon_prefs.useGeneratedScripts:
 
         file: bfu_export_logs.BFU_OT_FileExport = MyAsset.files.add()
         file.file_name = file_name_at

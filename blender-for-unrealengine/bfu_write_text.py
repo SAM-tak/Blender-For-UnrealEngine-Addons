@@ -213,7 +213,7 @@ def WriteAllTextFiles():
     addon_prefs = bfu_basics.GetAddonPrefs()
     
     root_dirpath = bpy.path.abspath(scene.bfu_export_other_file_path)
-    if scene.text_ExportLog:
+    if scene.bfu_use_text_export_log:
         Text = languages.ti("write_text_additional_track_start") + "\n"
         Text += "" + "\n"
         Text += WriteExportLog()
@@ -227,7 +227,7 @@ def WriteAllTextFiles():
     else:
         bfu_path = os.path.join(bbpl.blender_addon.addon_utils.get_addon_path("Unreal Engine Assets Exporter"), "bfu_import_module")
 
-    if scene.text_ImportAssetScript:
+    if scene.bfu_use_text_import_asset_script:
         json_data = bfu_write_import_asset_script.WriteImportAssetScript()
         ExportSingleJson(json_data, root_dirpath, "ImportAssetData.json")
         source = os.path.join(bfu_path, "asset_import_script.py")
@@ -235,7 +235,7 @@ def WriteAllTextFiles():
         destination = os.path.join(root_dirpath, filename)
         copyfile(source, destination)
 
-    if scene.text_ImportSequenceScript:
+    if scene.bfu_use_text_import_sequence_script:
         json_data = bfu_write_import_sequencer_script.WriteImportSequencerTracks()
         ExportSingleJson(json_data, root_dirpath, "ImportSequencerData.json")
         source = os.path.join(bfu_path, "sequencer_import_script.py")
