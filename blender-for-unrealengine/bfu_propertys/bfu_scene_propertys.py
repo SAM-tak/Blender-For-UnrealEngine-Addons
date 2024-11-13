@@ -56,6 +56,7 @@ def unregister():
     for cls in reversed(classes):
         bpy.utils.unregister_class(cls)
 
-    
+    del bpy.types.Scene.bfu_active_scene_tab
     del bpy.types.Scene.bfu_active_object_tab
+    del bpy.types.Scene.bfu_active_tab
 
