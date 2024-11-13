@@ -33,6 +33,7 @@ from .. import languages
 from .. import bfu_custom_property
 from .. import bfu_base_object
 from .. import bfu_adv_object
+from .. import bfu_base_collection
 from .. import bfu_material
 from .. import bfu_camera
 from .. import bfu_spline
@@ -919,6 +920,7 @@ class BFU_PT_BlenderForUnrealObject(bpy.types.Panel):
                 ]
             preset_values += bfu_base_object.bfu_base_obj_props.get_preset_values()
             preset_values += bfu_adv_object.bfu_adv_obj_props.get_preset_values()
+            preset_values += bfu_base_collection.bfu_base_col_props.get_preset_values()
             preset_values += bfu_modular_skeletal_specified_parts_meshs.get_preset_values()
             preset_values += bfu_custom_property.bfu_custom_property_props.get_preset_values()
             preset_values += bfu_material.bfu_material_props.get_preset_values()
@@ -1452,6 +1454,7 @@ class BFU_PT_BlenderForUnrealObject(bpy.types.Panel):
 
         bfu_base_object.bfu_base_obj_ui.draw_ui(layout, obj)
         bfu_adv_object.bfu_adv_obj_ui.draw_ui(layout, obj)
+        bfu_base_collection.bfu_base_col_ui.draw_ui(layout, obj)
         bfu_static_mesh.bfu_static_mesh_ui.draw_ui_object(layout, obj)
         bfu_skeletal_mesh.bfu_skeletal_mesh_ui.draw_ui_object(layout, obj)
         bfu_camera.bfu_camera_ui_and_props.draw_ui_object_camera(layout, obj)

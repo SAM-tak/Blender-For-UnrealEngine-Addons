@@ -42,7 +42,7 @@ def draw_ui(layout: bpy.types.UILayout, obj: bpy.types.Object):
         return
     if obj.bfu_export_type != "export_recursive":
         return
-    if bfu_skeletal_mesh.bfu_skeletal_mesh_utils.is_not_skeletal_mesh():
+    if bfu_skeletal_mesh.bfu_skeletal_mesh_utils.is_not_skeletal_mesh(obj):
         return
     
     # Draw UI
