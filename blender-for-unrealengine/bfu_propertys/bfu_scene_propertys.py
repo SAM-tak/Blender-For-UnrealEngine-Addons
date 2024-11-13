@@ -29,9 +29,7 @@ def register():
         bpy.utils.register_class(cls)
 
 
-    bpy.types.Scene.bfu_object_collision_properties_expanded = bbpl.blender_layout.layout_accordion.add_ui_accordion(name="Collision")
-    bpy.types.Scene.bfu_object_light_map_properties_expanded = bbpl.blender_layout.layout_accordion.add_ui_accordion(name="Light map")
-    bpy.types.Scene.bfu_object_uv_map_properties_expanded = bbpl.blender_layout.layout_accordion.add_ui_accordion(name="UV map")
+
 
     bpy.types.Scene.bfu_animation_action_properties_expanded = bbpl.blender_layout.layout_accordion.add_ui_accordion(name="Actions Properties")
     bpy.types.Scene.bfu_animation_action_advanced_properties_expanded = bbpl.blender_layout.layout_accordion.add_ui_accordion(name="Actions Advanced Properties")
@@ -77,9 +75,7 @@ def unregister():
     for cls in reversed(classes):
         bpy.utils.unregister_class(cls)
 
-    del bpy.types.Scene.bfu_object_collision_properties_expanded
-    del bpy.types.Scene.bfu_object_light_map_properties_expanded
-    del bpy.types.Scene.bfu_object_uv_map_properties_expanded
+
 
     del bpy.types.Scene.bfu_animation_action_properties_expanded
     del bpy.types.Scene.bfu_animation_action_advanced_properties_expanded

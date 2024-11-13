@@ -50,6 +50,8 @@ from . import bfu_socket
 from . import bfu_material
 from . import bfu_vertex_color
 from . import bfu_lod
+from . import bfu_uv_map
+from . import bfu_light_map
 from . import bfu_assets_references
 from . import bfu_custom_property
 from . import bfu_addon_parts
@@ -109,6 +111,10 @@ if "bfu_vertex_color" in locals():
     importlib.reload(bfu_vertex_color)
 if "bfu_lod" in locals():
     importlib.reload(bfu_lod)
+if "bfu_uv_map" in locals():
+    importlib.reload(bfu_uv_map)
+if "bfu_light_map" in locals():
+    importlib.reload(bfu_light_map)
 if "bfu_assets_references" in locals():
     importlib.reload(bfu_assets_references)
 if "bfu_custom_property" in locals():
@@ -183,6 +189,8 @@ def register():
     bfu_material.register()
     bfu_vertex_color.register()
     bfu_lod.register()
+    bfu_uv_map.register()
+    bfu_light_map.register()
     bfu_assets_references.register()
     bfu_custom_property.register()
     bfu_addon_parts.register()
@@ -208,6 +216,8 @@ def unregister():
     bfu_addon_parts.unregister()
     bfu_custom_property.unregister()
     bfu_assets_references.unregister()
+    bfu_light_map.unregister()
+    bfu_uv_map.unregister()
     bfu_lod.unregister()
     bfu_vertex_color.unregister()
     bfu_material.unregister()

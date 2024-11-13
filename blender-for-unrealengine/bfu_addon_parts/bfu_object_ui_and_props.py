@@ -44,6 +44,7 @@ from .. import bfu_lod
 from .. import bfu_alembic_animation
 from .. import bfu_groom
 from .. import bfu_assets_manager
+from .. import bfu_uv_map
 from .. import bfu_light_map
 from .. import bfu_assets_references
 
@@ -931,6 +932,8 @@ class BFU_PT_BlenderForUnrealObject(bpy.types.Panel):
             preset_values += bfu_alembic_animation.bfu_alembic_animation_props.get_preset_values()
             preset_values += bfu_vertex_color.bfu_vertex_color_props.get_preset_values()
             preset_values += bfu_lod.bfu_lod_props.get_preset_values()
+            preset_values += bfu_uv_map.bfu_uv_map_props.get_preset_values()
+            preset_values += bfu_light_map.bfu_light_map_props.get_preset_values()
             preset_values += bfu_assets_references.bfu_asset_ref_props.get_preset_values()
             return preset_values
 
@@ -1460,6 +1463,8 @@ class BFU_PT_BlenderForUnrealObject(bpy.types.Panel):
         bfu_camera.bfu_camera_ui_and_props.draw_ui_object_camera(layout, obj)
         bfu_spline.bfu_spline_ui_and_props.draw_ui_object_spline(layout, obj)
         bfu_lod.bfu_lod_ui.draw_ui(layout, obj)
+        bfu_uv_map.bfu_uv_map_ui.draw_ui(layout, obj)
+        bfu_light_map.bfu_light_map_ui.draw_ui(layout, obj)
         bfu_assets_references.bfu_asset_ref_ui.draw_ui(layout, obj)
 
 class BFU_OT_SceneCollectionExport(bpy.types.PropertyGroup):

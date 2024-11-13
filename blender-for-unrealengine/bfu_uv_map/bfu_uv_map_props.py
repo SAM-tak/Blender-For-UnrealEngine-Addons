@@ -18,52 +18,26 @@
 
 
 import bpy
-from . import bfu_light_map_utils
 from .. import bfu_basics
 from .. import bfu_utils
 from .. import bfu_ui
 from .. import bbpl
 
 
+
+
 def get_preset_values():
     preset_values = [
+            'obj.bfu_export_type',
+            'obj.bfu_export_folder_name',
         ]
     return preset_values
-
-class BFU_OT_ComputLightMap(bpy.types.Operator):
-    bl_label = "Calculate surface area"
-    bl_idname = "object.comput_lightmap"
-    bl_description = "Click to calculate the surface of the object"
-
-    def execute(self, context):
-        obj = context.object
-        obj.computedStaticMeshLightMapRes = bfu_utils.GetExportRealSurfaceArea(obj)
-        self.report(
-            {'INFO'},
-            "Light map area updated to " + str(round(obj.computedStaticMeshLightMapRes)) + ". " +
-            "Compunted Light map: " + str(bfu_light_map_utils.GetCompuntedLightMap(obj)))
-        return {'FINISHED'}
-
-class BFU_OT_ComputAllLightMap(bpy.types.Operator):
-    bl_label = "Calculate all surface area"
-    bl_idname = "object.comput_all_lightmap"
-    bl_description = (
-        "Click to calculate the surface of the all object in the scene"
-        )
-
-    def execute(self, context):
-        updated = bfu_utils.UpdateAreaLightMapList()
-        self.report({'INFO'}, "The light maps of " + str(updated) + " object(s) have been updated.")
-        return {'FINISHED'}
-
 
 # -------------------------------------------------------------------
 #   Register & Unregister
 # -------------------------------------------------------------------
 
 classes = (
-    BFU_OT_ComputLightMap,
-    BFU_OT_ComputAllLightMap
 )
 
 
@@ -71,11 +45,10 @@ def register():
     for cls in classes:
         bpy.utils.register_class(cls)
 
-    bpy.types.Scene.bfu_object_light_map_properties_expanded = bbpl.blender_layout.layout_accordion.add_ui_accordion(name="Light map")
-
+    bpy.types.Scene.bfu_object_uv_map_properties_expanded = bbpl.blender_layout.layout_accordion.add_ui_accordion(name="UV map")
 
 def unregister():
     for cls in reversed(classes):
         bpy.utils.unregister_class(cls)
 
-    del bpy.types.Scene.bfu_object_light_map_properties_expanded
+    del bpy.types.Scene.bfu_object_uv_map_properties_expanded
