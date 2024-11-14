@@ -18,8 +18,6 @@
 
 
 import bpy
-from .. import bpl
-from .. import bbpl
 from .. import bfu_cached_asset_list
 from .. import bfu_check_potential_error
 

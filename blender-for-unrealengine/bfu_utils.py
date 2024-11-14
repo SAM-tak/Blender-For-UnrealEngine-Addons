@@ -24,13 +24,10 @@ import fnmatch
 import mathutils
 import math
 import os
-import math
-import addon_utils
 from typing import List
 from . import bbpl
-from . import bpl
 from . import bfu_basics
-from . import bfu_assets_manager
+
 
 class SavedBones():
 

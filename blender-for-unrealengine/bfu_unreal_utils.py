@@ -18,9 +18,6 @@
 
 import os
 import bpy
-from . import bbpl
-from . import bpl
-from . import bfu_basics
 from . import bfu_utils
 
 def get_predicted_skeleton_name(obj):
