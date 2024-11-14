@@ -126,6 +126,7 @@ class BFU_PT_BlenderForUnrealObject(bpy.types.Panel):
         addon_prefs = bfu_basics.GetAddonPrefs()
         layout = self.layout
         
+        # Extension details
         if bpy.app.version >= (4, 2, 0):
             version_str = 'Version '+ str(bbpl.blender_extension.extension_utils.get_package_version())
         else:
@@ -141,31 +142,20 @@ class BFU_PT_BlenderForUnrealObject(bpy.types.Panel):
             icon="HELP"
             )
 
+        # Presets
         row = layout.row(align=True)
-        row.menu(
-            'BFU_MT_ObjectGlobalPropertiesPresets',
-            text='Global Properties Presets'
-            )
-        row.operator(
-            'object.add_globalproperties_preset',
-            text='',
-            icon='ADD'
-            )
-        row.operator(
-            'object.add_globalproperties_preset',
-            text='',
-            icon='REMOVE'
-            ).remove_active = True
+        row.menu('BFU_MT_ObjectGlobalPropertiesPresets', text='Global Properties Presets')
+        row.operator('object.add_globalproperties_preset', text='', icon='ADD')
+        row.operator('object.add_globalproperties_preset', text='', icon='REMOVE').remove_active = True
 
+        # Tab Buttions
         layout.row().prop(scene, "bfu_active_tab", expand=True)
         if scene.bfu_active_tab == "OBJECT":
             layout.row().prop(scene, "bfu_active_object_tab", expand=True)
         if scene.bfu_active_tab == "SCENE":
             layout.row().prop(scene, "bfu_active_scene_tab", expand=True)
 
-        bfu_material.bfu_material_ui.draw_ui_object_collision(layout)
-        bfu_vertex_color.bfu_vertex_color_ui.draw_ui_object_collision(layout)
-
+        # Main Sections
 
         if bfu_ui.bfu_ui_utils.DisplayPropertyFilter("OBJECT", "GENERAL"):
             
@@ -273,7 +263,6 @@ class BFU_PT_BlenderForUnrealObject(bpy.types.Panel):
                             
                 else:
                     layout.label(text='(No properties to show.)')
-
 
         if bfu_ui.bfu_ui_utils.DisplayPropertyFilter("OBJECT", "ANIM"):
             if obj is not None:
@@ -542,10 +531,9 @@ class BFU_PT_BlenderForUnrealObject(bpy.types.Panel):
                 collectionPropertyInfo.operator("object.showscenecollection")
                 layout.label(text='Note: The collection are exported like StaticMesh.')
 
-
+        # Object
         bfu_base_object.bfu_base_obj_ui.draw_ui(layout, obj)
         bfu_adv_object.bfu_adv_obj_ui.draw_ui(layout, obj)
-        bfu_base_collection.bfu_base_col_ui.draw_ui(layout, obj)
         bfu_static_mesh.bfu_static_mesh_ui.draw_ui_object(layout, obj)
         bfu_skeletal_mesh.bfu_skeletal_mesh_ui.draw_ui_object(layout, obj)
         bfu_camera.bfu_camera_ui_and_props.draw_ui_object_camera(layout, obj)
@@ -553,7 +541,10 @@ class BFU_PT_BlenderForUnrealObject(bpy.types.Panel):
         bfu_lod.bfu_lod_ui.draw_ui(layout, obj)
         bfu_uv_map.bfu_uv_map_ui.draw_obj_ui(layout, obj)
         bfu_light_map.bfu_light_map_ui.draw_obj_ui(layout, obj)
+        bfu_material.bfu_material_ui.draw_ui_object(layout)
+        bfu_vertex_color.bfu_vertex_color_ui.draw_ui_object(layout)
         bfu_assets_references.bfu_asset_ref_ui.draw_ui(layout, obj)
+
 
         # Animations
         bfu_anim_base.bfu_anim_base_ui.draw_ui(layout, obj)
@@ -562,6 +553,8 @@ class BFU_PT_BlenderForUnrealObject(bpy.types.Panel):
         bfu_anim_nla.bfu_anim_nla_ui.draw_ui(layout, obj)
         bfu_anim_nla_adv.bfu_anim_nla_adv_ui.draw_ui(layout, obj)
 
+        # Scene
+        bfu_base_collection.bfu_base_col_ui.draw_ui(layout, obj)
         
 
 

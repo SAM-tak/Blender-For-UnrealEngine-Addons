@@ -27,7 +27,7 @@ from .. import bfu_assets_manager
 
 
 
-def draw_ui_object_collision(layout: bpy.types.UILayout):
+def draw_ui_object(layout: bpy.types.UILayout):
     if bfu_ui.bfu_ui_utils.DisplayPropertyFilter("OBJECT", "MISC"):
 
         scene = bpy.context.scene
