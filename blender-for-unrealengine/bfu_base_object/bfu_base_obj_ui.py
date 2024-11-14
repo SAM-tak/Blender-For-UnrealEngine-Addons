@@ -22,6 +22,10 @@ from .. import bfu_basics
 from .. import bfu_utils
 from .. import bfu_ui
 from .. import bbpl
+from .. import bfu_assets_manager
+from .. import bfu_alembic_animation
+from .. import bfu_groom
+from .. import bfu_skeletal_mesh
 
 
 def draw_ui(layout: bpy.types.UILayout, obj: bpy.types.Object):
@@ -31,13 +35,52 @@ def draw_ui(layout: bpy.types.UILayout, obj: bpy.types.Object):
 
     # Hide filters
     if obj is None:
-        return
+        layout.row().label(text='No active object.')
     if bfu_utils.GetExportAsProxy(obj):
         return
     if obj.bfu_export_type != "export_recursive":
         return
     
     if bfu_ui.bfu_ui_utils.DisplayPropertyFilter("OBJECT", "GENERAL"):
-        scene.bfu_object_advanced_properties_expanded.draw(layout)
-        if scene.bfu_object_advanced_properties_expanded.is_expend():
-            pass
+        scene.bfu_object_properties_expanded.draw(layout)
+        if scene.bfu_object_properties_expanded.is_expend():
+            AssetType = layout.row()
+            AssetType.prop(obj, 'name', text="", icon='OBJECT_DATA')
+            # Show asset type
+            asset_class = bfu_assets_manager.bfu_asset_manager_utils.get_asset_class(obj)
+            if asset_class:
+                asset_type_name = asset_class.get_asset_type_name(obj)
+            else:
+                asset_type_name = "Asset type not found."
+
+            AssetType.label(text='('+asset_type_name+')')
+
+            ExportType = layout.column()
+            ExportType.prop(obj, 'bfu_export_type')
+
+
+            if obj.bfu_export_type == "export_recursive":
+
+                folderNameProperty = layout.column()
+                folderNameProperty.prop(obj, 'bfu_export_folder_name', icon='FILE_FOLDER')
+
+                ProxyProp = layout.column()
+                if bfu_utils.GetExportAsProxy(obj):
+                    ProxyProp.label(text="The Armature was detected as a proxy.")
+                    proxy_child = bfu_utils.GetExportProxyChild(obj)
+                    if proxy_child:
+                        ProxyProp.label(text="Proxy child: " + proxy_child.name)
+                    else:
+                        ProxyProp.label(text="Proxy child not found")
+
+                if not bfu_utils.GetExportAsProxy(obj):
+                    # exportCustomName
+                    exportCustomName = layout.row()
+                    exportCustomName.prop(obj, "bfu_use_custom_export_name")
+                    useCustomName = obj.bfu_use_custom_export_name
+                    exportCustomNameText = exportCustomName.column()
+                    exportCustomNameText.prop(obj, "bfu_custom_export_name")
+                    exportCustomNameText.enabled = useCustomName
+            bfu_alembic_animation.bfu_alembic_animation_ui.draw_general_ui_object(layout, obj)
+            bfu_groom.bfu_groom_ui.draw_general_ui_object(layout, obj)
+            bfu_skeletal_mesh.bfu_skeletal_mesh_ui.draw_general_ui_object(layout, obj)

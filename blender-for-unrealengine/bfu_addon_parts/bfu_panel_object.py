@@ -155,120 +155,13 @@ class BFU_PT_BlenderForUnrealObject(bpy.types.Panel):
         if scene.bfu_active_tab == "SCENE":
             layout.row().prop(scene, "bfu_active_scene_tab", expand=True)
 
-        # Main Sections
-
-        if bfu_ui.bfu_ui_utils.DisplayPropertyFilter("OBJECT", "GENERAL"):
-            
-            scene.bfu_object_properties_expanded.draw(layout)
-            if scene.bfu_object_properties_expanded.is_expend():
-
-                if obj is None:
-                    layout.row().label(text='No selected object.')
-                else:
-
-                    AssetType = layout.row()
-                    AssetType.prop(obj, 'name', text="", icon='OBJECT_DATA')
-                    # Show asset type
-                    asset_class = bfu_assets_manager.bfu_asset_manager_utils.get_asset_class(obj)
-                    if asset_class:
-                        asset_type_name = asset_class.get_asset_type_name(obj)
-                    else:
-                        asset_type_name = "Asset type not found."
-
-                    AssetType.label(text='('+asset_type_name+')')
-
-                    ExportType = layout.column()
-                    ExportType.prop(obj, 'bfu_export_type')
-
-
-                    if obj.bfu_export_type == "export_recursive":
-
-                        folderNameProperty = layout.column()
-                        folderNameProperty.prop(obj, 'bfu_export_folder_name', icon='FILE_FOLDER')
-
-                        ProxyProp = layout.column()
-                        if bfu_utils.GetExportAsProxy(obj):
-                            ProxyProp.label(text="The Armature was detected as a proxy.")
-                            proxy_child = bfu_utils.GetExportProxyChild(obj)
-                            if proxy_child:
-                                ProxyProp.label(text="Proxy child: " + proxy_child.name)
-                            else:
-                                ProxyProp.label(text="Proxy child not found")
-
-                        if not bfu_utils.GetExportAsProxy(obj):
-                            # exportCustomName
-                            exportCustomName = layout.row()
-                            exportCustomName.prop(obj, "bfu_use_custom_export_name")
-                            useCustomName = obj.bfu_use_custom_export_name
-                            exportCustomNameText = exportCustomName.column()
-                            exportCustomNameText.prop(obj, "bfu_custom_export_name")
-                            exportCustomNameText.enabled = useCustomName
-                    bfu_alembic_animation.bfu_alembic_animation_ui.draw_general_ui_object(layout, obj)
-                    bfu_groom.bfu_groom_ui.draw_general_ui_object(layout, obj)
-                    bfu_skeletal_mesh.bfu_skeletal_mesh_ui.draw_general_ui_object(layout, obj)
-
-
-
-
-            
-
-
-            bfu_alembic_animation.bfu_alembic_animation_ui.draw_ui_object(layout, obj)
-            bfu_groom.bfu_groom_ui.draw_ui_object(layout, obj)
-
-            scene.bfu_object_advanced_properties_expanded.draw(layout)
-            if scene.bfu_object_advanced_properties_expanded.is_expend():
-                if obj is not None:
-                    if obj.bfu_export_type == "export_recursive":
-
-                        transformProp = layout.column()
-                        is_not_alembic_animation = not bfu_alembic_animation.bfu_alembic_animation_utils.is_alembic_animation(obj)
-                        is_not_camera = not bfu_camera.bfu_camera_utils.is_camera(obj)
-                        if is_not_alembic_animation and is_not_camera:
-                            transformProp.prop(obj, "bfu_move_to_center_for_export")
-                            transformProp.prop(obj, "bfu_rotate_to_zero_for_export")
-                            transformProp.prop(obj, "bfu_additional_location_for_export")
-                            transformProp.prop(obj, "bfu_additional_rotation_for_export")
-                            
-                        transformProp.prop(obj, 'bfu_export_global_scale')
-                        if bfu_camera.bfu_camera_utils.is_camera(obj):
-                            transformProp.prop(obj, "bfu_additional_location_for_export")
-
-                        AxisProperty = layout.column()
-                        
-                        AxisProperty.prop(obj, 'bfu_override_procedure_preset')
-                        if obj.bfu_override_procedure_preset:
-                            AxisProperty.prop(obj, 'bfu_export_use_space_transform')
-                            AxisProperty.prop(obj, 'bfu_export_axis_forward')
-                            AxisProperty.prop(obj, 'bfu_export_axis_up')
-                            bbpl.blender_layout.layout_doc_button.add_doc_page_operator(AxisProperty, text="About axis Transforms", url="https://github.com/xavier150/Blender-For-UnrealEngine-Addons/wiki/Axis-Transforms")
-                            if bfu_skeletal_mesh.bfu_skeletal_mesh_utils.is_skeletal_mesh(obj):
-                                BoneAxisProperty = layout.column()
-                                BoneAxisProperty.prop(obj, 'bfu_export_primary_bone_axis')
-                                BoneAxisProperty.prop(obj, 'bfu_export_secondary_bone_axis')
-                        else:
-                            box = layout.box()
-                            if bfu_skeletal_mesh.bfu_skeletal_mesh_utils.is_skeletal_mesh(obj):
-                                preset = bfu_export_procedure.bfu_skeleton_export_procedure.get_obj_skeleton_procedure_preset(obj)
-                            else:
-                                preset = bfu_export_procedure.bfu_static_export_procedure.get_obj_static_procedure_preset(obj)
-                            var_lines = box.column()
-                            for key, value in preset.items():
-                                display_key = bpl.utils.format_property_name(key)
-                                var_lines.label(text=f"{display_key}: {value}\n")
-                        export_data = layout.column()
-                        bfu_custom_property.bfu_custom_property_utils.draw_ui_custom_property(export_data, obj)
-                        export_data.prop(obj, "bfu_export_with_meta_data")
-
-                            
-                else:
-                    layout.label(text='(No properties to show.)')
-
         # Object
         bfu_base_object.bfu_base_obj_ui.draw_ui(layout, obj)
         bfu_adv_object.bfu_adv_obj_ui.draw_ui(layout, obj)
         bfu_static_mesh.bfu_static_mesh_ui.draw_ui_object(layout, obj)
         bfu_skeletal_mesh.bfu_skeletal_mesh_ui.draw_ui_object(layout, obj)
+        bfu_alembic_animation.bfu_alembic_animation_ui.draw_ui_object(layout, obj)
+        bfu_groom.bfu_groom_ui.draw_ui_object(layout, obj)
         bfu_camera.bfu_camera_ui_and_props.draw_ui_object_camera(layout, obj)
         bfu_spline.bfu_spline_ui_and_props.draw_ui_object_spline(layout, obj)
         bfu_lod.bfu_lod_ui.draw_ui(layout, obj)
