@@ -20,7 +20,6 @@
 import os
 import bpy
 import addon_utils
-from . import bfu_modular_skeletal_specified_parts_meshs
 from .. import bbpl
 from .. import bpl
 from .. import bfu_export_procedure
@@ -40,6 +39,7 @@ from .. import bfu_spline
 from .. import bfu_vertex_color
 from .. import bfu_static_mesh
 from .. import bfu_skeletal_mesh
+from .. import bfu_modular_skeletal_mesh
 from .. import bfu_lod
 from .. import bfu_alembic_animation
 from .. import bfu_anim_base
@@ -84,7 +84,7 @@ class BFU_PT_BlenderForUnrealObject(bpy.types.Panel):
             preset_values += bfu_base_object.bfu_base_obj_props.get_preset_values()
             preset_values += bfu_adv_object.bfu_adv_obj_props.get_preset_values()
             preset_values += bfu_base_collection.bfu_base_col_props.get_preset_values()
-            preset_values += bfu_modular_skeletal_specified_parts_meshs.get_preset_values()
+            preset_values += bfu_modular_skeletal_mesh.bfu_modular_skeletal_mesh_props.get_preset_values()
             preset_values += bfu_custom_property.bfu_custom_property_props.get_preset_values()
             preset_values += bfu_material.bfu_material_props.get_preset_values()
             preset_values += bfu_camera.bfu_camera_ui_and_props.get_preset_values()
@@ -160,6 +160,7 @@ class BFU_PT_BlenderForUnrealObject(bpy.types.Panel):
         bfu_adv_object.bfu_adv_obj_ui.draw_ui(layout, obj)
         bfu_static_mesh.bfu_static_mesh_ui.draw_ui_object(layout, obj)
         bfu_skeletal_mesh.bfu_skeletal_mesh_ui.draw_ui_object(layout, obj)
+        bfu_modular_skeletal_mesh.bfu_modular_skeletal_mesh_ui.draw_ui_object(layout, obj)
         bfu_alembic_animation.bfu_alembic_animation_ui.draw_ui_object(layout, obj)
         bfu_groom.bfu_groom_ui.draw_ui_object(layout, obj)
         bfu_camera.bfu_camera_ui_and_props.draw_ui_object_camera(layout, obj)

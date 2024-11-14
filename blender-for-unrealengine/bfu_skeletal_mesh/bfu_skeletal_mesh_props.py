@@ -49,7 +49,6 @@ def register():
         bpy.utils.register_class(cls)
 
     bpy.types.Scene.bfu_skeleton_properties_expanded = bbpl.blender_layout.layout_accordion.add_ui_accordion(name="Skeleton")
-    bpy.types.Scene.bfu_modular_skeletal_mesh_properties_expanded = bbpl.blender_layout.layout_accordion.add_ui_accordion(name="Modular Skeletal Mesh")
 
     bpy.types.Object.bfu_export_deform_only = bpy.props.BoolProperty(
         name="Export only deform bones",
@@ -116,5 +115,4 @@ def unregister():
 
     del bpy.types.Object.bfu_export_deform_only
 
-    del bpy.types.Scene.bfu_modular_skeletal_mesh_properties_expanded
     del bpy.types.Scene.bfu_skeleton_properties_expanded

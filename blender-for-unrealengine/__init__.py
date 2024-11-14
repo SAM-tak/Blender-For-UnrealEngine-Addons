@@ -41,6 +41,7 @@ from . import bfu_adv_object
 from . import bfu_base_collection
 from . import bfu_static_mesh
 from . import bfu_skeletal_mesh
+from . import bfu_modular_skeletal_mesh
 from . import bfu_alembic_animation
 from . import bfu_anim_base
 from . import bfu_anim_action
@@ -101,6 +102,8 @@ if "bfu_static_mesh" in locals():
     importlib.reload(bfu_static_mesh)
 if "bfu_skeletal_mesh" in locals():
     importlib.reload(bfu_skeletal_mesh)
+if "bfu_modular_skeletal_mesh" in locals():
+    importlib.reload(bfu_modular_skeletal_mesh)
 if "bfu_alembic_animation" in locals():
     importlib.reload(bfu_alembic_animation)
 if "bfu_anim_base" in locals():
@@ -204,6 +207,7 @@ def register():
     bfu_base_collection.register()
     bfu_static_mesh.register()
     bfu_skeletal_mesh.register()
+    bfu_modular_skeletal_mesh.register()
     bfu_alembic_animation.register()
     bfu_anim_base.register()
     bfu_anim_action.register()
@@ -267,6 +271,7 @@ def unregister():
     bfu_anim_base.unregister()
     bfu_alembic_animation.unregister()
     bfu_groom.unregister()
+    bfu_modular_skeletal_mesh.unregister()
     bfu_skeletal_mesh.unregister()
     bfu_static_mesh.unregister()
     bfu_base_collection.unregister()

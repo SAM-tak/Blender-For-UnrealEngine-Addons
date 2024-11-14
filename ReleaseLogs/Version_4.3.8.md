@@ -3,6 +3,7 @@ Release Logs: https://github.com/xavier150/Blender-For-UnrealEngine-Addons/wiki/
 
 ### Version 4.3.8
 
+- Full addon refactoring for better properties and UI management and organization.
 - Fixed: Custom Skeletal Mesh Ref not well used.
 - Fixed: Skeleton search use only loaded assets.
 - Fixed: Export curve as static mesh do export fail.
