@@ -79,6 +79,7 @@ class FBXExporterGenerate:
         # Create the destination folder in the parent directory
         self.update_fbx_addon_version()
         version_as_module = self.get_str_version()
+        print("Start Generate ", version_as_module)
         dest_folder = os.path.join(parent_directory, io_scene_fbx_prefix+version_as_module)
         if not os.path.exists(dest_folder):
             os.makedirs(dest_folder)
@@ -112,8 +113,6 @@ class FBXExporterGenerate:
                     self.fbx_addon_version = tuple(map(int, elements))
                     return
 
-
-
     def copy_export_files(self, dest_folder):
         addon_folder = self.get_addon_folder()
         new_files = []
@@ -132,7 +131,9 @@ class FBXExporterGenerate:
             else:
                 print(f"File does not exist: {source_file}")
 
-        print(f"Copied specified FBX exporter files for Blender {self.version} to {dest_folder}")
+        print(f"Copied specified FBX exporter files.")
+        print(f"Source: {source_file}")
+        print(f"Target: {dest_folder}")
         return new_files
 
 
