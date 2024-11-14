@@ -4,7 +4,7 @@ import mathutils
 from typing import Dict, Any
 from . import bfu_spline_utils
 from . import bfu_spline_unreal_utils
-from .. import bps
+from .. import bpl
 from .. import bbpl
 from .. import languages
 from .. import bfu_basics
@@ -204,7 +204,7 @@ class BFU_SimpleSpline():
         addon_prefs = bfu_basics.GetAddonPrefs()
 
         #print(f"Start evaluate spline_data index {str(index)}")
-        counter = bps.utils.CounterTimer()
+        counter = bpl.utils.CounterTimer()
         
         if spline_data.type in ["POLY"]:
             for point in spline_data.points:
@@ -274,7 +274,7 @@ class BFU_SplinesList():
         addon_prefs = bfu_basics.GetAddonPrefs()
 
         #print(f"Start evaluate spline {spline_obj.name}")
-        counter = bps.utils.CounterTimer()
+        counter = bpl.utils.CounterTimer()
         
         for x, spline_data in enumerate(spline_obj.data.splines):
             simple_spline = self.simple_splines[x] = BFU_SimpleSpline(spline_data)
@@ -301,7 +301,7 @@ class BFU_MultiSplineTracks():
         scene = bpy.context.scene
         addon_prefs = bfu_basics.GetAddonPrefs()
 
-        counter = bps.utils.CounterTimer()
+        counter = bpl.utils.CounterTimer()
 
         slms = bfu_utils.TimelineMarkerSequence()
 

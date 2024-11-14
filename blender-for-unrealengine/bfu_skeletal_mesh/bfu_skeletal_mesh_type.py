@@ -30,13 +30,14 @@ class BFU_SkeletalMesh(bfu_assets_manager.bfu_asset_manager_type.BFU_BaseAssetCl
         super().__init__()
         self.use_materials = True
 
-    def support_asset_type(self, obj):
+    def support_asset_type(self, obj, details = None):
         if obj.type == "ARMATURE" and not obj.bfu_export_skeletal_mesh_as_static_mesh:
-            return True
+            if details == None:
+                return True
         return False
 
     def get_asset_type_name(self, obj):
-        return bfu_skeletal_mesh_config.asset_type_name
+        return bfu_skeletal_mesh_config.mesh_asset_type_name
 
     def get_obj_export_name(self, obj):
         if bfu_utils.GetExportAsProxy(obj):
@@ -55,13 +56,18 @@ class BFU_SkeletalMesh(bfu_assets_manager.bfu_asset_manager_type.BFU_BaseAssetCl
             return bfu_basics.ValidFilename(scene.bfu_skeletal_mesh_prefix_export_name+desired_name+fileType)
         return bfu_basics.ValidFilename(scene.bfu_skeletal_mesh_prefix_export_name+obj.name+fileType)
             
-    def get_obj_export_directory_path(self, obj):
+    def get_obj_export_directory_path(self, obj, absolute = True):
         folder_name = bfu_utils.get_export_folder_name(obj)
         scene = bpy.context.scene
-        if obj.bfu_create_sub_folder_with_skeletal_mesh_name:
-            dirpath = os.path.join(scene.bfu_export_skeletal_file_path, folder_name, self.get_obj_export_name(obj))
+        if(absolute):
+            root_path = bpy.path.abspath(scene.bfu_export_skeletal_file_path)
         else:
-            dirpath = os.path.join(scene.bfu_export_skeletal_file_path, folder_name)
+            root_path = scene.bfu_export_skeletal_file_path
+    
+        if obj.bfu_create_sub_folder_with_skeletal_mesh_name:
+            dirpath = os.path.join(root_path, folder_name, self.get_obj_export_name(obj))
+        else:
+            dirpath = os.path.join(root_path, folder_name)
         return dirpath
     
     def get_meshs_object_for_skeletal_mesh(self, obj):
@@ -75,7 +81,7 @@ class BFU_SkeletalMesh(bfu_assets_manager.bfu_asset_manager_type.BFU_BaseAssetCl
 
     def can_export_asset(self):
         scene = bpy.context.scene
-        return scene.skeletal_export
+        return scene.bfu_use_skeletal_export
 
     def can_export_obj_asset(self, obj):
         if self.can_export_asset():

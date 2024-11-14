@@ -28,31 +28,6 @@ def register():
     for cls in classes:
         bpy.utils.register_class(cls)
 
-    bpy.types.Scene.bfu_object_properties_expanded = bbpl.blender_layout.layout_accordion.add_ui_accordion(name="Object Properties")
-    bpy.types.Scene.bfu_object_lod_properties_expanded = bbpl.blender_layout.layout_accordion.add_ui_accordion(name="Lod")
-    bpy.types.Scene.bfu_object_collision_properties_expanded = bbpl.blender_layout.layout_accordion.add_ui_accordion(name="Collision")
-    bpy.types.Scene.bfu_object_light_map_properties_expanded = bbpl.blender_layout.layout_accordion.add_ui_accordion(name="Light map")
-    bpy.types.Scene.bfu_object_uv_map_properties_expanded = bbpl.blender_layout.layout_accordion.add_ui_accordion(name="UV map")
-
-    bpy.types.Scene.bfu_animation_action_properties_expanded = bbpl.blender_layout.layout_accordion.add_ui_accordion(name="Actions Properties")
-    bpy.types.Scene.bfu_animation_action_advanced_properties_expanded = bbpl.blender_layout.layout_accordion.add_ui_accordion(name="Actions Advanced Properties")
-    bpy.types.Scene.bfu_animation_nla_properties_expanded = bbpl.blender_layout.layout_accordion.add_ui_accordion(name="NLA Properties")
-    bpy.types.Scene.bfu_animation_nla_advanced_properties_expanded = bbpl.blender_layout.layout_accordion.add_ui_accordion(name="NLA Advanced Properties")
-    bpy.types.Scene.bfu_animation_advanced_properties_expanded = bbpl.blender_layout.layout_accordion.add_ui_accordion(name="Animation Advanced Properties")
-
-    bpy.types.Scene.bfu_engine_ref_properties_expanded = bbpl.blender_layout.layout_accordion.add_ui_accordion(name="Engine Refs")
-
-    bpy.types.Scene.bfu_collection_properties_expanded = bbpl.blender_layout.layout_accordion.add_ui_accordion(name="Collection Properties")
-    bpy.types.Scene.bfu_object_advanced_properties_expanded = bbpl.blender_layout.layout_accordion.add_ui_accordion(name="Object advanced Properties")
-    bpy.types.Scene.bfu_collision_expanded = bbpl.blender_layout.layout_accordion.add_ui_accordion(name="Collision")
-    bpy.types.Scene.bfu_socket_expanded = bbpl.blender_layout.layout_accordion.add_ui_accordion(name="Socket")
-    bpy.types.Scene.bfu_uvmap_expanded = bbpl.blender_layout.layout_accordion.add_ui_accordion(name="UV Map")
-    bpy.types.Scene.bfu_lightmap_expanded = bbpl.blender_layout.layout_accordion.add_ui_accordion(name="Light Map")
-    bpy.types.Scene.bfu_nomenclature_properties_expanded = bbpl.blender_layout.layout_accordion.add_ui_accordion(name="Nomenclature")
-    bpy.types.Scene.bfu_export_filter_properties_expanded = bbpl.blender_layout.layout_accordion.add_ui_accordion(name="Export filters")
-    bpy.types.Scene.bfu_export_process_properties_expanded = bbpl.blender_layout.layout_accordion.add_ui_accordion(name="Export process")
-    bpy.types.Scene.bfu_script_tool_expanded = bbpl.blender_layout.layout_accordion.add_ui_accordion(name="Copy Import Script")
-
     bpy.types.Scene.bfu_active_tab = bpy.props.EnumProperty(
         items=(
             ('OBJECT', 'Object', 'Object tab.'),
@@ -81,30 +56,7 @@ def unregister():
     for cls in reversed(classes):
         bpy.utils.unregister_class(cls)
 
-    del bpy.types.Scene.bfu_object_properties_expanded
-    del bpy.types.Scene.bfu_object_lod_properties_expanded
-    del bpy.types.Scene.bfu_object_collision_properties_expanded
-    del bpy.types.Scene.bfu_object_light_map_properties_expanded
-    del bpy.types.Scene.bfu_object_uv_map_properties_expanded
-
-    del bpy.types.Scene.bfu_animation_action_properties_expanded
-    del bpy.types.Scene.bfu_animation_action_advanced_properties_expanded
-    del bpy.types.Scene.bfu_animation_nla_properties_expanded
-    del bpy.types.Scene.bfu_animation_nla_advanced_properties_expanded
-    del bpy.types.Scene.bfu_animation_advanced_properties_expanded
-
-    del bpy.types.Scene.bfu_engine_ref_properties_expanded
-
-    del bpy.types.Scene.bfu_collection_properties_expanded
-    del bpy.types.Scene.bfu_object_advanced_properties_expanded
-    del bpy.types.Scene.bfu_collision_expanded
-    del bpy.types.Scene.bfu_uvmap_expanded
-    del bpy.types.Scene.bfu_socket_expanded
-    del bpy.types.Scene.bfu_lightmap_expanded
-    del bpy.types.Scene.bfu_nomenclature_properties_expanded
-    del bpy.types.Scene.bfu_export_filter_properties_expanded
-    del bpy.types.Scene.bfu_export_process_properties_expanded
-    del bpy.types.Scene.bfu_script_tool_expanded
-
+    del bpy.types.Scene.bfu_active_scene_tab
     del bpy.types.Scene.bfu_active_object_tab
+    del bpy.types.Scene.bfu_active_tab
 

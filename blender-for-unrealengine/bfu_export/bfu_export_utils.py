@@ -47,6 +47,7 @@ def GetExportFullpath(dirpath, filename):
 
 def ApplyProxyData(obj):
 
+    scene = bpy.context.scene
     # Apply proxy data if needed.
     if bfu_utils.GetExportProxyChild(obj) is not None:
 
@@ -76,8 +77,8 @@ def ApplyProxyData(obj):
                                 cons.target.name +
                                 "_UEProxyChild"
                             )
-                            if ChildProxyName in bpy.data.objects:
-                                cons.target = bpy.data.objects[ChildProxyName]
+                            if ChildProxyName in scene.objects:
+                                cons.target = scene.objects[ChildProxyName]
 
         # Get old armature in selected objects
         OldProxyChildArmature = None
@@ -101,17 +102,17 @@ def ApplyProxyData(obj):
                     else:
                         ToRemove.append(selectedObj)
             ReasignProxySkeleton(obj, OldProxyChildArmature)
-            SavedSelect = bbpl.utils.UserSelectSave()
+            SavedSelect = bbpl.save_data.select_save.UserSelectSave()
             SavedSelect.save_current_select()
 
             RemovedObjects = bfu_utils.CleanDeleteObjects(ToRemove)
             SavedSelect.remove_from_list_by_name(RemovedObjects)
-            SavedSelect.reset_select_by_ref()
+            SavedSelect.reset_select()
 
 
 def BakeArmatureAnimation(armature, frame_start, frame_end):
     # Change to pose mode
-    SavedSelect = bbpl.utils.UserSelectSave()
+    SavedSelect = bbpl.save_data.select_save.UserSelectSave()
     SavedSelect.save_current_select()
     bpy.ops.object.select_all(action='DESELECT')
     bbpl.utils.select_specific_object(armature)
@@ -125,7 +126,7 @@ def BakeArmatureAnimation(armature, frame_start, frame_end):
         bake_types={'POSE'}
         )
     bpy.ops.object.select_all(action='DESELECT')
-    SavedSelect.reset_select_by_ref()
+    SavedSelect.reset_select()
 
 
 def DuplicateSelectForExport():
@@ -138,12 +139,12 @@ def DuplicateSelectForExport():
             self.duplicate_select = None
 
         def SetOriginSelect(self):
-            select = bbpl.utils.UserSelectSave()
+            select = bbpl.save_data.select_save.UserSelectSave()
             select.save_current_select()
             self.origin_select = select
 
         def SetDuplicateSelect(self):
-            select = bbpl.utils.UserSelectSave()
+            select = bbpl.save_data.select_save.UserSelectSave()
             select.save_current_select()
             self.duplicate_select = select
 
@@ -157,6 +158,7 @@ def DuplicateSelectForExport():
         def RemoveData(self):
             bfu_utils.RemoveUselessSpecificData(self.data_name, self.data_type)
 
+    scene = bpy.context.scene
     duplicate_data = DuplicateData()
     duplicate_data.SetOriginSelect()
     for user_selected in duplicate_data.origin_select.user_selecteds:
@@ -181,7 +183,7 @@ def DuplicateSelectForExport():
 
     for objSelect in currentSelectNames:
         if objSelect not in bpy.context.selected_objects:
-            bpy.data.objects[objSelect].select_set(True)
+            scene.objects[objSelect].select_set(True)
 
     # Make sigle user and clean useless data.
     for objScene in bpy.context.selected_objects:
@@ -215,7 +217,8 @@ def ResetDuplicateNameAfterExport(duplicate_data):
 
 def ConvertSelectedCurveToMesh():
     # Have to convert curve to mesh before MakeSelectVisualReal for avoid double duplicate issue.
-    select = bbpl.utils.UserSelectSave()
+    scene = bpy.context.scene
+    select = bbpl.save_data.select_save.UserSelectSave()
     select.save_current_select()
     
     bpy.ops.object.select_all(action='DESELECT')
@@ -223,11 +226,11 @@ def ConvertSelectedCurveToMesh():
     
     for selected_obj in select.user_selecteds:
         if selected_obj.type == "CURVE":
-            selected_obj.select_set(True)
+            selected_obj.select_set(False)
 
     # Save object list
     previous_objects = []
-    for obj in bpy.data.objects:
+    for obj in scene.objects:
         previous_objects.append(obj)
 
     # Convert to mesh
@@ -235,20 +238,21 @@ def ConvertSelectedCurveToMesh():
         bpy.context.view_layer.objects.active = bpy.context.selected_objects[0] #Convert fail if active is none.
         bpy.ops.object.convert(target='MESH')
 
-    select.reset_select_by_name()
+    select.reset_select(use_names = True)
     
     # Select the new objects
-    for obj in bpy.data.objects:
+    for obj in scene.objects:
         if obj not in previous_objects:
             obj.select_set(True)
 
 def MakeSelectVisualReal():
-    select = bbpl.utils.UserSelectSave()
+    scene = bpy.context.scene
+    select = bbpl.save_data.select_save.UserSelectSave()
     select.save_current_select()
 
     # Save object list
     previous_objects = []
-    for obj in bpy.data.objects:
+    for obj in scene.objects:
         previous_objects.append(obj)
 
     # Visual Transform Apply
@@ -260,10 +264,10 @@ def MakeSelectVisualReal():
         use_hierarchy=True
         )
 
-    select.reset_select_by_name()
+    select.reset_select(use_names = True)
     
     # Select the new objects
-    for obj in bpy.data.objects:
+    for obj in scene.objects:
         if obj not in previous_objects:
             obj.select_set(True)
 
@@ -402,7 +406,7 @@ def ConvertGeometryNodeAttributeToUV(obj, attrib_name):
                     if attribute.name == attrib_name:
                         obj.data.attributes.active_index = x
 
-            SavedSelect = bbpl.utils.UserSelectSave()
+            SavedSelect = bbpl.save_data.select_save.UserSelectSave()
             SavedSelect.save_current_select()
             bbpl.utils.select_specific_object(obj)
             if bpy.app.version >= (3, 5, 0):
@@ -411,7 +415,7 @@ def ConvertGeometryNodeAttributeToUV(obj, attrib_name):
             else:
                 if obj.data.attributes.active:
                     bpy.ops.geometry.attribute_convert(mode='UV_MAP', domain='CORNER', data_type='FLOAT2')
-            SavedSelect.reset_select_by_ref()
+            SavedSelect.reset_select()
 
             # Because it not possible to move UV index I need recreate all UV for place new UV Map at start...
             if len(obj.data.uv_layers) < 8:  # Blender Cannot add more than 8 UV maps.
@@ -465,13 +469,14 @@ def ConvertGeometryNodeAttributeToUV(obj, attrib_name):
 
 
 def CorrectExtremUVAtExport(obj):
-    if obj.bfu_correct_extrem_uv_scale:
-        SavedSelect = bbpl.utils.UserSelectSave()
+    if obj.bfu_use_correct_extrem_uv_scale:
+        SavedSelect = bbpl.save_data.select_save.UserSelectSave()
         SavedSelect.save_current_select()
+        bbpl.utils.select_specific_object(obj)
         if bfu_utils.GoToMeshEditMode():
-            bfu_utils.CorrectExtremeUV(2)
+            bfu_utils.CorrectExtremeUV(obj.bfu_correct_extrem_uv_scale_step_scale, obj.bfu_correct_extrem_uv_scale_use_absolute)
             bbpl.utils.safe_mode_set('OBJECT')
-            SavedSelect.reset_select_by_ref()
+            SavedSelect.reset_select()
             return True
     return False
 

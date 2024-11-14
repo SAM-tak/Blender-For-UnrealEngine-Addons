@@ -69,10 +69,11 @@ class BFU_OT_CopySkeletalSocketButton(bpy.types.Operator):
                     "Skeletal sockets copied. Paste in Unreal Engine Skeletal Mesh assets for import sockets. (Ctrl+V)")
         return {'FINISHED'}
 
-def draw_ui_scene_socket(layout: bpy.types.UILayout):
-    scene = bpy.context.scene
-    scene.bfu_socket_expanded.draw(layout)
-    if scene.bfu_socket_expanded.is_expend():
+def draw_tools_ui(layout: bpy.types.UILayout, context: bpy.types.Context):
+    scene = context.scene
+    
+    scene.bfu_tools_socket_properties_expanded.draw(layout)
+    if scene.bfu_tools_socket_properties_expanded.is_expend():
         addon_prefs = bfu_basics.GetAddonPrefs()
 
         # Draw user tips and check can use buttons
@@ -162,6 +163,8 @@ def register():
     for cls in classes:
         bpy.utils.register_class(cls)
 
+    bpy.types.Scene.bfu_tools_socket_properties_expanded = bbpl.blender_layout.layout_accordion.add_ui_accordion(name="Socket")
+
     bpy.types.Object.bfu_use_socket_custom_Name = bpy.props.BoolProperty(
         name="Socket custom name",
         description='Use a custom name in Unreal Engine for this socket?',
@@ -181,3 +184,5 @@ def unregister():
 
     del bpy.types.Object.bfu_socket_custom_Name
     del bpy.types.Object.bfu_use_socket_custom_Name
+
+    del bpy.types.Scene.bfu_tools_socket_properties_expanded

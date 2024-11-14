@@ -17,32 +17,29 @@
 # ======================= END GPL LICENSE BLOCK =============================
 
 import os.path
+
 try:
     import unreal
 except ImportError:
     import unreal_engine as unreal
-from . import bps
+
 from . import import_module_utils
 from . import import_module_unreal_utils
 from . import sequencer_utils
 
 
 
-
-
-
-
 def ready_for_sequence_import():
-    if import_module_unreal_utils.is_unreal_version_greater_or_equal(4,20):  # TO DO: EditorAssetLibrary was added in witch version exactly?
-        if not hasattr(unreal, 'EditorAssetLibrary'):
-            message = 'WARNING: Editor Scripting Utilities should be activated.' + "\n"
-            message += 'Edit > Plugin > Scripting > Editor Scripting Utilities.'
-            import_module_unreal_utils.show_warning_message("Editor Scripting Utilities not activated.", message)
-            return False
-    if not hasattr(unreal.MovieSceneSequence, 'set_display_rate'):
-        message = 'WARNING: Editor Scripting Utilities should be activated.' + "\n"
-        message += 'Edit > Plugin > Scripting > Sequencer Scripting.'
+    if not import_module_unreal_utils.editor_scripting_utilities_active():
+        message = 'WARNING: Editor Scripting Utilities Plugin should be activated.' + "\n"
+        message += 'Edit > Plugin > Scripting > Editor Scripting Utilities.'
         import_module_unreal_utils.show_warning_message("Editor Scripting Utilities not activated.", message)
+        return False
+    
+    if not import_module_unreal_utils.sequencer_scripting_active():
+        message = 'WARNING: Sequencer Scripting Plugin should be activated.' + "\n"
+        message += 'Edit > Plugin > Scripting > Sequencer Scripting.'
+        import_module_unreal_utils.show_warning_message("Sequencer Scripting not activated.", message)
         return False
     return True
 

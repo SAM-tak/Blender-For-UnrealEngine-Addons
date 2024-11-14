@@ -27,7 +27,7 @@ class BFU_BaseAssetClass:
         self.use_materials = False
         self.use_sockets = False
 
-    def support_asset_type(self, obj):
+    def support_asset_type(self, obj, details = None):
         return False
 
     def get_asset_type_name(self, obj):
@@ -39,12 +39,8 @@ class BFU_BaseAssetClass:
     def get_obj_file_name(self, obj, desired_name="", fileType=".fbx"):
         return ""
     
-    def get_obj_export_directory_path(self, obj):
+    def get_obj_export_directory_path(self, obj, absolute = True):
         return ""
-        
-    def get_obj_export_abs_directory_path(self, obj):
-        dirpath = self.get_obj_export_directory_path(obj)
-        return bpy.path.abspath(dirpath)
 
     def can_export_asset(self):
         return False

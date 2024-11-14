@@ -18,13 +18,10 @@
 
 import bpy
 import fnmatch
-from .. import bps
+from .. import bpl
 from .. import bbpl
 from .. import bfu_basics
 from .. import bfu_utils
-from .. import bfu_unreal_utils
-from .. import bfu_export_logs
-from .. import bfu_assets_manager
 from .. import bfu_static_mesh
 
 
@@ -33,7 +30,7 @@ def GetExportRealSurfaceArea(obj):
     local_view_areas = bbpl.scene_utils.move_to_global_view()
     bbpl.utils.safe_mode_set('OBJECT')
 
-    SavedSelect = bbpl.utils.UserSelectSave()
+    SavedSelect = bbpl.save_data.select_save.UserSelectSave()
     SavedSelect.save_current_select()
     bfu_utils.SelectParentAndDesiredChilds(obj)
 
@@ -66,7 +63,7 @@ def GetExportRealSurfaceArea(obj):
     active = bpy.context.view_layer.objects.active
     area = bfu_basics.GetSurfaceArea(active)
     bfu_utils.CleanDeleteObjects(bpy.context.selected_objects)
-    SavedSelect.reset_select_by_ref()
+    SavedSelect.reset_select()
     bbpl.scene_utils.move_to_local_view(local_view_areas)
     return area
 
@@ -95,7 +92,7 @@ def GetCompuntedLightMap(obj):
         area *= obj.bfu_static_mesh_light_map_surface_scale/2
         if obj.bfu_static_mesh_light_map_round_power_of_two:
 
-            return bps.math.nearest_power_of_two(int(round(area)))
+            return bpl.math.nearest_power_of_two(int(round(area)))
         return int(round(area))
 
 def UpdateAreaLightMapList(objects_to_update=None):
@@ -113,7 +110,7 @@ def UpdateAreaLightMapList(objects_to_update=None):
 
     UpdatedRes = 0
 
-    counter = bps.utils.CounterTimer()
+    counter = bpl.utils.CounterTimer()
     for obj in objs:
         obj.computedStaticMeshLightMapRes = GetExportRealSurfaceArea(obj)
         UpdatedRes += 1

@@ -2,7 +2,7 @@ import bpy
 import math
 from typing import Dict, Any
 from . import bfu_camera_unreal_utils
-from .. import bps
+from .. import bpl
 from .. import bbpl
 from .. import languages
 from .. import bfu_basics
@@ -283,7 +283,7 @@ class BFU_CameraTracks():
         addon_prefs = bfu_basics.GetAddonPrefs()
 
         print(f"Start evaluate camera {camera.name} Frames:({str(frame_start)}-{str(frame_end)})")
-        counter = bps.utils.CounterTimer()
+        counter = bpl.utils.CounterTimer()
         
         slms = bfu_utils.TimelineMarkerSequence()
         
@@ -341,7 +341,7 @@ class BFU_MultiCameraTracks():
         scene = bpy.context.scene
         addon_prefs = bfu_basics.GetAddonPrefs()
 
-        counter = bps.utils.CounterTimer()
+        counter = bpl.utils.CounterTimer()
 
         slms = bfu_utils.TimelineMarkerSequence()
 

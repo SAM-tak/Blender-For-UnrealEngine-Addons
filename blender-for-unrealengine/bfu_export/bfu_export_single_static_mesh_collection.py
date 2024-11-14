@@ -33,7 +33,6 @@ def ProcessCollectionExport(op, col):
 
     addon_prefs = bfu_basics.GetAddonPrefs()
     dirpath = bfu_utils.GetCollectionExportDir(bpy.data.collections[col.name])
-    absdirpath = bpy.path.abspath(dirpath)
     scene = bpy.context.scene
 
     MyAsset: bfu_export_logs.BFU_OT_UnrealExportedAsset = scene.UnrealExportedAssetsList.add()
@@ -52,14 +51,14 @@ def ProcessCollectionExport(op, col):
     MyAsset.StartAssetExport()
     ExportSingleStaticMeshCollection(op, dirpath, file.GetFileWithExtension(), col.name)
 
-    if (scene.text_AdditionalData and addon_prefs.useGeneratedScripts):
+    if (scene.bfu_use_text_additional_data and addon_prefs.useGeneratedScripts):
         
         file: bfu_export_logs.BFU_OT_FileExport = MyAsset.files.add()
         file.file_name = bfu_naming.get_collection_file_name(col, col.name+"_AdditionalTrack", "")
         file.file_extension = "json"
         file.file_path = dirpath
         file.file_type = "AdditionalTrack"
-        bfu_export_utils.ExportAdditionalParameter(absdirpath, file.GetFileWithExtension(), MyAsset)
+        bfu_export_utils.ExportAdditionalParameter(dirpath, file.GetFileWithExtension(), MyAsset)
 
     MyAsset.EndAssetExport(True)
     return MyAsset

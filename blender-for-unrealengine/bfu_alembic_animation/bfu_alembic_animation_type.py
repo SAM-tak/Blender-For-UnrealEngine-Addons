@@ -30,7 +30,7 @@ class BFU_AlembicAnimation(bfu_assets_manager.bfu_asset_manager_type.BFU_BaseAss
         super().__init__()
         self.use_materials = True
 
-    def support_asset_type(self, obj):
+    def support_asset_type(self, obj, details = None):
         if obj.bfu_export_as_alembic_animation:
             return True
         return False
@@ -48,18 +48,24 @@ class BFU_AlembicAnimation(bfu_assets_manager.bfu_asset_manager_type.BFU_BaseAss
             return bfu_basics.ValidFilename(scene.bfu_alembic_animation_prefix_export_name+desired_name+fileType)
         return bfu_basics.ValidFilename(scene.bfu_alembic_animation_prefix_export_name+obj.name+fileType)
     
-    def get_obj_export_directory_path(self, obj):
+    def get_obj_export_directory_path(self, obj, absolute = True):
         folder_name = bfu_utils.get_export_folder_name(obj)
         scene = bpy.context.scene
-        if obj.bfu_create_sub_folder_with_alembic_name:
-            dirpath = os.path.join(scene.bfu_export_alembic_file_path, folder_name, self.get_asset_type_name(obj))
+        if(absolute):
+            root_path = bpy.path.abspath(scene.bfu_export_alembic_file_path)
         else:
-            dirpath = os.path.join(scene.bfu_export_alembic_file_path, folder_name)
+            root_path = scene.bfu_export_alembic_file_path
+
+
+        if obj.bfu_create_sub_folder_with_alembic_name:
+            dirpath = os.path.join(root_path, folder_name, self.get_asset_type_name(obj))
+        else:
+            dirpath = os.path.join(root_path, folder_name)
         return dirpath
     
     def can_export_asset(self):
         scene = bpy.context.scene
-        return scene.alembic_export
+        return scene.bfu_use_alembic_export
 
     def can_export_obj_asset(self, obj):
         return self.can_export_asset()

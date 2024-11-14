@@ -22,7 +22,7 @@ from shutil import copyfile
 import bpy
 import math
 
-from . import bps
+from . import bpl
 from . import bbpl
 from . import languages
 from . import bfu_basics
@@ -42,7 +42,7 @@ from . import bfu_skeletal_mesh
 def ExportSingleText(text, dirpath, filename):
     # Export single text
 
-    counter = bps.utils.CounterTimer()
+    counter = bpl.utils.CounterTimer()
 
     absdirpath = bpy.path.abspath(dirpath)
     bfu_basics.VerifiDirs(absdirpath)
@@ -59,7 +59,7 @@ def ExportSingleText(text, dirpath, filename):
 def ExportSingleJson(json_data, dirpath, filename):
     # Export single Json
 
-    counter = bps.utils.CounterTimer()
+    counter = bpl.utils.CounterTimer()
 
     absdirpath = bpy.path.abspath(dirpath)
     bfu_basics.VerifiDirs(absdirpath)
@@ -172,7 +172,7 @@ def WriteSingleMeshAdditionalParameter(unreal_exported_asset):
         def GetLodPath(lod_obj):
             asset_class = bfu_assets_manager.bfu_asset_manager_utils.get_asset_class(lod_obj)
             if asset_class:
-                directory_path = asset_class.get_obj_export_abs_directory_path(lod_obj)
+                directory_path = asset_class.get_obj_export_directory_path(lod_obj, True)
                 file_name = asset_class.get_obj_file_name(lod_obj)
             return os.path.join(directory_path, file_name)
 
@@ -211,33 +211,34 @@ def WriteAllTextFiles():
 
     scene = bpy.context.scene
     addon_prefs = bfu_basics.GetAddonPrefs()
-
-    if scene.text_ExportLog:
+    
+    root_dirpath = bpy.path.abspath(scene.bfu_export_other_file_path)
+    if scene.bfu_use_text_export_log:
         Text = languages.ti("write_text_additional_track_start") + "\n"
         Text += "" + "\n"
         Text += WriteExportLog()
         if Text is not None:
             Filename = bfu_basics.ValidFilename(scene.bfu_file_export_log_name)
-            ExportSingleText(Text, scene.bfu_export_other_file_path, Filename)
+            ExportSingleText(Text, root_dirpath, Filename)
 
     # Import script
     if bpy.app.version >= (4, 2, 0):
-        bfu_path = os.path.join(bbpl.blender_extension.extension_utils.get_package_path("blender_for_unrealengine"), "bfu_import_module")
+        bfu_path = os.path.join(bbpl.blender_extension.extension_utils.get_package_path(), "bfu_import_module")
     else:
-        bfu_path = os.path.join(bbpl.blender_addon.addon_utils.get_addon_path("Blender for UnrealEngine"), "bfu_import_module")
+        bfu_path = os.path.join(bbpl.blender_addon.addon_utils.get_addon_path("Unreal Engine Assets Exporter"), "bfu_import_module")
 
-    if scene.text_ImportAssetScript:
+    if scene.bfu_use_text_import_asset_script:
         json_data = bfu_write_import_asset_script.WriteImportAssetScript()
-        ExportSingleJson(json_data, scene.bfu_export_other_file_path, "ImportAssetData.json")
+        ExportSingleJson(json_data, root_dirpath, "ImportAssetData.json")
         source = os.path.join(bfu_path, "asset_import_script.py")
         filename = bfu_basics.ValidFilename(scene.bfu_file_import_asset_script_name)
-        destination = bpy.path.abspath(os.path.join(scene.bfu_export_other_file_path, filename))
+        destination = os.path.join(root_dirpath, filename)
         copyfile(source, destination)
 
-    if scene.text_ImportSequenceScript:
+    if scene.bfu_use_text_import_sequence_script:
         json_data = bfu_write_import_sequencer_script.WriteImportSequencerTracks()
-        ExportSingleJson(json_data, scene.bfu_export_other_file_path, "ImportSequencerData.json")
+        ExportSingleJson(json_data, root_dirpath, "ImportSequencerData.json")
         source = os.path.join(bfu_path, "sequencer_import_script.py")
         filename = bfu_basics.ValidFilename(scene.bfu_file_import_sequencer_script_name)
-        destination = bpy.path.abspath(os.path.join(scene.bfu_export_other_file_path, filename))
+        destination = os.path.join(root_dirpath, filename)
         copyfile(source, destination)

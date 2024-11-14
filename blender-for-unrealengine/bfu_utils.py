@@ -24,13 +24,10 @@ import fnmatch
 import mathutils
 import math
 import os
-import math
-import addon_utils
 from typing import List
 from . import bbpl
-from . import bps
 from . import bfu_basics
-from . import bfu_assets_manager
+
 
 class SavedBones():
 
@@ -660,7 +657,7 @@ def SelectParentAndSpecificChilds(active, objects):
 
 
 def RemoveSocketFromSelectForProxyArmature():
-    select = bbpl.utils.UserSelectSave()
+    select = bbpl.save_data.select_save.UserSelectSave()
     select.save_current_select()
     # With skeletal mesh the socket must be not exported,
     # ue4 read it like a bone
@@ -669,7 +666,7 @@ def RemoveSocketFromSelectForProxyArmature():
         if fnmatch.fnmatchcase(obj.name, "SOCKET*"):
             sockets.append(obj)
     CleanDeleteObjects(sockets)
-    select.reset_select_by_name()
+    select.reset_select(use_names = True)
 
 
 def GoToMeshEditMode():
@@ -683,14 +680,14 @@ def GoToMeshEditMode():
 
 
 def ApplyNeededModifierToSelect():
-    SavedSelect = bbpl.utils.UserSelectSave()
+    SavedSelect = bbpl.save_data.select_save.UserSelectSave()
     SavedSelect.save_current_select()
 
     # Get selected objects with modifiers.
     for obj in bpy.context.selected_objects:
         ApplyObjectModifiers(obj, ['ARMATURE'])
 
-    SavedSelect.reset_select_by_ref()
+    SavedSelect.reset_select()
 
 def ApplyObjectModifiers(obj: bpy.types.Object, blacklist_type = []):
 
@@ -725,8 +722,8 @@ def ApplyObjectModifiers(obj: bpy.types.Object, blacklist_type = []):
     
 
 
-def CorrectExtremeUV(stepScale=2):
-
+def CorrectExtremeUV(step_scale=2, move_to_absolute=False):
+    
     def GetHaveConnectedLoop(faceTarget):
         # In bmesh faces
         for loop in faceTarget.loops:
@@ -779,16 +776,24 @@ def CorrectExtremeUV(stepScale=2):
 
         return Islands
 
-    def MoveItlandToCenter(faces, uv_lay, minDistance):
+    def MoveItlandToCenter(faces, uv_lay, min_distance, absolute):
         loop = faces[-1].loops[-1]
 
-        x = round(loop[uv_lay].uv[0]/minDistance, 0)*minDistance
-        y = round(loop[uv_lay].uv[1]/minDistance, 0)*minDistance
+        delta_x = round(loop[uv_lay].uv[0]/min_distance, 0)*min_distance
+        delta_y = round(loop[uv_lay].uv[1]/min_distance, 0)*min_distance
 
         for face in faces:
             for loop in face.loops:
-                loop[uv_lay].uv[0] -= x
-                loop[uv_lay].uv[1] -= y
+                loop[uv_lay].uv[0] -= delta_x
+                loop[uv_lay].uv[1] -= delta_y
+
+        if(absolute == True):
+            # Move Faces to make it alway positive
+            for face in faces:
+                for loop in face.loops:
+                    loop[uv_lay].uv[0] = abs(loop[uv_lay].uv[0])
+                    loop[uv_lay].uv[1] = abs(loop[uv_lay].uv[1])
+
 
     def IsValidForUvEdit(obj):
         if obj.type == "MESH":
@@ -806,10 +811,9 @@ def CorrectExtremeUV(stepScale=2):
 
             for faces in GetAllIsland(bm, uv_lay):
                 uv_lay = bm.loops.layers.uv.active
-                MoveItlandToCenter(faces, uv_lay, stepScale)
+                MoveItlandToCenter(faces, uv_lay, step_scale, move_to_absolute)
 
             obj.data.update()
-
 
 def ApplyExportTransform(obj, use_type="Object"):
 
@@ -912,7 +916,7 @@ class SkeletalExportScale():
             armature_animation_data.clear_animation_data(armature)
 
         if is_a_proxy:
-            SavedSelect = bbpl.utils.UserSelectSave()
+            SavedSelect = bbpl.save_data.select_save.UserSelectSave()
             SavedSelect.save_current_select()
             bpy.ops.object.select_all(action='DESELECT')
             armature.select_set(True)
@@ -931,7 +935,7 @@ class SkeletalExportScale():
             properties=True
             )
         if is_a_proxy:
-            SavedSelect.reset_select_by_ref()
+            SavedSelect.reset_select()
 
         # Apply armature location
         armature.location = old_location*rescale
@@ -1096,27 +1100,27 @@ def GetAnimSample(obj):
     return obj.bfu_sample_anim_for_export
 
 
-def GetArmatureRootBones(obj):
-    rootBones = []
-    if obj.type == "ARMATURE":
+def get_armature_root_bones(armature: bpy.types.Object) -> List[bpy.types.EditBone]:
+    root_bones = []
+    if armature.type == "ARMATURE":
 
-        if not obj.bfu_export_deform_only:
-            for bone in obj.data.bones:
-                if bone.parent is None:
-                    rootBones.append(bone)
-
-        if obj.bfu_export_deform_only:
-            for bone in obj.data.bones:
+        if armature.bfu_export_deform_only:
+            for bone in armature.data.bones:
                 if bone.use_deform:
                     rootBone = bfu_basics.getRootBoneParent(bone)
-                    if rootBone not in rootBones:
-                        rootBones.append(rootBone)
-    return rootBones
+                    if rootBone not in root_bones:
+                        root_bones.append(rootBone)
+
+        else:
+            for bone in armature.data.bones:
+                if bone.parent is None:
+                    root_bones.append(bone)
+    return root_bones
 
 
 def GetDesiredExportArmatureName(obj):
     addon_prefs = bfu_basics.GetAddonPrefs()
-    single_root = len(GetArmatureRootBones(obj)) == 1
+    single_root = len(get_armature_root_bones(obj)) == 1
     if addon_prefs.add_skeleton_root_bone or single_root != 1:
         return addon_prefs.skeleton_root_bone_name
     return "Armature"

@@ -7,45 +7,54 @@
 #
 #  This program is distributed in the hope that it will be useful,
 #  but WITHOUT ANY WARRANTY; without even the implied warranty of
-#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	 See the
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 #  GNU General Public License for more details.
 #
 #  You should have received a copy of the GNU General Public License
-#  along with this program.	 If not, see <http://www.gnu.org/licenses/>.
+#  along with this program. If not, see <http://www.gnu.org/licenses/>.
 #  All rights reserved.
 #
 # ======================= END GPL LICENSE BLOCK =============================
 
 import string
+from typing import List, Tuple
+from . import import_module_unreal_utils
 
 try:
     import unreal
 except ImportError:
     import unreal_engine as unreal
 
-def get_selected_level_actors():
-    selected_actors = unreal.EditorLevelLibrary.get_selected_level_actors()
-    return selected_actors
+def load_asset(name):
+    find_asset = unreal.find_asset(name, follow_redirectors=True)
+    if find_asset is None:
+        # Load asset if not find.
+        find_asset = unreal.load_asset(name, follow_redirectors=True)
+    return find_asset
+     
 
-def get_unreal_version():
+def get_selected_level_actors() -> List[unreal.Actor]:
+    """Returns a list of selected actors in the level."""
+    return unreal.EditorLevelLibrary.get_selected_level_actors()
+
+def get_unreal_version() -> Tuple[int, int, int]:
+    """Returns the Unreal Engine version as a tuple of (major, minor, patch)."""
     version_info = unreal.SystemLibrary.get_engine_version().split('-')[0]
-    version_numbers = version_info.split('.')
-    major = int(version_numbers[0])
-    minor = int(version_numbers[1])
-    patch = int(version_numbers[2])
+    major, minor, patch = map(int, version_info.split('.'))
     return major, minor, patch
 
-def is_unreal_version_greater_or_equal(target_major, target_minor=0, target_patch=0):
+def is_unreal_version_greater_or_equal(target_major: int, target_minor: int = 0, target_patch: int = 0) -> bool:
+    """Checks if the Unreal Engine version is greater than or equal to the target version."""
     major, minor, patch = get_unreal_version()
-    
-    if major > target_major or (major == target_major and minor >= target_minor) or (major == target_major and minor == target_minor and patch >= target_patch):
-        return True
-    else:
-        return False
+    return (
+        major > target_major or 
+        (major == target_major and minor > target_minor) or 
+        (major == target_major and minor == target_minor and patch >= target_patch)
+    )
 
-def ValidUnrealAssetsName(filename):
-    # Normalizes string, removes non-alpha characters
-    # Asset name in Unreal use
+
+def valid_unreal_asset_name(filename):
+    """Returns a valid Unreal asset name by replacing invalid characters."""
 
     filename = filename.replace('.', '_')
     filename = filename.replace('(', '_')
@@ -55,37 +64,30 @@ def ValidUnrealAssetsName(filename):
     filename = ''.join(c for c in filename if c in valid_chars)
     return filename
 
-def show_simple_message(title, message):
-    return unreal.EditorDialog.show_message(title, message, unreal.AppMsgType.OK)
+def show_simple_message(title: str, message: str) -> unreal.AppReturnType:
+    """Displays a simple message dialog in Unreal Editor."""
+    if hasattr(unreal, 'EditorDialog'):
+        return unreal.EditorDialog.show_message(title, message, unreal.AppMsgType.OK)
+    else:
+        print('--------------------------------------------------')
+        print(message)
 
-def show_warning_message(title, message):
-    print('--------------------------------------------------')
-    print(message)
-    return unreal.EditorDialog.show_message(title, message, unreal.AppMsgType.OK)
+def show_warning_message(title: str, message: str) -> unreal.AppReturnType:
+    """Displays a warning message in Unreal Editor and prints it to the console."""
+    if hasattr(unreal, 'EditorDialog'):
+        unreal.EditorDialog.show_message(title, message, unreal.AppMsgType.OK)
+    else:
+        print('--------------------------------------------------')
+        print(message)
 
-def get_vertex_override_color(asset_additional_data):
-    if asset_additional_data is None:
-        return None
+def get_support_interchange() -> bool:
+    return import_module_unreal_utils.is_unreal_version_greater_or_equal(5, 0)
 
-    if "vertex_override_color" in asset_additional_data:
-        vertex_override_color = unreal.LinearColor(
-            asset_additional_data["vertex_override_color"][0],
-            asset_additional_data["vertex_override_color"][1],
-            asset_additional_data["vertex_override_color"][2]
-            )
-        return vertex_override_color
+def editor_scripting_utilities_active() -> bool:
+    if is_unreal_version_greater_or_equal(4,20):
+        if hasattr(unreal, 'EditorAssetLibrary'):
+            return True
+    return False
 
-def get_vertex_color_import_option(asset_additional_data):
-    if asset_additional_data is None:
-        return None
-
-    vertex_color_import_option = unreal.VertexColorImportOption.REPLACE  # Default
-    if "vertex_color_import_option" in asset_additional_data:
-        if asset_additional_data["vertex_color_import_option"] == "IGNORE":
-            vertex_color_import_option = unreal.VertexColorImportOption.IGNORE
-        elif asset_additional_data["vertex_color_import_option"] == "OVERRIDE":
-            vertex_color_import_option = unreal.VertexColorImportOption.OVERRIDE
-        elif asset_additional_data["vertex_color_import_option"] == "REPLACE":
-            vertex_color_import_option = unreal.VertexColorImportOption.REPLACE
-    return vertex_color_import_option
-
+def sequencer_scripting_active() -> bool:
+    return hasattr(unreal.MovieSceneSequence, 'set_display_rate')

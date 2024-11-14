@@ -32,7 +32,7 @@ class BFU_StaticMesh(bfu_assets_manager.bfu_asset_manager_type.BFU_BaseAssetClas
         self.use_lods = True
         self.use_materials = True
 
-    def support_asset_type(self, obj):
+    def support_asset_type(self, obj, details = None):
         if obj.bfu_export_skeletal_mesh_as_static_mesh:
             return True
         elif obj.bfu_export_as_groom_simulation:
@@ -58,15 +58,20 @@ class BFU_StaticMesh(bfu_assets_manager.bfu_asset_manager_type.BFU_BaseAssetClas
             return bfu_basics.ValidFilename(scene.bfu_static_mesh_prefix_export_name+desired_name+fileType)
         return bfu_basics.ValidFilename(scene.bfu_static_mesh_prefix_export_name+obj.name+fileType)
     
-    def get_obj_export_directory_path(self, obj):
+    def get_obj_export_directory_path(self, obj, absolute = True):
+        
         folder_name = bfu_utils.get_export_folder_name(obj)
         scene = bpy.context.scene
-        dirpath = os.path.join(scene.bfu_export_static_file_path, folder_name)
+        if(absolute):
+            root_path = bpy.path.abspath(scene.bfu_export_static_file_path)
+        else:
+            root_path = scene.bfu_export_static_file_path
+        dirpath = os.path.join(root_path, folder_name)
         return dirpath
     
     def can_export_asset(self):
         scene = bpy.context.scene
-        return scene.static_export
+        return scene.bfu_use_static_export
 
     def can_export_obj_asset(self, obj):
         return self.can_export_asset()

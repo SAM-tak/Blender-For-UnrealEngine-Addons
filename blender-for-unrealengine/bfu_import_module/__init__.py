@@ -18,7 +18,8 @@
 
 import importlib
 
-from . import bps
+from . import bpl
+from . import config
 from . import import_module_utils
 from . import import_module_unreal_utils
 from . import import_module_post_treatment
@@ -26,11 +27,17 @@ from . import asset_import
 from . import asset_import
 from . import sequencer_import
 from . import sequencer_utils
+from . import bfu_import_animations
 from . import bfu_import_materials
+from . import bfu_import_vertex_color
 from . import bfu_import_sequencer
+from . import import_module_tasks_class
+from . import import_module_tasks_helper
 
-if "bps" in locals():
-    importlib.reload(bps)
+if "bpl" in locals():
+    importlib.reload(bpl)
+if "config" in locals():
+    importlib.reload(config)
 if "import_module_utils" in locals():
     importlib.reload(import_module_utils)
 if "import_module_unreal_utils" in locals():
@@ -43,15 +50,24 @@ if "sequencer_import" in locals():
     importlib.reload(sequencer_import)
 if "sequencer_utils" in locals():
     importlib.reload(sequencer_utils)
+if "bfu_import_animations" in locals():
+    importlib.reload(bfu_import_animations)
 if "bfu_import_materials" in locals():
     importlib.reload(bfu_import_materials)
+if "bfu_import_vertex_color" in locals():
+    importlib.reload(bfu_import_vertex_color)
 if "bfu_import_sequencer" in locals():
     importlib.reload(bfu_import_sequencer)
+if "import_module_tasks_class" in locals():
+    importlib.reload(import_module_tasks_class)
+if "import_module_tasks_helper" in locals():
+    importlib.reload(import_module_tasks_helper)
 
-def run_asset_import(assets_data, show_finished_popup=True):
+def run_asset_import(assets_data, show_finished_popup=False):
     if asset_import.ready_for_asset_import():
         return asset_import.ImportAllAssets(assets_data, show_finished_popup)
 
-def run_sequencer_import(sequence_data, show_finished_popup=True):
+def run_sequencer_import(sequence_data, show_finished_popup=False):
     if sequencer_import.ready_for_sequence_import():
         return sequencer_import.CreateSequencer(sequence_data, show_finished_popup)
+    

@@ -22,6 +22,7 @@ import bpy
 from . import bfu_camera_utils
 from . import bfu_camera_write_paste_commands
 from .. import bfu_basics
+from .. import bfu_ui
 from .. import bbpl
 from .. import languages
 
@@ -48,29 +49,29 @@ def draw_ui_object_camera(layout: bpy.types.UILayout, obj: bpy.types.Object):
 
     camera_ui = layout.column()
     scene = bpy.context.scene 
-    scene.bfu_camera_properties_expanded.draw(camera_ui)
-    if scene.bfu_camera_properties_expanded.is_expend():
-        if obj.type == "CAMERA":
-            camera_ui_pop = camera_ui.column()
+    if bfu_ui.bfu_ui_utils.DisplayPropertyFilter("OBJECT", "GENERAL"):
+        scene.bfu_camera_properties_expanded.draw(camera_ui)
+        if scene.bfu_camera_properties_expanded.is_expend():
+            if obj.type == "CAMERA":
+                camera_ui_pop = camera_ui.column()
 
-            export_procedure_prop = camera_ui_pop.column()
-            export_procedure_prop.prop(obj, 'bfu_camera_export_procedure')
+                export_procedure_prop = camera_ui_pop.column()
+                export_procedure_prop.prop(obj, 'bfu_camera_export_procedure')
 
-            camera_ui_pop.prop(obj, 'bfu_desired_camera_type')
-            if obj.bfu_desired_camera_type == "CUSTOM":
-                camera_ui_pop.prop(obj, 'bfu_custom_camera_actor')
-                camera_ui_pop.prop(obj, 'bfu_custom_camera_default_actor')
-                camera_ui_pop.prop(obj, 'bfu_custom_camera_component')
-            camera_ui_pop.prop(obj, 'bfu_export_fbx_camera')
-            camera_ui_pop.prop(obj, 'bfu_fix_axis_flippings')
-            camera_ui_pop.enabled = obj.bfu_export_type == "export_recursive"
-            camera_ui.operator("object.bfu_copy_active_camera_data", icon="COPYDOWN")
+                camera_ui_pop.prop(obj, 'bfu_desired_camera_type')
+                if obj.bfu_desired_camera_type == "CUSTOM":
+                    camera_ui_pop.prop(obj, 'bfu_custom_camera_actor')
+                    camera_ui_pop.prop(obj, 'bfu_custom_camera_default_actor')
+                    camera_ui_pop.prop(obj, 'bfu_custom_camera_component')
+                camera_ui_pop.prop(obj, 'bfu_export_fbx_camera')
+                camera_ui_pop.prop(obj, 'bfu_fix_axis_flippings')
+                camera_ui_pop.enabled = obj.bfu_export_type == "export_recursive"
+                camera_ui.operator("object.bfu_copy_active_camera_data", icon="COPYDOWN")
 
 
-def draw_ui_scene_camera(layout: bpy.types.UILayout):
-
+def draw_tools_ui(layout: bpy.types.UILayout, context: bpy.types.Context):
+    scene = context.scene
     camera_ui = layout.column()
-    scene = bpy.context.scene  
     scene.bfu_camera_tools_expanded.draw(camera_ui)
     if scene.bfu_camera_tools_expanded.is_expend():
         camera_ui.operator("object.copy_selected_cameras_data", icon="COPYDOWN")

@@ -32,13 +32,22 @@ xavierloux.loux@gmail.com
 
 import bpy
 import importlib
-from . import bps
+from . import bpl
 from . import bbpl
 from . import bfu_assets_manager
 from . import bfu_propertys
+from . import bfu_base_object
+from . import bfu_adv_object
+from . import bfu_base_collection
 from . import bfu_static_mesh
 from . import bfu_skeletal_mesh
+from . import bfu_modular_skeletal_mesh
 from . import bfu_alembic_animation
+from . import bfu_anim_base
+from . import bfu_anim_action
+from . import bfu_anim_action_adv
+from . import bfu_anim_nla
+from . import bfu_anim_nla_adv
 from . import bfu_groom
 from . import bfu_camera
 from . import bfu_spline
@@ -47,8 +56,14 @@ from . import bfu_socket
 from . import bfu_material
 from . import bfu_vertex_color
 from . import bfu_lod
+from . import bfu_uv_map
+from . import bfu_light_map
+from . import bfu_assets_references
 from . import bfu_custom_property
 from . import bfu_addon_parts
+from . import bfu_export_nomenclature
+from . import bfu_export_filter
+from . import bfu_export_process
 from . import bfu_export_procedure
 from . import bfu_addon_pref
 from . import bfu_export_logs
@@ -68,20 +83,39 @@ from . import bfu_backward_compatibility
 from . import bfu_cached_asset_list
 
 
-if "bps" in locals():
-    importlib.reload(bps)
+
+if "bpl" in locals():
+    importlib.reload(bpl)
 if "bbpl" in locals():
     importlib.reload(bbpl)
 if "bfu_assets_manager" in locals():
     importlib.reload(bfu_assets_manager)
 if "bfu_propertys" in locals():
     importlib.reload(bfu_propertys)
+if "bfu_base_object" in locals():
+    importlib.reload(bfu_base_object)
+if "bfu_adv_object" in locals():
+    importlib.reload(bfu_adv_object)
+if "bfu_base_collection" in locals():
+    importlib.reload(bfu_base_collection)
 if "bfu_static_mesh" in locals():
     importlib.reload(bfu_static_mesh)
 if "bfu_skeletal_mesh" in locals():
     importlib.reload(bfu_skeletal_mesh)
+if "bfu_modular_skeletal_mesh" in locals():
+    importlib.reload(bfu_modular_skeletal_mesh)
 if "bfu_alembic_animation" in locals():
     importlib.reload(bfu_alembic_animation)
+if "bfu_anim_base" in locals():
+    importlib.reload(bfu_anim_base)
+if "bfu_anim_action" in locals():
+    importlib.reload(bfu_anim_action)
+if "bfu_anim_action_adv" in locals():
+    importlib.reload(bfu_anim_action_adv)
+if "bfu_anim_nla" in locals():
+    importlib.reload(bfu_anim_nla)
+if "bfu_anim_nla_adv" in locals():
+    importlib.reload(bfu_anim_nla_adv)
 if "bfu_groom" in locals():
     importlib.reload(bfu_groom)
 if "bfu_camera" in locals():
@@ -98,10 +132,22 @@ if "bfu_vertex_color" in locals():
     importlib.reload(bfu_vertex_color)
 if "bfu_lod" in locals():
     importlib.reload(bfu_lod)
+if "bfu_uv_map" in locals():
+    importlib.reload(bfu_uv_map)
+if "bfu_light_map" in locals():
+    importlib.reload(bfu_light_map)
+if "bfu_assets_references" in locals():
+    importlib.reload(bfu_assets_references)
 if "bfu_custom_property" in locals():
     importlib.reload(bfu_custom_property)
 if "bfu_addon_parts" in locals():
     importlib.reload(bfu_addon_parts)
+if "bfu_export_nomenclature" in locals():
+    importlib.reload(bfu_export_nomenclature)
+if "bfu_export_filter" in locals():
+    importlib.reload(bfu_export_filter)
+if "bfu_export_process" in locals():
+    importlib.reload(bfu_export_process)
 if "bfu_export_procedure" in locals():
     importlib.reload(bfu_export_procedure)
 if "bfu_addon_pref" in locals():
@@ -137,19 +183,7 @@ if "bfu_backward_compatibility" in locals():
 if "bfu_cached_asset_list" in locals():
     importlib.reload(bfu_cached_asset_list)
 
-bl_info = {
-    'name': 'Blender for UnrealEngine',
-    'author': 'Loux Xavier (BleuRaven)',
-    'version': (4, 3, 1),
-    'blender': (2, 80, 0),
-    'location': 'View3D > UI > Unreal Engine',
-    'description': "This add-ons allows to easily export several objects at the same time and import in Unreal Engine.",
-    'warning': '',
-    "wiki_url": "https://github.com/xavier150/Blender-For-UnrealEngine-Addons/wiki",
-    'tracker_url': 'https://github.com/xavier150/Blender-For-UnrealEngine-Addons/issues',
-    'support': 'COMMUNITY',
-    'category': 'Import-Export'}
-
+bl_info = {}
 
 class BFUCachedAction(bpy.types.PropertyGroup):
     """
@@ -168,9 +202,18 @@ def register():
     bbpl.register()
     bfu_assets_manager.register()
     bfu_propertys.register()
+    bfu_base_object.register()
+    bfu_adv_object.register()
+    bfu_base_collection.register()
     bfu_static_mesh.register()
     bfu_skeletal_mesh.register()
+    bfu_modular_skeletal_mesh.register()
     bfu_alembic_animation.register()
+    bfu_anim_base.register()
+    bfu_anim_action.register()
+    bfu_anim_action_adv.register()
+    bfu_anim_nla.register()
+    bfu_anim_nla_adv.register()
     bfu_groom.register()
     bfu_camera.register()
     bfu_spline.register()
@@ -179,8 +222,14 @@ def register():
     bfu_material.register()
     bfu_vertex_color.register()
     bfu_lod.register()
+    bfu_uv_map.register()
+    bfu_light_map.register()
+    bfu_assets_references.register()
     bfu_custom_property.register()
     bfu_addon_parts.register()
+    bfu_export_nomenclature.register()
+    bfu_export_filter.register()
+    bfu_export_process.register()
     bfu_export_procedure.register()
     bfu_addon_pref.register()
     bfu_export_logs.register()
@@ -200,8 +249,14 @@ def unregister():
     bfu_export_logs.unregister()
     bfu_addon_pref.unregister()
     bfu_export_procedure.unregister()
+    bfu_export_process.unregister()
+    bfu_export_filter.unregister()
+    bfu_export_nomenclature.unregister()
     bfu_addon_parts.unregister()
     bfu_custom_property.unregister()
+    bfu_assets_references.unregister()
+    bfu_light_map.unregister()
+    bfu_uv_map.unregister()
     bfu_lod.unregister()
     bfu_vertex_color.unregister()
     bfu_material.unregister()
@@ -209,10 +264,19 @@ def unregister():
     bfu_collision.unregister()
     bfu_spline.unregister()
     bfu_camera.unregister()
+    bfu_anim_nla_adv.unregister()
+    bfu_anim_nla.unregister()
+    bfu_anim_action_adv.unregister()
+    bfu_anim_action.unregister()
+    bfu_anim_base.unregister()
     bfu_alembic_animation.unregister()
     bfu_groom.unregister()
+    bfu_modular_skeletal_mesh.unregister()
     bfu_skeletal_mesh.unregister()
     bfu_static_mesh.unregister()
+    bfu_base_collection.unregister()
+    bfu_adv_object.unregister()
+    bfu_base_object.unregister()
     bfu_propertys.unregister()
     bfu_assets_manager.unregister()
     bbpl.unregister()

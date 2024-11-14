@@ -39,8 +39,6 @@ def update_old_variables():
     print("Updating old bfu variables...")
 
     for obj in bpy.data.objects:
-
-
         update_variable(obj, ["bfu_skeleton_search_mode"], "bfu_engine_ref_skeleton_search_mode", enum_callback)
         update_variable(obj, ["bfu_target_skeleton_custom_path"], "bfu_engine_ref_skeleton_custom_path")
         update_variable(obj, ["bfu_target_skeleton_custom_name"], "bfu_engine_ref_skeleton_custom_name")
@@ -71,7 +69,6 @@ def update_old_variables():
         update_variable(obj, ["GenerateLightmapUVs"], "bfu_generate_light_map_uvs")
         update_variable(obj, ["convert_geometry_node_attribute_to_uv"], "bfu_convert_geometry_node_attribute_to_uv")
         update_variable(obj, ["convert_geometry_node_attribute_to_uv_name"], "bfu_convert_geometry_node_attribute_to_uv_name")
-        update_variable(obj, ["correct_extrem_uv_scale"], "bfu_correct_extrem_uv_scale")
         update_variable(obj, ["AutoGenerateCollision"], "bfu_auto_generate_collision")
         update_variable(obj, ["MaterialSearchLocation"], "bfu_material_search_location", enum_callback)
         update_variable(obj, ["CollisionTraceFlag"], "bfu_collision_trace_flag", enum_callback)
@@ -99,13 +96,13 @@ def update_old_variables():
         update_variable(obj, ["AdditionalLocationForExport"], "bfu_additional_location_for_export")
         update_variable(obj, ["AdditionalRotationForExport"], "bfu_additional_rotation_for_export")
 
-        update_variable(obj, ["exportActionList"], "bfu_animation_asset_list")
-        update_variable(obj, ["active_ObjectAction"], "bfu_active_animation_asset_list")
+        update_variable(obj, ["exportActionList, bfu_animation_asset_list"], "bfu_action_asset_list")
+        update_variable(obj, ["active_ObjectAction, bfu_active_animation_asset_list"], "bfu_active_action_asset_list")
 
         update_variable(obj, ["ExportAsAlembic, bfu_export_as_alembic"], "bfu_export_as_alembic_animation")
-
         
-
+        update_variable(obj, ["correct_extrem_uv_scale", "bfu_correct_extrem_uv_scale"], "bfu_use_correct_extrem_uv_scale")
+        update_variable(obj, ["bfu_invert_normal_maps"], "bfu_flip_normal_map_green_channel")
 
     for col in bpy.data.collections:
         update_variable(col, ["exportFolderName"], "bfu_export_folder_name")
@@ -132,6 +129,20 @@ def update_old_variables():
 
         update_variable(scene, ["CollectionExportList"], "bfu_collection_asset_list")
         update_variable(scene, ["active_CollectionExportList"], "bfu_active_collection_asset_list")
+
+        update_variable(scene, ["static_export"], "bfu_use_static_export")
+        update_variable(scene, ["static_collection_export"], "bfu_use_static_collection_export")
+        update_variable(scene, ["skeletal_export"], "bfu_use_skeletal_export")
+        update_variable(scene, ["anin_export"], "bfu_use_anin_export")
+        update_variable(scene, ["alembic_export"], "bfu_use_alembic_export")
+        update_variable(scene, ["groom_simulation_export"], "bfu_use_groom_simulation_export")
+        update_variable(scene, ["camera_export"], "bfu_use_camera_export")
+        update_variable(scene, ["spline_export"], "bfu_use_spline_export")
+
+        update_variable(scene, ["text_ExportLog"], "bfu_use_text_export_log")
+        update_variable(scene, ["text_ImportAssetScript"], "bfu_use_text_import_asset_script")
+        update_variable(scene, ["text_ImportSequenceScript"], "bfu_use_text_import_sequence_script")
+        update_variable(scene, ["text_AdditionalData"], "bfu_use_text_additional_data")
 
 
 def enum_callback(data, old_var_name, new_var_name):

@@ -55,51 +55,35 @@ def create_safe_bone(arm, bone_name, context_id=None):
 
     return bone
 
-
 def get_mirror_bone_name(original_bones):
     """
     Get the mirror bone name for the given bone(s).
     """
-    bones = []
-    new_bones = []
-
     if not isinstance(original_bones, list):
         bones = [original_bones]  # Convert to list
     else:
         bones = original_bones
 
     def try_to_invert_bones(bone):
-        def invert(bone, old, new):
-            if bone.endswith(old):
-                new_bone_name = bone[:-len(old)]
-                new_bone_name = new_bone_name + new
-                return new_bone_name
-            return None
-
         change = [
-            ["_l", "_r"],
-            ["_L", "_R"]
+            ("_l", "_r"),
+            ("_L", "_R")
         ]
-        for c in change:
-            a = invert(bone, c[0], c[1])
-            if a:
-                return a
-            b = invert(bone, c[1], c[0])
-            if b:
-                return b
 
-        # Return original If no invert found.
+        for old, new in change:
+            if bone.endswith(old):
+                return bone[:-len(old)] + new
+            elif bone.endswith(new):
+                return bone[:-len(new)] + old
+
+        # Return original if no invert found
         return bone
 
-    for bone in bones:
-        new_bones.append(try_to_invert_bones(bone))
+    # Using list comprehension for performance
+    new_bones = [try_to_invert_bones(bone) for bone in bones]
 
-    # Can return same bone when don't found mirror
-    if not isinstance(original_bones, list):
-        return new_bones[0]
-    else:
-        return new_bones
-
+    # Return a single element if the input was not a list
+    return new_bones[0] if not isinstance(original_bones, list) else new_bones
 
 def get_name_with_new_prefix(name, old_prefix, new_prefix):
     """
@@ -114,7 +98,6 @@ def get_name_with_new_prefix(name, old_prefix, new_prefix):
         raise TypeError('"' + old_prefix + '" not found as prefix in "' + name + '".')
     return new_bone_name
 
-
 def get_name_list_with_new_prefix(name_list, old_prefix, new_prefix):
     """
     Replace a prefix and add a new prefix to each name in a list.
@@ -124,7 +107,6 @@ def get_name_list_with_new_prefix(name_list, old_prefix, new_prefix):
     for name in name_list:
         new_list.append(get_name_with_new_prefix(name, old_prefix, new_prefix))
     return new_list
-
 
 def no_num(name):
     """
@@ -181,7 +163,6 @@ def change_current_layer(layer, source):
         if i != layer:
             source.layers[i] = False
 
-
 def change_select_layer(layer):
     """
     Change the active bone layer in the armature to the specified layer.
@@ -189,13 +170,11 @@ def change_select_layer(layer):
     layer_values = [layer == i for i in range(32)]
     bpy.ops.armature.bone_layers(layers=layer_values)
 
-
 def change_user_view_layer(layer):
     """
     Change the active layer in the user view to the specified layer.
     """
     change_current_layer(layer, bpy.context.object.data)
-
 
 def duplicate_rig_layer(armature, original_layer, new_layer, old_prefix, new_prefix):
     """
@@ -235,6 +214,7 @@ def duplicate_rig_layer(armature, original_layer, new_layer, old_prefix, new_pre
     armature.data.pose_position = 'POSE'  # Set the pose position back to pose mode
     return new_bone_names
 
+
 class Orig_prefixhanBone():
     """
     Create a new Orig_prefixhanBone instance.
@@ -268,7 +248,6 @@ def set_bone_orientation(armature, bone_name, vector, roll):
     bone.tail = bone.head + vector * length
     bone.roll = roll
 
-
 def get_bone_with_length(armature, bone_name, new_length, apply_tail=True):
     """
     Evaluate the edit_bone tail position with specific length
@@ -279,8 +258,6 @@ def get_bone_with_length(armature, bone_name, new_length, apply_tail=True):
 
     new_tail = bone.head + (vector * new_length)
     return new_tail
-
-
 
 def set_bone_length(armature, bone_name, new_length):
     """
@@ -302,7 +279,6 @@ def get_bone_vector(armature, bone_name):
     head = armature.data.edit_bones[bone_name].head
     tail = armature.data.edit_bones[bone_name].tail
     return head - tail
-
 
 def set_bone_scale(armature, bone_name, new_scale, apply_tail=True):
     """
@@ -335,7 +311,6 @@ def get_first_parent(bone):
         return get_first_parent(bone.parent)
     else:
         return bone
-
 
 def create_simple_stretch(armature, bone, target_bone_name, name):
     """
@@ -390,9 +365,9 @@ class DriverPropertyHelper:
             description=self.description,
             overridable=True)
 
-        bone_const = self.bone_const_name
-        constraints = self.constraint_name
-        driver_value = 'pose.bones["' + bone_const + '"].constraints["' + constraints + '"].influence'
+        escaped_bone_const = bpy.utils.escape_identifier(self.bone_const_name)
+        escaped_constraints = bpy.utils.escape_identifier(self.constraint_name)
+        driver_value = f'pose.bones["{escaped_bone_const}"].constraints["{escaped_constraints}"].influence'
         driver = self.armature.driver_add(driver_value).driver
         set_driver(self.armature, driver, bone_name, self.property_name)
 
@@ -412,10 +387,11 @@ def create_bone_custom_property(armature, property_bone_name, property_name, def
         soft_max=value_max,
         description=description
     )
-    property_bone.property_overridable_library_set('["' + property_name + '"]', overridable)
-
-    return 'pose.bones["' + property_bone_name + '"]["' + property_name + '"]'
-
+    escaped_property_name = bpy.utils.escape_identifier(property_name)
+    escaped_property_bone_name = bpy.utils.escape_identifier(property_bone_name)
+    property_bone.property_overridable_library_set(f'["{escaped_property_name}"]', overridable)
+    data_path = f'pose.bones["{escaped_property_bone_name}"]["{escaped_property_name}"]'
+    return data_path
 
 def set_driver(armature, driver, bone_name, driver_name, clean_previous=True):
     """
@@ -423,13 +399,17 @@ def set_driver(armature, driver, bone_name, driver_name, clean_previous=True):
     """
     if clean_previous:
         utils.clear_driver_var(driver)
+
+    # Échapper les noms de bone et driver pour les utiliser en toute sécurité dans data_path
+    escaped_bone_name = bpy.utils.escape_identifier(bone_name)
+    escaped_driver_name = bpy.utils.escape_identifier(driver_name)
+
     v = driver.variables.new()
     v.name = driver_name.replace(" ", "_")
     v.targets[0].id = armature
-    v.targets[0].data_path = 'pose.bones["' + bone_name + '"]["' + driver_name + '"]'
-    driver.expression = driver_name.replace(" ", "_")
+    v.targets[0].data_path = f'pose.bones["{escaped_bone_name}"]["{escaped_driver_name}"]'
+    driver.expression = v.name
     return v
-
 
 def subdivise_one_bone(armature, bone_name, subdivise_prefix_name="Subdivise_", split_number=2, keep_parent=True, ):
     """
@@ -484,7 +464,6 @@ def subdivise_one_bone(armature, bone_name, subdivise_prefix_name="Subdivise_", 
     # Final reparenting
     return chain
 
-
 def duplicate_bone(arm, bone_name, new_name=None):
     """
     Creates a duplicate bone in the armature.
@@ -497,6 +476,7 @@ def duplicate_bone(arm, bone_name, new_name=None):
     Returns:
         str: The name of the created bone.
     """
+
     edit_bone = arm.data.edit_bones[bone_name]
     if new_name is None:
         new_name = edit_bone.name + "_dup"
@@ -519,7 +499,6 @@ def duplicate_bone(arm, bone_name, new_name=None):
         new_bone.layers = edit_bone.layers # Deprecated in Blender 4.0
 
     return new_bone.name
-
 
 def copy_constraint(armature, copy_bone_name, paste_bone_name, clear=True):
     """
@@ -547,12 +526,9 @@ def copy_constraint(armature, copy_bone_name, paste_bone_name, clear=True):
 
     # armature.pose.bones[paste_bone].constraints = armature.pose.bones[copy_bone].constraints
 
-
-
 def set_bones_lock(armature, bone_names, lock):
     for bone_name in bone_names:
         set_bone_lock(armature, bone_name, lock)
-
 
 def set_bone_lock(armature, bone_name, lock):
     # Check if we are in Pose mode

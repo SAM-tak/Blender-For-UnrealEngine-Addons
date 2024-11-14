@@ -21,11 +21,9 @@ import bpy
 from . import bfu_fbx_export
 from . import bfu_export_utils
 from .. import bfu_camera
-from .. import bps
 from .. import bbpl
 from .. import bfu_basics
 from .. import bfu_utils
-from .. import bfu_naming
 from .. import bfu_export_logs
 from .. import bfu_assets_manager
 
@@ -37,7 +35,7 @@ def ProcessCameraExport(op, obj, pre_bake_camera: bfu_camera.bfu_camera_data.BFU
 
     asset_class = bfu_assets_manager.bfu_asset_manager_utils.get_asset_class(obj)
     asset_type = asset_class.get_asset_type_name(obj)
-    dirpath = asset_class.get_obj_export_directory_path(obj)
+    dirpath = asset_class.get_obj_export_directory_path(obj, True)
     file_name = asset_class.get_obj_file_name(obj, obj.name, "")
     file_name_at = asset_class.get_obj_file_name(obj, obj.name+"_AdditionalTrack", "") 
 
@@ -60,7 +58,7 @@ def ProcessCameraExport(op, obj, pre_bake_camera: bfu_camera.bfu_camera_data.BFU
 
         ExportSingleFbxCamera(op, dirpath, file.GetFileWithExtension(), obj)
 
-    if scene.text_AdditionalData and addon_prefs.useGeneratedScripts:
+    if scene.bfu_use_text_additional_data and addon_prefs.useGeneratedScripts:
 
         file: bfu_export_logs.BFU_OT_FileExport = MyAsset.files.add()
         file.file_name = file_name_at
