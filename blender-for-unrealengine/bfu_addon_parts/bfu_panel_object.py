@@ -102,7 +102,7 @@ class BFU_PT_BlenderForUnrealObject(bpy.types.Panel):
             preset_values += bfu_uv_map.bfu_uv_map_props.get_preset_values()
             preset_values += bfu_light_map.bfu_light_map_props.get_preset_values()
             preset_values += bfu_assets_references.bfu_asset_ref_props.get_preset_values()
-            preset_values += bfu_collision.bfu_collision_ui_and_props.get_preset_values()
+            preset_values += bfu_collision.bfu_collision_props.get_preset_values()
             return preset_values
 
         # Common variable used for all preset values
@@ -416,31 +416,6 @@ class BFU_PT_BlenderForUnrealObject(bpy.types.Panel):
         if bfu_ui.bfu_ui_utils.DisplayPropertyFilter("OBJECT", "MISC"):
 
 
-            scene.bfu_object_collision_properties_expanded.draw(layout)
-            if scene.bfu_object_collision_properties_expanded.is_expend():
-                if addon_prefs.useGeneratedScripts and obj is not None:
-                    if obj.bfu_export_type == "export_recursive":
-
-                        # StaticMesh prop
-                        if bfu_static_mesh.bfu_static_mesh_utils.is_static_mesh(obj):
-                            if not obj.bfu_export_as_lod_mesh:
-                                auto_generate_collision = layout.row()
-                                auto_generate_collision.prop(
-                                    obj,
-                                    'bfu_auto_generate_collision'
-                                    )
-                                collision_trace_flag = layout.row()
-                                collision_trace_flag.prop(
-                                    obj,
-                                    'bfu_collision_trace_flag'
-                                    )
-                        # SkeletalMesh prop
-                        if bfu_skeletal_mesh.bfu_skeletal_mesh_utils.is_skeletal_mesh(obj):
-                            if not obj.bfu_export_as_lod_mesh:
-                                create_physics_asset = layout.row()
-                                create_physics_asset.prop(obj, "bfu_create_physics_asset")
-                                enable_skeletal_mesh_per_poly_collision = layout.row()
-                                enable_skeletal_mesh_per_poly_collision.prop(obj, 'bfu_enable_skeletal_mesh_per_poly_collision')
 
 
 
@@ -503,6 +478,7 @@ class BFU_PT_BlenderForUnrealObject(bpy.types.Panel):
         bfu_camera.bfu_camera_ui_and_props.draw_ui_object_camera(layout, obj)
         bfu_spline.bfu_spline_ui_and_props.draw_ui_object_spline(layout, obj)
         bfu_lod.bfu_lod_ui.draw_ui(layout, obj)
+        bfu_collision.bfu_collision_ui.draw_ui_object(layout, obj)
         bfu_uv_map.bfu_uv_map_ui.draw_obj_ui(layout, obj)
         bfu_light_map.bfu_light_map_ui.draw_obj_ui(layout, obj)
         bfu_material.bfu_material_ui.draw_ui_object(layout)

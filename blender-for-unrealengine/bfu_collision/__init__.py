@@ -19,11 +19,17 @@
 import bpy
 import importlib
 
-from . import bfu_collision_ui_and_props
+from . import bfu_collision_props
+from . import bfu_collision_types
+from . import bfu_collision_ui
 from . import bfu_collision_utils
 
-if "bfu_collision_ui_and_props" in locals():
-    importlib.reload(bfu_collision_ui_and_props)
+if "bfu_collision_types" in locals():
+    importlib.reload(bfu_collision_types)
+if "bfu_collision_props" in locals():
+    importlib.reload(bfu_collision_props)
+if "bfu_collision_ui" in locals():
+    importlib.reload(bfu_collision_ui)
 if "bfu_collision_utils" in locals():
     importlib.reload(bfu_collision_utils)
 
@@ -35,10 +41,12 @@ def register():
     for cls in classes:
         bpy.utils.register_class(cls)
 
-    bfu_collision_ui_and_props.register()
+    bfu_collision_types.register()
+    bfu_collision_props.register()
 
 def unregister():
     for cls in reversed(classes):
         bpy.utils.unregister_class(cls)
 
-    bfu_collision_ui_and_props.unregister()
+    bfu_collision_props.unregister()
+    bfu_collision_types.unregister()
