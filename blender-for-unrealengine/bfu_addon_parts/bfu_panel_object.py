@@ -54,7 +54,6 @@ from .. import bfu_light_map
 from .. import bfu_assets_references
 from .. import bfu_collision
 
-
 class BFU_PT_BlenderForUnrealObject(bpy.types.Panel):
     # Unreal engine export panel
 
@@ -183,11 +182,6 @@ class BFU_PT_BlenderForUnrealObject(bpy.types.Panel):
 
         # Scene
         bfu_base_collection.bfu_base_col_ui.draw_ui(layout, context)
-        
-
-
-
-
 
 # -------------------------------------------------------------------
 #   Register & Unregister

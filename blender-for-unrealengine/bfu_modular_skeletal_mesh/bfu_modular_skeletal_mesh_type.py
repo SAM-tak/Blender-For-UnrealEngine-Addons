@@ -86,7 +86,6 @@ class BFU_UI_ModularSkeletalSpecifiedPartsTargetList(BBPL_UI_TemplateList): # Dr
     rows: bpy.props.IntProperty(default = 3)
     maxrows: bpy.props.IntProperty(default = 3)
 
-
 class BFU_UI_ModularSkeletalSpecifiedPartsMeshItem(BBPL_UI_TemplateItem): # Item class (bpy.types.PropertyGroup)
     enabled: bpy.props.BoolProperty(
         name="Use",
@@ -156,9 +155,6 @@ class BFU_UI_ModularSkeletalSpecifiedPartsMeshs(BBPL_UI_TemplateList): # Draw It
             prop_data.enabled = item.enabled
 
             item.skeletal_parts.draw(box).enabled = item.enabled
-        
-
-
 
 
 # -------------------------------------------------------------------
