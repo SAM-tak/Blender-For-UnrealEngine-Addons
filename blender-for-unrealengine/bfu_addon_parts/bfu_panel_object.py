@@ -264,158 +264,6 @@ class BFU_PT_BlenderForUnrealObject(bpy.types.Panel):
                 else:
                     layout.label(text='(No properties to show.)')
 
-        if bfu_ui.bfu_ui_utils.DisplayPropertyFilter("OBJECT", "ANIM"):
-            if obj is not None:
-                if obj.bfu_export_type == "export_recursive" and not obj.bfu_export_as_lod_mesh:
-
-                    scene.bfu_animation_action_properties_expanded.draw(layout)
-                    if scene.bfu_animation_action_properties_expanded.is_expend():
-                        if (bfu_skeletal_mesh.bfu_skeletal_mesh_utils.is_skeletal_mesh(obj) or
-                                bfu_camera.bfu_camera_utils.is_camera(obj) or
-                                bfu_alembic_animation.bfu_alembic_animation_utils.is_alembic_animation(obj)):
-
-                            if bfu_skeletal_mesh.bfu_skeletal_mesh_utils.is_skeletal_mesh(obj):
-                                # Action list
-                                ActionListProperty = layout.column()
-                                ActionListProperty.prop(obj, 'bfu_anim_action_export_enum')
-                                if obj.bfu_anim_action_export_enum == "export_specific_list":
-                                    ActionListProperty.template_list(
-                                        # type and unique id
-                                        "BFU_UL_ActionExportTarget", "",
-                                        # pointer to the CollectionProperty
-                                        obj, "bfu_action_asset_list",
-                                        # pointer to the active identifier
-                                        obj, "bfu_active_action_asset_list",
-                                        maxrows=5,
-                                        rows=5
-                                    )
-                                    ActionListProperty.operator(
-                                        "object.updateobjactionlist",
-                                        icon='RECOVER_LAST')
-                                if obj.bfu_anim_action_export_enum == "export_specific_prefix":
-                                    ActionListProperty.prop(obj, 'bfu_prefix_name_to_export')
-
-                            # Action Time
-                            if obj.type != "CAMERA" and obj.bfu_skeleton_export_procedure != "auto-rig-pro":
-                                ActionTimeProperty = layout.column()
-                                ActionTimeProperty.enabled = obj.bfu_anim_action_export_enum != 'dont_export'
-                                ActionTimeProperty.prop(obj, 'bfu_anim_action_start_end_time_enum')
-                                if obj.bfu_anim_action_start_end_time_enum == "with_customframes":
-                                    OfsetTime = ActionTimeProperty.row()
-                                    OfsetTime.prop(obj, 'bfu_anim_action_custom_start_frame')
-                                    OfsetTime.prop(obj, 'bfu_anim_action_custom_end_frame')
-                                if obj.bfu_anim_action_start_end_time_enum != "with_customframes":
-                                    OfsetTime = ActionTimeProperty.row()
-                                    OfsetTime.prop(obj, 'bfu_anim_action_start_frame_offset')
-                                    OfsetTime.prop(obj, 'bfu_anim_action_end_frame_offset')
-
-                            else:
-                                layout.label(
-                                    text=(
-                                        "Note: animation start/end use scene frames" +
-                                        " with the camera for the sequencer.")
-                                    )
-
-                            # Nomenclature
-                            if bfu_skeletal_mesh.bfu_skeletal_mesh_utils.is_skeletal_mesh(obj):
-                                export_anim_naming = layout.column()
-                                export_anim_naming.enabled = obj.bfu_anim_action_export_enum != 'dont_export'
-                                export_anim_naming.prop(obj, 'bfu_anim_naming_type')
-                                if obj.bfu_anim_naming_type == "include_custom_name":
-                                    export_anim_naming_text = export_anim_naming.column()
-                                    export_anim_naming_text.prop(obj, 'bfu_anim_naming_custom')
-
-
-
-                        else:
-                            layout.label(
-                                text='(This assets is not a SkeletalMesh or Camera)')
-
-                    scene.bfu_animation_action_advanced_properties_expanded.draw(layout)
-                    if scene.bfu_animation_action_advanced_properties_expanded.is_expend():
-
-                        if bfu_alembic_animation.bfu_alembic_animation_utils.is_not_alembic_animation(obj):
-                            transformProp = layout.column()
-                            transformProp.enabled = obj.bfu_anim_action_export_enum != 'dont_export'
-                            transformProp.prop(obj, "bfu_move_action_to_center_for_export")
-                            transformProp.prop(obj, "bfu_rotate_action_to_zero_for_export")
-
-                    scene.bfu_animation_nla_properties_expanded.draw(layout)
-                    if scene.bfu_animation_nla_properties_expanded.is_expend():
-                        # NLA
-                        if bfu_skeletal_mesh.bfu_skeletal_mesh_utils.is_skeletal_mesh(obj):
-                            NLAAnim = layout.row()
-                            NLAAnim.prop(obj, 'bfu_anim_nla_use')
-                            NLAAnimChild = NLAAnim.column()
-                            NLAAnimChild.enabled = obj.bfu_anim_nla_use
-                            NLAAnimChild.prop(obj, 'bfu_anim_nla_export_name')
-                            if obj.bfu_skeleton_export_procedure == "auto-rig-pro":
-                                NLAAnim.enabled = False
-                                NLAAnimChild.enabled = False
-
-                        # NLA Time
-                        if obj.type != "CAMERA" and obj.bfu_skeleton_export_procedure != "auto-rig-pro":
-                            NLATimeProperty = layout.column()
-                            NLATimeProperty.enabled = obj.bfu_anim_nla_use
-                            NLATimeProperty.prop(obj, 'bfu_anim_nla_start_end_time_enum')
-                            if obj.bfu_anim_nla_start_end_time_enum == "with_customframes":
-                                OfsetTime = NLATimeProperty.row()
-                                OfsetTime.prop(obj, 'bfu_anim_nla_custom_start_frame')
-                                OfsetTime.prop(obj, 'bfu_anim_nla_custom_end_frame')
-                            if obj.bfu_anim_nla_start_end_time_enum != "with_customframes":
-                                OfsetTime = NLATimeProperty.row()
-                                OfsetTime.prop(obj, 'bfu_anim_nla_start_frame_offset')
-                                OfsetTime.prop(obj, 'bfu_anim_nla_end_frame_offset')
-
-
-                    scene.bfu_animation_nla_advanced_properties_expanded.draw(layout)
-                    if scene.bfu_animation_nla_advanced_properties_expanded.is_expend():
-                        if bfu_alembic_animation.bfu_alembic_animation_utils.is_not_alembic_animation(obj):
-                            transformProp2 = layout.column()
-                            transformProp2.enabled = obj.bfu_anim_nla_use
-                            transformProp2.prop(obj, "bfu_move_nla_to_center_for_export")
-                            transformProp2.prop(obj, "bfu_rotate_nla_to_zero_for_export")
-
-
-                    scene.bfu_animation_advanced_properties_expanded.draw(layout)
-                    if scene.bfu_animation_advanced_properties_expanded.is_expend():
-                        # Animation fbx properties
-                        if bfu_alembic_animation.bfu_alembic_animation_utils.is_not_alembic_animation(obj):
-                            propsFbx = layout.row()
-                            if obj.bfu_skeleton_export_procedure != "auto-rig-pro":
-                                propsFbx.prop(obj, 'bfu_sample_anim_for_export')
-                            propsFbx.prop(obj, 'bfu_simplify_anim_for_export')
-                        propsScaleAnimation = layout.row()
-                        propsScaleAnimation.prop(obj, "bfu_disable_free_scale_animation")
-
-                    # Armature export action list feedback
-                    if bfu_skeletal_mesh.bfu_skeletal_mesh_utils.is_skeletal_mesh(obj):
-                        layout.label(
-                            text='Note: The Action with only one' +
-                            ' frame are exported like Pose.')
-                        ArmaturePropertyInfo = (
-                            layout.row().box().split(factor=0.75)
-                            )
-                        animation_asset_cache = bfu_cached_asset_list.GetAnimationAssetCache(obj)
-                        animation_to_export = animation_asset_cache.GetAnimationAssetList()
-                        ActionNum = len(animation_to_export)
-                        if obj.bfu_anim_nla_use:
-                            ActionNum += 1
-                        actionFeedback = (
-                            str(ActionNum) +
-                            " Animation(s) will be exported with this object.")
-                        ArmaturePropertyInfo.label(
-                            text=actionFeedback,
-                            icon='INFO')
-                        ArmaturePropertyInfo.operator("object.showobjaction")
-                else:
-                    layout.label(text='(No properties to show.)')
-            else:
-                layout.label(text='(No properties to show.)')
-
-
-
-
         # Object
         bfu_base_object.bfu_base_obj_ui.draw_ui(layout, obj)
         bfu_adv_object.bfu_adv_obj_ui.draw_ui(layout, obj)
@@ -432,11 +280,12 @@ class BFU_PT_BlenderForUnrealObject(bpy.types.Panel):
         bfu_assets_references.bfu_asset_ref_ui.draw_ui(layout, obj)
 
         # Animations
-        bfu_anim_base.bfu_anim_base_ui.draw_ui(layout, obj)
         bfu_anim_action.bfu_anim_action_ui.draw_ui(layout, obj)
         bfu_anim_action_adv.bfu_anim_action_adv_ui.draw_ui(layout, obj)
         bfu_anim_nla.bfu_anim_nla_ui.draw_ui(layout, obj)
         bfu_anim_nla_adv.bfu_anim_nla_adv_ui.draw_ui(layout, obj)
+        bfu_anim_base.bfu_anim_base_ui.draw_ui(layout, obj)
+        bfu_anim_base.bfu_anim_base_ui.draw_animation_tab_foot_ui(layout, obj)
 
         # Scene
         bfu_base_collection.bfu_base_col_ui.draw_ui(layout, context)

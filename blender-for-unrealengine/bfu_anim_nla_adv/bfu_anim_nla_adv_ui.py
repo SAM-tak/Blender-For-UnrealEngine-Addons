@@ -22,13 +22,12 @@ from .. import bfu_basics
 from .. import bfu_utils
 from .. import bfu_ui
 from .. import bbpl
+from .. import bfu_alembic_animation
+
 
 
 def draw_ui(layout: bpy.types.UILayout, obj: bpy.types.Object):
 
-    if obj is None:
-        return
-    
     scene = bpy.context.scene 
     addon_prefs = bfu_basics.GetAddonPrefs()
 
@@ -39,8 +38,13 @@ def draw_ui(layout: bpy.types.UILayout, obj: bpy.types.Object):
         return
     if obj.bfu_export_type != "export_recursive":
         return
+    if bfu_alembic_animation.bfu_alembic_animation_utils.is_alembic_animation(obj):
+        return
     
-    if bfu_ui.bfu_ui_utils.DisplayPropertyFilter("OBJECT", "GENERAL"):
-        scene.bfu_object_advanced_properties_expanded.draw(layout)
-        if scene.bfu_object_advanced_properties_expanded.is_expend():
-            pass
+    if bfu_ui.bfu_ui_utils.DisplayPropertyFilter("OBJECT", "ANIM"):
+        scene.bfu_animation_nla_advanced_properties_expanded.draw(layout)
+        if scene.bfu_animation_nla_advanced_properties_expanded.is_expend():
+            transformProp2 = layout.column()
+            transformProp2.enabled = obj.bfu_anim_nla_use
+            transformProp2.prop(obj, "bfu_move_nla_to_center_for_export")
+            transformProp2.prop(obj, "bfu_rotate_nla_to_zero_for_export")

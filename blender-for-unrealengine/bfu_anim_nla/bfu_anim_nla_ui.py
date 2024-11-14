@@ -22,15 +22,15 @@ from .. import bfu_basics
 from .. import bfu_utils
 from .. import bfu_ui
 from .. import bbpl
+from .. import bfu_skeletal_mesh
+
 
 
 def draw_ui(layout: bpy.types.UILayout, obj: bpy.types.Object):
 
-    if obj is None:
-        return
-    
     scene = bpy.context.scene 
     addon_prefs = bfu_basics.GetAddonPrefs()
+    is_skeletal_mesh = bfu_skeletal_mesh.bfu_skeletal_mesh_utils.is_skeletal_mesh(obj)
 
     # Hide filters
     if obj is None:
@@ -40,7 +40,30 @@ def draw_ui(layout: bpy.types.UILayout, obj: bpy.types.Object):
     if obj.bfu_export_type != "export_recursive":
         return
     
-    if bfu_ui.bfu_ui_utils.DisplayPropertyFilter("OBJECT", "GENERAL"):
-        scene.bfu_object_advanced_properties_expanded.draw(layout)
-        if scene.bfu_object_advanced_properties_expanded.is_expend():
-            pass
+    if bfu_ui.bfu_ui_utils.DisplayPropertyFilter("OBJECT", "ANIM"):
+        scene.bfu_animation_nla_properties_expanded.draw(layout)
+        if scene.bfu_animation_nla_properties_expanded.is_expend():
+            # NLA
+            if is_skeletal_mesh:
+                NLAAnim = layout.row()
+                NLAAnim.prop(obj, 'bfu_anim_nla_use')
+                NLAAnimChild = NLAAnim.column()
+                NLAAnimChild.enabled = obj.bfu_anim_nla_use
+                NLAAnimChild.prop(obj, 'bfu_anim_nla_export_name')
+                if obj.bfu_skeleton_export_procedure == "auto-rig-pro":
+                    NLAAnim.enabled = False
+                    NLAAnimChild.enabled = False
+
+            # NLA Time
+            if obj.type != "CAMERA" and obj.bfu_skeleton_export_procedure != "auto-rig-pro":
+                NLATimeProperty = layout.column()
+                NLATimeProperty.enabled = obj.bfu_anim_nla_use
+                NLATimeProperty.prop(obj, 'bfu_anim_nla_start_end_time_enum')
+                if obj.bfu_anim_nla_start_end_time_enum == "with_customframes":
+                    OfsetTime = NLATimeProperty.row()
+                    OfsetTime.prop(obj, 'bfu_anim_nla_custom_start_frame')
+                    OfsetTime.prop(obj, 'bfu_anim_nla_custom_end_frame')
+                if obj.bfu_anim_nla_start_end_time_enum != "with_customframes":
+                    OfsetTime = NLATimeProperty.row()
+                    OfsetTime.prop(obj, 'bfu_anim_nla_start_frame_offset')
+                    OfsetTime.prop(obj, 'bfu_anim_nla_end_frame_offset')
