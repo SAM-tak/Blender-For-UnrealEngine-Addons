@@ -75,10 +75,7 @@ class BFU_PT_Export(bpy.types.Panel):
         row = layout.row(align=True)
         row.menu('BFU_MT_NomenclaturePresets', text='Export Presets')
         row.operator('object.add_nomenclature_preset', text='', icon='ADD')
-        row.operator(
-            'object.add_nomenclature_preset',
-            text='',
-            icon='REMOVE').remove_active = True
+        row.operator('object.add_nomenclature_preset', text='', icon='REMOVE').remove_active = True
 
         # Export sections
         bfu_export_nomenclature.bfu_export_nomenclature_ui.draw_ui(layout, context)
