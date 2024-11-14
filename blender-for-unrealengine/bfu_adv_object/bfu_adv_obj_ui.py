@@ -32,9 +32,6 @@ from .. import bfu_custom_property
 
 def draw_ui(layout: bpy.types.UILayout, obj: bpy.types.Object):
 
-    if obj is None:
-        return
-    
     scene = bpy.context.scene 
     addon_prefs = bfu_basics.GetAddonPrefs()
 

@@ -27,27 +27,33 @@ from .. import bfu_assets_manager
 
 
 
-def draw_ui_object(layout: bpy.types.UILayout):
-    if bfu_ui.bfu_ui_utils.DisplayPropertyFilter("OBJECT", "MISC"):
+def draw_ui_object(layout: bpy.types.UILayout, obj: bpy.types.Object):
 
-        scene = bpy.context.scene
+    scene = bpy.context.scene 
+    addon_prefs = bfu_basics.GetAddonPrefs()
+
+    # Hide filters
+    if obj is None:
+        return
+    if addon_prefs.useGeneratedScripts is False:
+        return
+    if obj.bfu_export_type != "export_recursive":
+        return
+    if obj.bfu_export_as_lod_mesh:
+        return
+
+    if bfu_ui.bfu_ui_utils.DisplayPropertyFilter("OBJECT", "MISC"):
         scene.bfu_object_material_properties_expanded.draw(layout)
         if scene.bfu_object_material_properties_expanded.is_expend():
-
-            addon_prefs = bfu_basics.GetAddonPrefs()
-            obj = bpy.context.object
-            if addon_prefs.useGeneratedScripts and obj is not None:
-                if obj.bfu_export_type == "export_recursive":
-                    if not obj.bfu_export_as_lod_mesh:
-                        asset_class = bfu_assets_manager.bfu_asset_manager_utils.get_asset_class(obj)
-                        if asset_class and asset_class.use_materials == True:
-                            bfu_material_search_location = layout.column()
-                            bbpl.blender_layout.layout_doc_button.add_doc_page_operator(bfu_material_search_location, text="About Materials", url="https://github.com/xavier150/Blender-For-UnrealEngine-Addons/wiki/Material")
-                            bfu_material_search_location.prop(obj, 'bfu_material_search_location')
-                            bfu_material_search_location.prop(obj, 'bfu_import_materials')
-                            bfu_material_search_location.prop(obj, 'bfu_import_textures')
-                            bfu_material_search_location.prop(obj, 'bfu_flip_normal_map_green_channel')
-                            bfu_material_search_location.prop(obj, 'bfu_reorder_material_to_fbx_order')
+            asset_class = bfu_assets_manager.bfu_asset_manager_utils.get_asset_class(obj)
+            if asset_class and asset_class.use_materials == True:
+                bfu_material_search_location = layout.column()
+                bbpl.blender_layout.layout_doc_button.add_doc_page_operator(bfu_material_search_location, text="About Materials", url="https://github.com/xavier150/Blender-For-UnrealEngine-Addons/wiki/Material")
+                bfu_material_search_location.prop(obj, 'bfu_material_search_location')
+                bfu_material_search_location.prop(obj, 'bfu_import_materials')
+                bfu_material_search_location.prop(obj, 'bfu_import_textures')
+                bfu_material_search_location.prop(obj, 'bfu_flip_normal_map_green_channel')
+                bfu_material_search_location.prop(obj, 'bfu_reorder_material_to_fbx_order')
                             
 
 def draw_ui_scene_collision(layout: bpy.types.UILayout):

@@ -7,15 +7,31 @@
 import importlib
 import importlib.util
 import os
-from . import import_module_utils
+import sys
+import json
 
+def JsonLoad(json_file):
+    # Changed in Python 3.9: The keyword argument encoding has been removed.
+    if sys.version_info >= (3, 9):
+        return json.load(json_file)
+    else:
+        return json.load(json_file, encoding="utf8")
+
+
+def JsonLoadFile(json_file_path):
+    if sys.version_info[0] < 3:
+        with open(json_file_path, "r") as json_file:
+            return JsonLoad(json_file)
+    else:
+        with open(json_file_path, "r", encoding="utf8") as json_file:
+            return JsonLoad(json_file)
 
 def RunImportScriptWithJsonData():
     # Prepare process import
     json_data_file = 'ImportSequencerData.json'
     dir_path = os.path.dirname(os.path.realpath(__file__))
     import_file_path = os.path.join(dir_path, json_data_file)
-    sequence_data = import_module_utils.JsonLoadFile(import_file_path)
+    sequence_data = JsonLoadFile(import_file_path)
     
     file_path = os.path.join(sequence_data["info"]["addon_path"],'run_unreal_import_script.py')
     spec = importlib.util.spec_from_file_location("__import_sequencer__", file_path)

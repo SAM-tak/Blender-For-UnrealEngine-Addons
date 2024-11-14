@@ -1,30 +1,35 @@
 from . import edit_files
+import ast
 
-has_valid_parent_function = '''
-    def has_valid_parent(self, objects):
-        par = self.parent
-        if par in objects:
-            if self._tag == 'OB':
-                par_type = self.bdata.parent_type
-                if par_type in {'OBJECT', 'BONE'}:
-                    return True
-                else:
-                    print("Sorry, “{}” parenting type is not supported".format(par_type))
-                    return False
-            return True
-        return False
-'''
+def get_has_valid_parent_func(file_path):
+    content = edit_files.get_file_content(file_path)
+    tree = ast.parse(content)
+    lines = None
+    for node in tree.body:
+        if isinstance(node, ast.ClassDef) and node.name == "ObjectWrapper":
+            for class_node in node.body:
+                if isinstance(class_node, ast.FunctionDef) and class_node.name == "has_valid_parent":
+                    # Extraire le code source de la fonction
+                    start_line = class_node.lineno - 1
+                    end_line = class_node.end_lineno
+                    function_lines = content.splitlines()[start_line:end_line]
+                    return "\n".join(function_lines)
+    edit_files.print_edit_error(f"Function 'has_valid_parent' inside 'ObjectWrapper' not found in {file_path}")
 
 def update_fbx_utils(file_path, version):
     add_re_import(file_path)
     edit_files.add_quaternion_import(file_path)
     add_support_for_custom_kind(file_path)
-    new_func = add_is_leg_bone_func(has_valid_parent_function, file_path)
-    new_func = add_is_rightside_bone_func(new_func, file_path)
-    new_func = add_is_reverse_direction_bone_func(new_func, file_path)
-    new_func = add_is_basic_bone_func(new_func, file_path)
-    new_func = add_aling_matrix_funcs(new_func, file_path)
-    add_disable_free_scale_animation(file_path)
+
+    lines = get_has_valid_parent_func(file_path)
+
+    if lines:
+        new_func = add_is_leg_bone_func(lines, file_path)
+        new_func = add_is_rightside_bone_func(new_func, file_path)
+        new_func = add_is_reverse_direction_bone_func(new_func, file_path)
+        new_func = add_is_basic_bone_func(new_func, file_path)
+        new_func = add_aling_matrix_funcs(new_func, file_path)
+        add_disable_free_scale_animation(file_path)
 
 
 def add_re_import(file_path):

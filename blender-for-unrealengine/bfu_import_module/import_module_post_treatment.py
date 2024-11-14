@@ -51,7 +51,7 @@ def import_static_lod(asset, asset_options, asset_data, asset_additional_data, l
                 slot_replaced = unreal.EditorStaticMeshLibrary.set_lod_from_static_mesh(asset, lod_number, lodAsset, 0, True)
                 unreal.EditorAssetLibrary.delete_asset(lodTask.imported_object_paths[0])
 
-def import_skeletal_lod(asset, asset_data, asset_additional_data, lod_name, lod_number):
+def import_skeletal_lod(asset, asset_options, asset_data, asset_additional_data, lod_name, lod_number):
     if "LevelOfDetail" in asset_additional_data:
         if lod_name in asset_additional_data["LevelOfDetail"]:
             # Unreal python no longer support Skeletal mesh LODS import.
@@ -65,6 +65,7 @@ def set_static_mesh_lods(asset, asset_options, asset_data, asset_additional_data
     import_static_lod(asset, asset_options, asset_data, asset_additional_data, "lod_3", 3)
     import_static_lod(asset, asset_options, asset_data, asset_additional_data, "lod_4", 4)
     import_static_lod(asset, asset_options, asset_data, asset_additional_data, "lod_5", 5)
+
 
 def set_skeletal_mesh_lods(asset, asset_options, asset_data, asset_additional_data):
     # Import the SkeletalMesh lod(s)

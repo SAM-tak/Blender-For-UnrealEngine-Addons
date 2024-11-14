@@ -1,5 +1,13 @@
+import ast
+
 def print_edit_error(text):
     print(f"\033[91m{text}\033[0m")
+
+def get_file_content(file_path):
+    # Lire le contenu du fichier Python
+    with open(file_path, 'r+', encoding='utf-8') as f:
+        content = f.read()
+    return content
 
 def add_header_to_file(file_path):
     header = (

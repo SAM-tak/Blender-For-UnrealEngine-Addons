@@ -26,9 +26,6 @@ from .. import bfu_skeletal_mesh
 
 
 def draw_ui(layout: bpy.types.UILayout, obj: bpy.types.Object):
-
-    if obj is None:
-        return
     
     scene = bpy.context.scene 
     addon_prefs = bfu_basics.GetAddonPrefs()
@@ -42,7 +39,8 @@ def draw_ui(layout: bpy.types.UILayout, obj: bpy.types.Object):
         return
     if obj.bfu_export_type != "export_recursive":
         return
-    if bfu_skeletal_mesh.bfu_skeletal_mesh_utils.is_not_skeletal_mesh(obj):
+    is_skeletal_mesh = bfu_skeletal_mesh.bfu_skeletal_mesh_utils.is_skeletal_mesh(obj)
+    if is_skeletal_mesh is False:
         return
     
     # Draw UI
@@ -51,7 +49,7 @@ def draw_ui(layout: bpy.types.UILayout, obj: bpy.types.Object):
         if scene.bfu_engine_ref_properties_expanded.is_expend():
 
             # SkeletalMesh prop
-            if bfu_skeletal_mesh.bfu_skeletal_mesh_utils.is_skeletal_mesh(obj):
+            if is_skeletal_mesh:
                 if not obj.bfu_export_as_lod_mesh:
                     unreal_engine_refs = layout.column()
                     draw_skeleton_prop(unreal_engine_refs, obj)

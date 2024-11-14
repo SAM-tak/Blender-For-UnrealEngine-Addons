@@ -1400,7 +1400,6 @@ class ObjectWrapper(metaclass=MetaObjectWrapper):
                     return False
             return True
         return False
-
     LEG_NAME_PATTERN = re.compile(r'[^a-zA-Z]?(thigh|calf)([^a-zA-Z]|$)', re.IGNORECASE)
 
     def is_leg_bone(self):
@@ -1455,6 +1454,7 @@ class ObjectWrapper(metaclass=MetaObjectWrapper):
                 if self.bdata.parent.name in bone_aligns[self.armature.name]:
                     return bone_aligns[self.armature.name][self.bdata.parent.name][1]
         return None
+
 
     def use_bake_space_transform(self, scene_data):
         # NOTE: Only applies to object types supporting this!!! Currently, only meshes and the like...

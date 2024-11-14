@@ -160,8 +160,8 @@ class BFU_PT_BlenderForUnrealObject(bpy.types.Panel):
         bfu_collision.bfu_collision_ui.draw_ui_object(layout, obj)
         bfu_uv_map.bfu_uv_map_ui.draw_obj_ui(layout, obj)
         bfu_light_map.bfu_light_map_ui.draw_obj_ui(layout, obj)
-        bfu_material.bfu_material_ui.draw_ui_object(layout)
-        bfu_vertex_color.bfu_vertex_color_ui.draw_ui_object(layout)
+        bfu_material.bfu_material_ui.draw_ui_object(layout, obj)
+        bfu_vertex_color.bfu_vertex_color_ui.draw_ui_object(layout, obj)
         bfu_assets_references.bfu_asset_ref_ui.draw_ui(layout, obj)
 
         # Animations

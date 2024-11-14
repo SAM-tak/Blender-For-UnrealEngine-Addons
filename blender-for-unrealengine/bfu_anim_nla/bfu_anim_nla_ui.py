@@ -30,15 +30,14 @@ def draw_ui(layout: bpy.types.UILayout, obj: bpy.types.Object):
 
     scene = bpy.context.scene 
     addon_prefs = bfu_basics.GetAddonPrefs()
-    is_skeletal_mesh = bfu_skeletal_mesh.bfu_skeletal_mesh_utils.is_skeletal_mesh(obj)
+
 
     # Hide filters
     if obj is None:
         return
-    if bfu_utils.GetExportAsProxy(obj):
-        return
     if obj.bfu_export_type != "export_recursive":
         return
+    is_skeletal_mesh = bfu_skeletal_mesh.bfu_skeletal_mesh_utils.is_skeletal_mesh(obj)
     
     if bfu_ui.bfu_ui_utils.DisplayPropertyFilter("OBJECT", "ANIM"):
         scene.bfu_animation_nla_properties_expanded.draw(layout)
