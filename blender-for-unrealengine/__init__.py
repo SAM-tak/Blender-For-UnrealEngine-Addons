@@ -183,8 +183,6 @@ if "bfu_backward_compatibility" in locals():
 if "bfu_cached_asset_list" in locals():
     importlib.reload(bfu_cached_asset_list)
 
-bl_info = {}
-
 class BFUCachedAction(bpy.types.PropertyGroup):
     """
     Represents a cached action for Blender File Utils (BFU).

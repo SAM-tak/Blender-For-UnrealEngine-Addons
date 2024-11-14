@@ -4,3 +4,4 @@ Release Logs: https://github.com/xavier150/Blender-For-UnrealEngine-Addons/wiki/
 ### Version 4.3.9
 
 - Fixed: Animation UI not visible on linked Armatures.
+- Fixed: Generated Builds for Blender 4.1 and older is wrong.
