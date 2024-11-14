@@ -413,60 +413,6 @@ class BFU_PT_BlenderForUnrealObject(bpy.types.Panel):
             else:
                 layout.label(text='(No properties to show.)')
 
-        if bfu_ui.bfu_ui_utils.DisplayPropertyFilter("OBJECT", "MISC"):
-
-
-
-
-
-            scene.bfu_object_light_map_properties_expanded.draw(layout)
-            if scene.bfu_object_light_map_properties_expanded.is_expend():
-                if addon_prefs.useGeneratedScripts and obj is not None:
-                    if obj.bfu_export_type == "export_recursive":
-
-                        # Light map
-                        if bfu_static_mesh.bfu_static_mesh_utils.is_static_mesh(obj):
-                            StaticMeshLightMapRes = layout.box()
-                            StaticMeshLightMapRes.prop(obj, 'bfu_static_mesh_light_map_mode')
-                            if obj.bfu_static_mesh_light_map_mode == "CustomMap":
-                                CustomLightMap = StaticMeshLightMapRes.column()
-                                CustomLightMap.prop(obj, 'bfu_static_mesh_custom_light_map_res')
-                            if obj.bfu_static_mesh_light_map_mode == "SurfaceArea":
-                                SurfaceAreaLightMap = StaticMeshLightMapRes.column()
-                                SurfaceAreaLightMapButton = SurfaceAreaLightMap.row()
-                                SurfaceAreaLightMapButton.operator("object.comput_lightmap", icon='TEXTURE')
-                                SurfaceAreaLightMapButton.operator("object.comput_all_lightmap", icon='TEXTURE')
-                                SurfaceAreaLightMap.prop(obj, 'bfu_use_static_mesh_light_map_world_scale')
-                                SurfaceAreaLightMap.prop(obj, 'bfu_static_mesh_light_map_surface_scale')
-                                SurfaceAreaLightMap.prop(obj, 'bfu_static_mesh_light_map_round_power_of_two')
-                            if obj.bfu_static_mesh_light_map_mode != "Default":
-                                CompuntedLightMap = str(bfu_light_map.bfu_light_map_utils.GetCompuntedLightMap(obj))
-                                StaticMeshLightMapRes.label(text='Compunted light map: ' + CompuntedLightMap)
-                            bfu_generate_light_map_uvs = layout.row()
-                            bfu_generate_light_map_uvs.prop(obj, 'bfu_generate_light_map_uvs')
-
-
-            scene.bfu_object_uv_map_properties_expanded.draw(layout)
-            if scene.bfu_object_uv_map_properties_expanded.is_expend():
-                if obj.bfu_export_type == "export_recursive":
-                    # Geometry Node Uv
-                    bfu_convert_geometry_node_attribute_to_uv = layout.column()
-                    convert_geometry_node_attribute_to_uv_use = bfu_convert_geometry_node_attribute_to_uv.row()
-                    convert_geometry_node_attribute_to_uv_use.prop(obj, 'bfu_convert_geometry_node_attribute_to_uv')
-                    bbpl.blender_layout.layout_doc_button.add_doc_page_operator(convert_geometry_node_attribute_to_uv_use, url="https://github.com/xavier150/Blender-For-UnrealEngine-Addons/wiki/UV-Maps#geometry-node-uv")
-                    bfu_convert_geometry_node_attribute_to_uv_name = bfu_convert_geometry_node_attribute_to_uv.column()
-                    bfu_convert_geometry_node_attribute_to_uv_name.prop(obj, 'bfu_convert_geometry_node_attribute_to_uv_name')
-                    bfu_convert_geometry_node_attribute_to_uv_name.enabled = obj.bfu_convert_geometry_node_attribute_to_uv
-
-                    # Extreme UV Scale
-                    ui_correct_extrem_uv_scale = layout.column()
-                    ui_correct_extrem_uv_scale_use = ui_correct_extrem_uv_scale.row()
-                    ui_correct_extrem_uv_scale_use.prop(obj, 'bfu_use_correct_extrem_uv_scale')
-                    bbpl.blender_layout.layout_doc_button.add_doc_page_operator(ui_correct_extrem_uv_scale_use, url="https://github.com/xavier150/Blender-For-UnrealEngine-Addons/wiki/UV-Maps#extreme-uv-scale")
-                    ui_correct_extrem_uv_scale_options = ui_correct_extrem_uv_scale.column()
-                    ui_correct_extrem_uv_scale_options.prop(obj, 'bfu_correct_extrem_uv_scale_step_scale')
-                    ui_correct_extrem_uv_scale_options.prop(obj, 'bfu_correct_extrem_uv_scale_use_absolute')
-                    ui_correct_extrem_uv_scale_options.enabled = obj.bfu_use_correct_extrem_uv_scale
 
 
 
@@ -484,7 +430,6 @@ class BFU_PT_BlenderForUnrealObject(bpy.types.Panel):
         bfu_material.bfu_material_ui.draw_ui_object(layout)
         bfu_vertex_color.bfu_vertex_color_ui.draw_ui_object(layout)
         bfu_assets_references.bfu_asset_ref_ui.draw_ui(layout, obj)
-
 
         # Animations
         bfu_anim_base.bfu_anim_base_ui.draw_ui(layout, obj)
