@@ -30,11 +30,11 @@ def draw_obj_ui(layout: bpy.types.UILayout, obj: bpy.types.Object):
 
     scene = bpy.context.scene 
     addon_prefs = bfu_basics.GetAddonPrefs()
-    is_static_mesh = bfu_static_mesh.bfu_static_mesh_utils.is_static_mesh(obj)
 
     # Hide filters
     if obj is None:
         return
+    is_static_mesh = bfu_static_mesh.bfu_static_mesh_utils.is_static_mesh(obj)
     if addon_prefs.useGeneratedScripts is False:
         return
     if bfu_utils.GetExportAsProxy(obj):

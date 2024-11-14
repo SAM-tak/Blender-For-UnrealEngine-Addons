@@ -31,15 +31,15 @@ def draw_ui(layout: bpy.types.UILayout, obj: bpy.types.Object):
 
     scene = bpy.context.scene 
     addon_prefs = bfu_basics.GetAddonPrefs()
-    is_skeletal_mesh = bfu_skeletal_mesh.bfu_skeletal_mesh_utils.is_skeletal_mesh(obj)
-    is_camera = bfu_camera.bfu_camera_utils.is_camera(obj)
-    is_alembic_animation = bfu_alembic_animation.bfu_alembic_animation_utils.is_alembic_animation(obj)
 
     # Hide filters
     if obj is None:
         return
     if obj.bfu_export_type != "export_recursive":
         return
+    is_skeletal_mesh = bfu_skeletal_mesh.bfu_skeletal_mesh_utils.is_skeletal_mesh(obj)
+    is_camera = bfu_camera.bfu_camera_utils.is_camera(obj)
+    is_alembic_animation = bfu_alembic_animation.bfu_alembic_animation_utils.is_alembic_animation(obj)
     if True not in [is_skeletal_mesh, is_camera, is_alembic_animation]:
         return
 

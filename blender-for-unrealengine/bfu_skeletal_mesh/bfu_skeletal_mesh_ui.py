@@ -47,10 +47,10 @@ def draw_ui_object(layout: bpy.types.UILayout, obj: bpy.types.Object):
     
     scene = bpy.context.scene 
     addon_prefs = bfu_basics.GetAddonPrefs()
-    is_skeletal_mesh = bfu_skeletal_mesh_utils.is_skeletal_mesh(obj)
 
     if obj is None:
         return
+    is_skeletal_mesh = bfu_skeletal_mesh_utils.is_skeletal_mesh(obj)
     if obj.type != "ARMATURE":
         return
     if is_skeletal_mesh is False:

@@ -7,3 +7,5 @@ Release Logs: https://github.com/xavier150/Blender-For-UnrealEngine-Addons/wiki/
 - Fixed: Animation UI not visible on linked Armatures.
 - Fixed: Generated Builds for Blender 4.1 and olders version is wrong.
 - Fixed: Import scripts do not works. (wrong import call in the scripts)
+- Fixed: UI Script produce scripts errors when object is not select.
+- Fixed: UI is hiddend when bfu_export_type is not "export_recursive".
