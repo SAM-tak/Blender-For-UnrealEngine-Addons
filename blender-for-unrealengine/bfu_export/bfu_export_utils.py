@@ -47,6 +47,7 @@ def GetExportFullpath(dirpath, filename):
 
 def ApplyProxyData(obj):
 
+    scene = bpy.context.scene
     # Apply proxy data if needed.
     if bfu_utils.GetExportProxyChild(obj) is not None:
 
@@ -76,8 +77,8 @@ def ApplyProxyData(obj):
                                 cons.target.name +
                                 "_UEProxyChild"
                             )
-                            if ChildProxyName in bpy.data.objects:
-                                cons.target = bpy.data.objects[ChildProxyName]
+                            if ChildProxyName in scene.objects:
+                                cons.target = scene.objects[ChildProxyName]
 
         # Get old armature in selected objects
         OldProxyChildArmature = None
@@ -157,6 +158,7 @@ def DuplicateSelectForExport():
         def RemoveData(self):
             bfu_utils.RemoveUselessSpecificData(self.data_name, self.data_type)
 
+    scene = bpy.context.scene
     duplicate_data = DuplicateData()
     duplicate_data.SetOriginSelect()
     for user_selected in duplicate_data.origin_select.user_selecteds:
@@ -181,7 +183,7 @@ def DuplicateSelectForExport():
 
     for objSelect in currentSelectNames:
         if objSelect not in bpy.context.selected_objects:
-            bpy.data.objects[objSelect].select_set(True)
+            scene.objects[objSelect].select_set(True)
 
     # Make sigle user and clean useless data.
     for objScene in bpy.context.selected_objects:
@@ -215,6 +217,7 @@ def ResetDuplicateNameAfterExport(duplicate_data):
 
 def ConvertSelectedCurveToMesh():
     # Have to convert curve to mesh before MakeSelectVisualReal for avoid double duplicate issue.
+    scene = bpy.context.scene
     select = bbpl.save_data.select_save.UserSelectSave()
     select.save_current_select()
     
@@ -227,7 +230,7 @@ def ConvertSelectedCurveToMesh():
 
     # Save object list
     previous_objects = []
-    for obj in bpy.data.objects:
+    for obj in scene.objects:
         previous_objects.append(obj)
 
     # Convert to mesh
@@ -238,17 +241,18 @@ def ConvertSelectedCurveToMesh():
     select.reset_select(use_names = True)
     
     # Select the new objects
-    for obj in bpy.data.objects:
+    for obj in scene.objects:
         if obj not in previous_objects:
             obj.select_set(True)
 
 def MakeSelectVisualReal():
+    scene = bpy.context.scene
     select = bbpl.save_data.select_save.UserSelectSave()
     select.save_current_select()
 
     # Save object list
     previous_objects = []
-    for obj in bpy.data.objects:
+    for obj in scene.objects:
         previous_objects.append(obj)
 
     # Visual Transform Apply
@@ -263,7 +267,7 @@ def MakeSelectVisualReal():
     select.reset_select(use_names = True)
     
     # Select the new objects
-    for obj in bpy.data.objects:
+    for obj in scene.objects:
         if obj not in previous_objects:
             obj.select_set(True)
 

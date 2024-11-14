@@ -80,7 +80,9 @@ def IsValidObjectForExport(scene, obj):
     return asset_class.can_export_obj_asset(obj)
 
 def PrepareSceneForExport():
-    for obj in bpy.data.objects:
+    scene = bpy.context.scene
+    
+    for obj in scene.objects:
         if obj.hide_select:
             obj.hide_select = False
         if obj.hide_viewport:

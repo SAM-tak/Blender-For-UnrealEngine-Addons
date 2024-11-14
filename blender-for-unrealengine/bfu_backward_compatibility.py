@@ -39,8 +39,6 @@ def update_old_variables():
     print("Updating old bfu variables...")
 
     for obj in bpy.data.objects:
-
-
         update_variable(obj, ["bfu_skeleton_search_mode"], "bfu_engine_ref_skeleton_search_mode", enum_callback)
         update_variable(obj, ["bfu_target_skeleton_custom_path"], "bfu_engine_ref_skeleton_custom_path")
         update_variable(obj, ["bfu_target_skeleton_custom_name"], "bfu_engine_ref_skeleton_custom_name")

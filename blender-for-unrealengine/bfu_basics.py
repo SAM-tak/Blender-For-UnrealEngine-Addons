@@ -28,52 +28,9 @@ def GetAddonPrefs():
     return bpy.context.preferences.addons[__package__].preferences
 
 
-def is_deleted(o):
-    if o and o is not None:
-        return not (o.name in bpy.data.objects)
-    else:
-        return True
-
-
 def CheckPluginIsActivated(PluginName):
     is_enabled, is_loaded = addon_utils.check(PluginName)
     return is_enabled and is_loaded
-
-
-def ChecksRelationship(arrayA, arrayB):
-    # Checks if it exits an identical variable in two lists
-
-    for a in arrayA:
-        for b in arrayB:
-            if a == b:
-                return True
-    return False
-
-
-def nextPowerOfTwo(n):
-    # compute power of two greater than or equal to n
-
-    # decrement n (to handle cases when n itself
-    # is a power of 2)
-    n = n - 1
-
-    # do till only one bit is left
-    while n & n - 1:
-        n = n & n - 1  # unset rightmost bit
-
-    # n is now a power of two (less than n)
-    return n << 1
-
-
-def previousPowerOfTwo(n):
-    # compute power of two less than or equal to n
-
-    # do till only one bit is left
-    while (n & n - 1):
-        n = n & n - 1		# unset rightmost bit
-
-    # n is now a power of two (less than or equal to n)
-    return n
 
 
 def RemoveFolderTree(folder):
@@ -81,15 +38,10 @@ def RemoveFolderTree(folder):
     if dirpath.exists() and dirpath.is_dir():
         shutil.rmtree(dirpath, ignore_errors=True)
 
-
-
-
-
 def getRootBoneParent(bone):
     if bone.parent is not None:
         return getRootBoneParent(bone.parent)
     return bone
-
 
 def getFirstDeformBoneParent(bone):
     if bone.parent is not None:
@@ -98,7 +50,6 @@ def getFirstDeformBoneParent(bone):
         else:
             return getFirstDeformBoneParent(bone.parent)
     return bone
-
 
 def SetCollectionUse(collection):
     # Set if collection is hide and selectable
