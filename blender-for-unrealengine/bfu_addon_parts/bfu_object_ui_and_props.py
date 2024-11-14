@@ -64,134 +64,6 @@ class BFU_PT_BlenderForUnrealObject(bpy.types.Panel):
     bl_region_type = "UI"
     bl_category = "Unreal Engine"
 
-    # Scene and global
-    class BFU_OT_OpenDocumentationPage(bpy.types.Operator):
-        bl_label = "Documentation"
-        bl_idname = "object.bfu_open_documentation_page"
-        bl_description = "Clic for open documentation page on GitHub"
-
-        def execute(self, context):
-            os.system(
-                "start \"\" " +
-                "https://github.com/xavier150/Blender-For-UnrealEngine-Addons/wiki"
-                )
-            return {'FINISHED'}
-
-    # Animation :
-    class BFU_UL_ActionExportTarget(bpy.types.UIList):
-        def draw_item(self, context, layout, data, item, icon, active_data, active_property, index):
-            action_is_valid = False
-            if item.name in bpy.data.actions:
-                action_is_valid = True
-
-            if self.layout_type in {'DEFAULT', 'COMPACT'}:
-                if action_is_valid:  # If action is valid
-                    layout.prop(
-                        bpy.data.actions[item.name],
-                        "name",
-                        text="",
-                        emboss=False,
-                        icon="ACTION"
-                    )
-                    layout.prop(item, "use", text="")
-                else:
-                    dataText = (
-                        'Action data named "' + item.name +
-                        '" Not Found. Please click on update'
-                    )
-                    layout.label(text=dataText, icon="ERROR")
-            # Not optimized for 'GRID' layout type.
-            elif self.layout_type in {'GRID'}:
-                layout.alignment = 'CENTER'
-                layout.label(text="", icon_value=icon)
-
-    class BFU_OT_UpdateObjActionListButton(bpy.types.Operator):
-        bl_label = "Update action list"
-        bl_idname = "object.updateobjactionlist"
-        bl_description = "Update action list"
-
-        def execute(self, context):
-            def UpdateExportActionList(obj):
-                # Update the provisional action list known by the object
-
-                def SetUseFromLast(anim_list, ActionName):
-                    for item in anim_list:
-                        if item[0] == ActionName:
-                            if item[1]:
-                                return True
-                    return False
-
-                animSave = [["", False]]
-                for Anim in obj.bfu_action_asset_list:  # CollectionProperty
-                    name = Anim.name
-                    use = Anim.use
-                    animSave.append([name, use])
-                obj.bfu_action_asset_list.clear()
-                for action in bpy.data.actions:
-                    obj.bfu_action_asset_list.add().name = action.name
-                    useFromLast = SetUseFromLast(animSave, action.name)
-                    obj.bfu_action_asset_list[action.name].use = useFromLast
-            UpdateExportActionList(bpy.context.object)
-            return {'FINISHED'}
-
-    class BFU_OT_ShowActionToExport(bpy.types.Operator):
-        bl_label = "Show action(s)"
-        bl_idname = "object.showobjaction"
-        bl_description = (
-            "Click to show actions that are" +
-            " to be exported with this armature."
-            )
-
-        def execute(self, context):
-            obj = context.object
-            animation_asset_cache = bfu_cached_asset_list.GetAnimationAssetCache(obj)
-            animation_asset_cache.UpdateActionCache()
-            animation_to_export = animation_asset_cache.GetAnimationAssetList()
-
-            popup_title = "Action list"
-            if len(animation_to_export) > 0:
-                animationNumber = len(animation_to_export)
-                if obj.bfu_anim_nla_use:
-                    animationNumber += 1
-                popup_title = (
-                    str(animationNumber) +
-                    ' action(s) found for obj named "'+obj.name+'".'
-                    )
-            else:
-                popup_title = (
-                    'No action found for obj named "' +
-                    obj.name+'".')
-
-            def draw(self, context: bpy.types.Context):
-                col = self.layout.column()
-
-                def addAnimRow(
-                        action_name,
-                        action_type,
-                        frame_start,
-                        frame_end):
-                    row = col.row()
-                    row.label(
-                        text="- ["+action_name +
-                        "] Frame "+frame_start+" to "+frame_end +
-                        " ("+action_type+")"
-                        )
-
-                for action in animation_to_export:
-                    Frames = bfu_utils.GetDesiredActionStartEndTime(obj, action)
-                    frame_start = str(Frames[0])
-                    frame_end = str(Frames[1])
-                    addAnimRow(action.name, bfu_utils.GetActionType(action), frame_start, frame_end)
-                if obj.bfu_anim_nla_use:
-                    scene = context.scene
-                    addAnimRow(obj.bfu_anim_nla_export_name, "NlAnim", str(scene.frame_start), str(scene.frame_end))
-
-            bpy.context.window_manager.popup_menu(
-                draw,
-                title=popup_title,
-                icon='ACTION'
-                )
-            return {'FINISHED'}
 
     class BFU_MT_ObjectGlobalPropertiesPresets(bpy.types.Menu):
         bl_label = 'Global Properties Presets'
@@ -200,8 +72,6 @@ class BFU_PT_BlenderForUnrealObject(bpy.types.Panel):
         draw = bpy.types.Menu.draw_preset
 
     from bl_operators.presets import AddPresetBase
-
-
 
     class BFU_OT_AddObjectGlobalPropertiesPreset(AddPresetBase, bpy.types.Operator):
         bl_idname = 'object.add_globalproperties_preset'
@@ -248,91 +118,6 @@ class BFU_PT_BlenderForUnrealObject(bpy.types.Panel):
         # Directory to store the presets
         preset_subdir = 'blender-for-unrealengine/global-properties-presets'
 
-
-
-    class BFU_UL_CollectionExportTarget(bpy.types.UIList):
-
-        def draw_item(self, context, layout, data, item, icon, active_data, active_property, index, flt_flag):
-
-            collection_is_valid = False
-            if item.name in bpy.data.collections:
-                collection_is_valid = True
-
-            if self.layout_type in {'DEFAULT', 'COMPACT'}:
-                if collection_is_valid:  # If action is valid
-                    layout.prop(
-                        bpy.data.collections[item.name],
-                        "name",
-                        text="",
-                        emboss=False,
-                        icon="OUTLINER_COLLECTION")
-                    layout.prop(item, "use", text="")
-                else:
-                    dataText = (
-                        'Collection named "' +
-                        item.name +
-                        '" Not Found. Please clic on update')
-                    layout.label(text=dataText, icon="ERROR")
-            # Not optimised for 'GRID' layout type.
-            elif self.layout_type in {'GRID'}:
-                layout.alignment = 'CENTER'
-                layout.label(text="", icon_value=icon)
-
-    class BFU_OT_UpdateCollectionButton(bpy.types.Operator):
-        bl_label = "Update collection list"
-        bl_idname = "object.updatecollectionlist"
-        bl_description = "Update collection list"
-
-        def execute(self, context):
-            def UpdateExportCollectionList(scene):
-                # Update the provisional collection list known by the object
-
-                def SetUseFromLast(col_list, CollectionName):
-                    for item in col_list:
-                        if item[0] == CollectionName:
-                            if item[1]:
-                                return True
-                    return False
-
-                colSave = [["", False]]
-                for col in scene.bfu_collection_asset_list:  # CollectionProperty
-                    name = col.name
-                    use = col.use
-                    colSave.append([name, use])
-                scene.bfu_collection_asset_list.clear()
-                for col in bpy.data.collections:
-                    scene.bfu_collection_asset_list.add().name = col.name
-                    useFromLast = SetUseFromLast(colSave, col.name)
-                    scene.bfu_collection_asset_list[col.name].use = useFromLast
-            UpdateExportCollectionList(context.scene)
-            return {'FINISHED'}
-
-    class BFU_OT_ShowCollectionToExport(bpy.types.Operator):
-        bl_label = "Show collection(s)"
-        bl_idname = "object.showscenecollection"
-        bl_description = "Click to show collections to export"
-
-        def execute(self, context):
-            scene = context.scene
-            collection_asset_cache = bfu_cached_asset_list.GetCollectionAssetCache()
-            collection_export_asset_list = collection_asset_cache.GetCollectionAssetList()
-            popup_title = "Collection list"
-            if len(collection_export_asset_list) > 0:
-                popup_title = (
-                    str(len(collection_export_asset_list))+' collection(s) to export found.')
-            else:
-                popup_title = 'No collection to export found.'
-
-            def draw(self, context: bpy.types.Context):
-                col = self.layout.column()
-                for collection in collection_export_asset_list:
-                    row = col.row()
-                    row.label(text="- "+collection.name)
-            bpy.context.window_manager.popup_menu(
-                draw,
-                title=popup_title,
-                icon='GROUP')
-            return {'FINISHED'}
 
     def draw(self, context: bpy.types.Context):
         
@@ -786,13 +571,6 @@ classes = (
     BFU_PT_BlenderForUnrealObject,
     BFU_PT_BlenderForUnrealObject.BFU_MT_ObjectGlobalPropertiesPresets,
     BFU_PT_BlenderForUnrealObject.BFU_OT_AddObjectGlobalPropertiesPreset,
-    BFU_PT_BlenderForUnrealObject.BFU_OT_OpenDocumentationPage,
-    BFU_PT_BlenderForUnrealObject.BFU_UL_ActionExportTarget,
-    BFU_PT_BlenderForUnrealObject.BFU_OT_UpdateObjActionListButton,
-    BFU_PT_BlenderForUnrealObject.BFU_OT_ShowActionToExport,
-    BFU_PT_BlenderForUnrealObject.BFU_UL_CollectionExportTarget,
-    BFU_PT_BlenderForUnrealObject.BFU_OT_UpdateCollectionButton,
-    BFU_PT_BlenderForUnrealObject.BFU_OT_ShowCollectionToExport,
 )
 
 

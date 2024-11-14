@@ -40,6 +40,62 @@ def get_preset_values():
     ]
     return preset_values
 
+class BFU_UL_ActionExportTarget(bpy.types.UIList):
+    def draw_item(self, context, layout, data, item, icon, active_data, active_property, index):
+        action_is_valid = False
+        if item.name in bpy.data.actions:
+            action_is_valid = True
+
+        if self.layout_type in {'DEFAULT', 'COMPACT'}:
+            if action_is_valid:  # If action is valid
+                layout.prop(
+                    bpy.data.actions[item.name],
+                    "name",
+                    text="",
+                    emboss=False,
+                    icon="ACTION"
+                )
+                layout.prop(item, "use", text="")
+            else:
+                dataText = (
+                    'Action data named "' + item.name +
+                    '" Not Found. Please click on update'
+                )
+                layout.label(text=dataText, icon="ERROR")
+        # Not optimized for 'GRID' layout type.
+        elif self.layout_type in {'GRID'}:
+            layout.alignment = 'CENTER'
+            layout.label(text="", icon_value=icon)
+
+class BFU_OT_UpdateObjActionListButton(bpy.types.Operator):
+    bl_label = "Update action list"
+    bl_idname = "object.updateobjactionlist"
+    bl_description = "Update action list"
+
+    def execute(self, context):
+        def UpdateExportActionList(obj):
+            # Update the provisional action list known by the object
+
+            def SetUseFromLast(anim_list, ActionName):
+                for item in anim_list:
+                    if item[0] == ActionName:
+                        if item[1]:
+                            return True
+                return False
+
+            animSave = [["", False]]
+            for Anim in obj.bfu_action_asset_list:  # CollectionProperty
+                name = Anim.name
+                use = Anim.use
+                animSave.append([name, use])
+            obj.bfu_action_asset_list.clear()
+            for action in bpy.data.actions:
+                obj.bfu_action_asset_list.add().name = action.name
+                useFromLast = SetUseFromLast(animSave, action.name)
+                obj.bfu_action_asset_list[action.name].use = useFromLast
+        UpdateExportActionList(bpy.context.object)
+        return {'FINISHED'}
+
 class BFU_OT_ObjExportAction(bpy.types.PropertyGroup):
     name: bpy.props.StringProperty(name="Action data name", default="Unknown", override={'LIBRARY_OVERRIDABLE'})
     use: bpy.props.BoolProperty(name="use this action", default=False, override={'LIBRARY_OVERRIDABLE'})
@@ -50,6 +106,8 @@ class BFU_OT_ObjExportAction(bpy.types.PropertyGroup):
 # -------------------------------------------------------------------
 
 classes = (
+    BFU_UL_ActionExportTarget,
+    BFU_OT_UpdateObjActionListButton,
     BFU_OT_ObjExportAction,
 )
 
