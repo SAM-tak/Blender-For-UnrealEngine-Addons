@@ -134,7 +134,12 @@ class BFU_PT_BlenderForUnrealObject(bpy.types.Panel):
         credit_box = layout.box()
         credit_box.label(text=languages.ti('intro'))
         credit_box.label(text=version_str)
-        credit_box.operator("object.bfu_open_documentation_page", icon="HELP")
+        bbpl.blender_layout.layout_doc_button.functions.add_doc_page_operator(
+            layout = layout,
+            url = "https://github.com/xavier150/Blender-For-UnrealEngine-Addons",
+            text = "Open Github page",
+            icon="HELP"
+            )
 
         row = layout.row(align=True)
         row.menu(

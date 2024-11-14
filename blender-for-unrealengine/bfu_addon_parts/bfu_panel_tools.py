@@ -37,8 +37,8 @@ class BFU_PT_BlenderForUnrealTool(bpy.types.Panel):
     def draw(self, context: bpy.types.Context):
 
         layout = self.layout
-        scene = bpy.context.scene
 
+        # Tools sections
         bfu_camera.bfu_camera_ui_and_props.draw_tools_ui(layout, context)
         bfu_spline.bfu_spline_ui_and_props.draw_tools_ui(layout, context)
 
@@ -49,7 +49,7 @@ class BFU_PT_BlenderForUnrealTool(bpy.types.Panel):
         bfu_light_map.bfu_light_map_ui.draw_tools_ui(layout, context)
 
 
-
+''
 
 # -------------------------------------------------------------------
 #   Register & Unregister

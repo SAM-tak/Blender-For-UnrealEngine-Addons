@@ -72,7 +72,7 @@ class BFU_PT_Export(bpy.types.Panel):
         layout = self.layout
 
         # Presets
-        row = self.layout.row(align=True)
+        row = layout.row(align=True)
         row.menu('BFU_MT_NomenclaturePresets', text='Export Presets')
         row.operator('object.add_nomenclature_preset', text='', icon='ADD')
         row.operator(
