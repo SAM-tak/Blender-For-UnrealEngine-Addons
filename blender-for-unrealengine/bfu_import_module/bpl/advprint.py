@@ -23,8 +23,6 @@
 #  XavierLoux.com
 # ----------------------------------------------
 
-
-import sys
 import time
 
 
@@ -35,7 +33,7 @@ class ProgressionBarClass():
 
     def _set_name(self, value):
         if not isinstance(value, str):
-            raise TypeError("name must be set to an String")
+            raise TypeError("name must be set to a String")
         self.__name = value
 
     name = property(_get_name, _set_name)
@@ -58,7 +56,6 @@ class ProgressionBarClass():
     def _set_total_step(self, value):
         if not (isinstance(value, int) or isinstance(value, float)):
             raise TypeError("total_step must be set to an Integer or Float")
-
         self.__total_step = value
 
     total_step = property(_get_total_step, _set_total_step)
@@ -81,29 +78,25 @@ class ProgressionBarClass():
         total_step = self.__total_step
         self.__previous_step = progress  # Update the previous step.
 
-        is_done = False
-        if progress >= total_step:
-            is_done = True
+        is_done = progress >= total_step
 
-        # Write message.
+        # Write message
         msg = "\r{0}:".format(job_title)
 
         if self.show_block:
-            block = int(round(length*progress/total_step))
-            msg += " [{0}]".format("#"*block + "-"*(length-block))
+            block = int(round(length * progress / total_step))
+            msg += " [{0}]".format("#" * block + "-" * (length - block))
 
         if self.show_steps:
             msg += " {0}/{1}".format(progress, total_step)
 
         if is_done:
-            msg += " DONE IN {0}s\r\n".format(round(time.perf_counter()-self.__counter_start, 3))
+            msg += " DONE IN {0}s\r\n".format(round(time.perf_counter() - self.__counter_start, 3))
+        elif self.show_percentage:
+            msg += " {0}%".format(round((progress * 100) / total_step, 2))
 
-        else:
-            if self.show_percentage:
-                msg += " {0}%".format(round((progress*100)/total_step, 2))
-
-        sys.stdout.write(msg)
-        sys.stdout.flush()
+        # Print the progress message on the same line
+        print(msg, end='', flush=True)
 
 
 def print_separation(number=60, char="-"):
