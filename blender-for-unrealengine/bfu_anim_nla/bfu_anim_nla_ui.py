@@ -35,8 +35,6 @@ def draw_ui(layout: bpy.types.UILayout, obj: bpy.types.Object):
     # Hide filters
     if obj is None:
         return
-    if bfu_utils.GetExportAsProxy(obj):
-        return
     if obj.bfu_export_type != "export_recursive":
         return
     

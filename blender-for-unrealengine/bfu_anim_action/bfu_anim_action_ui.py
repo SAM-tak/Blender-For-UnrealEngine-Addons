@@ -35,17 +35,14 @@ def draw_ui(layout: bpy.types.UILayout, obj: bpy.types.Object):
     is_camera = bfu_camera.bfu_camera_utils.is_camera(obj)
     is_alembic_animation = bfu_alembic_animation.bfu_alembic_animation_utils.is_alembic_animation(obj)
 
-
     # Hide filters
     if obj is None:
-        return
-    if bfu_utils.GetExportAsProxy(obj):
         return
     if obj.bfu_export_type != "export_recursive":
         return
     if True not in [is_skeletal_mesh, is_camera, is_alembic_animation]:
         return
-    
+
     if bfu_ui.bfu_ui_utils.DisplayPropertyFilter("OBJECT", "ANIM"):
         scene.bfu_animation_action_properties_expanded.draw(layout)
         if scene.bfu_animation_action_properties_expanded.is_expend():
