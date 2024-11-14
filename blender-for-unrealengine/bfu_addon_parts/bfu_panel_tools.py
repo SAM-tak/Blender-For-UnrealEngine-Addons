@@ -42,7 +42,7 @@ class BFU_PT_BlenderForUnrealTool(bpy.types.Panel):
         bfu_camera.bfu_camera_ui_and_props.draw_tools_ui(layout, context)
         bfu_spline.bfu_spline_ui_and_props.draw_tools_ui(layout, context)
 
-        bfu_collision.bfu_collision_ui_and_props.draw_tools_ui(layout, context)
+        bfu_collision.bfu_collision_ui.draw_tools_ui(layout, context)
         bfu_socket.bfu_socket_ui_and_props.draw_tools_ui(layout, context)
 
         bfu_uv_map.bfu_uv_map_ui.draw_tools_ui(layout, context)
