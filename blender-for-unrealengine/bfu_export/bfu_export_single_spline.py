@@ -48,34 +48,34 @@ def ProcessSplineExport(op, obj, pre_bake_spline: bfu_spline.bfu_spline_data.BFU
     MyAsset.asset_type = asset_type
     MyAsset.animation_start_frame = scene.frame_start
     MyAsset.animation_end_frame = scene.frame_end+1
-    MyAsset.StartAssetExport()
+    file: bfu_export_logs.BFU_OT_FileExport = MyAsset.files.add()
 
-    if obj.bfu_export_fbx_spline:
-        file: bfu_export_logs.BFU_OT_FileExport = MyAsset.files.add()
-        file.file_name = file_name
-        file.file_extension = "fbx"
-        file.file_path = dirpath
-        file.file_type = "FBX"
+    fullpath = bfu_export_utils.check_and_make_export_path(dirpath, file.GetFileWithExtension())
+    if fullpath:
+        MyAsset.StartAssetExport()
 
-        ExportSingleFbxSpline(op, dirpath, file.GetFileWithExtension(), obj)
+        if obj.bfu_export_fbx_spline:
+            file.file_name = file_name
+            file.file_extension = "fbx"
+            file.file_path = dirpath
+            file.file_type = "FBX"
 
-    if scene.bfu_use_text_additional_data and addon_prefs.useGeneratedScripts:
+            ExportSingleFbxSpline(op, dirpath, file.GetFileWithExtension(), obj)
 
-        file: bfu_export_logs.BFU_OT_FileExport = MyAsset.files.add()
-        file.file_name = file_name_at
-        file.file_extension = "json"
-        file.file_path = dirpath
-        file.file_type = "AdditionalTrack"
-        bfu_spline.bfu_spline_export_utils.ExportSingleAdditionalTrackSpline(dirpath, file.GetFileWithExtension(), obj, pre_bake_spline)
+        if scene.bfu_use_text_additional_data and addon_prefs.useGeneratedScripts:
+            file.file_name = file_name_at
+            file.file_extension = "json"
+            file.file_path = dirpath
+            file.file_type = "AdditionalTrack"
+            bfu_spline.bfu_spline_export_utils.ExportSingleAdditionalTrackSpline(dirpath, file.GetFileWithExtension(), obj, pre_bake_spline)
 
-    MyAsset.EndAssetExport(True)
+        MyAsset.EndAssetExport(True)
     return MyAsset
 
 
 def ExportSingleFbxSpline(
         op,
-        dirpath,
-        filename,
+        fullpath,
         obj
         ):
 
@@ -115,7 +115,7 @@ def ExportSingleFbxSpline(
         bfu_fbx_export.export_scene_fbx_with_custom_fbx_io(
             op,
             bpy.context,
-            filepath=bfu_export_utils.GetExportFullpath(dirpath, filename),
+            filepath=fullpath,
             check_existing=False,
             use_selection=True,
             global_matrix=bfu_export_utils.get_static_axis_conversion(obj),
@@ -147,7 +147,7 @@ def ExportSingleFbxSpline(
             )
     elif (spline_export_procedure == "blender-standard") and export_fbx_spline:
         bfu_fbx_export.export_scene_fbx(
-            filepath=bfu_export_utils.GetExportFullpath(dirpath, filename),
+            filepath=fullpath,
             check_existing=False,
             use_selection=True,
             apply_unit_scale=True,

@@ -51,18 +51,18 @@ def ProcessActionExport(op, obj, action, action_curve_scale):
     file.file_path = dirpath
     file.file_type = "FBX"
 
-    MyAsset.StartAssetExport()
-    action_curve_scale = ExportSingleFbxAction(op, scene, dirpath, file.GetFileWithExtension(), obj, action, action_curve_scale)
-
-    MyAsset.EndAssetExport(True)
+    fullpath = bfu_export_utils.check_and_make_export_path(dirpath, file.GetFileWithExtension())
+    if fullpath:
+        MyAsset.StartAssetExport()
+        action_curve_scale = ExportSingleFbxAction(op, scene, fullpath, obj, action, action_curve_scale)
+        MyAsset.EndAssetExport(True)
     return action_curve_scale
 
 
 def ExportSingleFbxAction(
         op,
         originalScene,
-        dirpath,
-        filename,
+        fullpath,
         armature,
         targetAction,
         action_curve_scale
@@ -159,7 +159,7 @@ def ExportSingleFbxAction(
         bfu_fbx_export.export_scene_fbx_with_custom_fbx_io(
             operator=op,
             context=bpy.context,
-            filepath=bfu_export_utils.GetExportFullpath(dirpath, filename),
+            filepath=fullpath,
             check_existing=False,
             use_selection=True,
             animation_only=active.bfu_export_animation_without_mesh,
@@ -195,7 +195,7 @@ def ExportSingleFbxAction(
             )
     elif (skeleton_export_procedure == "blender-standard"):
         bfu_fbx_export.export_scene_fbx(
-            filepath=bfu_export_utils.GetExportFullpath(dirpath, filename),
+            filepath=fullpath,
             check_existing=False,
             use_selection=True,
             apply_unit_scale=True,
@@ -232,7 +232,7 @@ def ExportSingleFbxAction(
         active.animation_data.action.name = TempName
 
         bfu_fbx_export.export_scene_fbx(
-            filepath=bfu_export_utils.GetExportFullpath(dirpath, filename),
+            filepath=fullpath,
             # export_rig_name=GetDesiredExportArmatureName(active),
             bake_anim=True,
             anim_export_name_string=active.animation_data.action.name,

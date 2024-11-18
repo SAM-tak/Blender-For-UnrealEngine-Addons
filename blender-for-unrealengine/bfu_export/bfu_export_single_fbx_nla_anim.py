@@ -55,17 +55,17 @@ def ProcessNLAAnimExport(op, obj):
     file.file_path = dirpath
     file.file_type = "FBX"
 
-    MyAsset.StartAssetExport()
-    ExportSingleFbxNLAAnim(op, dirpath, file.GetFileWithExtension(), obj)
-
-    MyAsset.EndAssetExport(True)
+    fullpath = bfu_export_utils.check_and_make_export_path(dirpath, file.GetFileWithExtension())
+    if fullpath:
+        MyAsset.StartAssetExport()
+        ExportSingleFbxNLAAnim(op, fullpath, obj)
+        MyAsset.EndAssetExport(True)
     return MyAsset
 
 
 def ExportSingleFbxNLAAnim(
         op,
-        dirpath,
-        filename,
+        fullpath,
         armature
         ):
 
@@ -143,7 +143,7 @@ def ExportSingleFbxNLAAnim(
         bfu_fbx_export.export_scene_fbx_with_custom_fbx_io(
             operator=op,
             context=bpy.context,
-            filepath=bfu_export_utils.GetExportFullpath(dirpath, filename),
+            filepath=fullpath,
             check_existing=False,
             use_selection=True,
             animation_only=active.bfu_export_animation_without_mesh,
@@ -178,7 +178,7 @@ def ExportSingleFbxNLAAnim(
             )
     elif (skeleton_export_procedure == "blender-standard"):
         bfu_fbx_export.export_scene_fbx(
-            filepath=bfu_export_utils.GetExportFullpath(dirpath, filename),
+            filepath=fullpath,
             check_existing=False,
             use_selection=True,
             apply_unit_scale=True,
@@ -208,7 +208,7 @@ def ExportSingleFbxNLAAnim(
             )
     elif (skeleton_export_procedure == "auto-rig-pro"):
         bfu_fbx_export.export_scene_fbx(
-            filepath=bfu_export_utils.GetExportFullpath(dirpath, filename),
+            filepath=fullpath,
             # export_rig_name=GetDesiredExportArmatureName(active),
             bake_anim=True,
             anim_export_name_string=active.animation_data.action.name,

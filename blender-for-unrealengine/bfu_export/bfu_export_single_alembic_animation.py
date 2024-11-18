@@ -50,16 +50,16 @@ def ProcessAlembicAnimationExport(obj):
     file.file_path = dirpath
     file.file_type = "ABC"
 
-    MyAsset.StartAssetExport()
-    ExportSingleAlembicAnimation(dirpath, file.GetFileWithExtension(), obj)
-
-    MyAsset.EndAssetExport(True)
+    fullpath = bfu_export_utils.check_and_make_export_path(dirpath, file.GetFileWithExtension())
+    if fullpath:
+        MyAsset.StartAssetExport()
+        ExportSingleAlembicAnimation(fullpath, obj)
+        MyAsset.EndAssetExport(True)
     return MyAsset
 
 
 def ExportSingleAlembicAnimation(
-        dirpath,
-        filename,
+        fullpath,
         obj
         ):
 
@@ -83,7 +83,7 @@ def ExportSingleAlembicAnimation(
     # Export
     if (alembic_animation_export_procedure == "blender-standard"):
         bpy.ops.wm.alembic_export(
-            filepath=bfu_export_utils.GetExportFullpath(dirpath, filename),
+            filepath=fullpath,
             check_existing=False,
             selected=True,
             triangulate=True,

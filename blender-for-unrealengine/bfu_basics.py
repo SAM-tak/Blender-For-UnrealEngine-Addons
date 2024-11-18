@@ -78,9 +78,8 @@ def ConvertToConvexHull(obj):
         bm.to_mesh(mesh)  # BMesh to Mesh
 
 
-def VerifiDirs(directory):
+def verifi_dirs(directory):
     # Check and create a folder if it does not exist
-
     if not os.path.exists(directory):
         os.makedirs(directory)
         return True

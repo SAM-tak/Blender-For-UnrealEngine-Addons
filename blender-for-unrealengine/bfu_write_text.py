@@ -45,7 +45,7 @@ def ExportSingleText(text, dirpath, filename):
     counter = bpl.utils.CounterTimer()
 
     absdirpath = bpy.path.abspath(dirpath)
-    bfu_basics.VerifiDirs(absdirpath)
+    bfu_basics.verifi_dirs(absdirpath)
     fullpath = os.path.join(absdirpath, filename)
 
     with open(fullpath, "w") as file:
@@ -62,7 +62,7 @@ def ExportSingleJson(json_data, dirpath, filename):
     counter = bpl.utils.CounterTimer()
 
     absdirpath = bpy.path.abspath(dirpath)
-    bfu_basics.VerifiDirs(absdirpath)
+    bfu_basics.verifi_dirs(absdirpath)
     fullpath = os.path.join(absdirpath, filename)
 
     with open(fullpath, 'w') as json_file:
