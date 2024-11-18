@@ -19,6 +19,7 @@
 
 import bpy
 
+
 def DisplayPropertyFilter(active_tab, active_sub_tab):
     # Define more easily the options which must be displayed or not
 
@@ -26,7 +27,10 @@ def DisplayPropertyFilter(active_tab, active_sub_tab):
     if scene.bfu_active_tab == active_tab == "OBJECT":
         if scene.bfu_active_object_tab == active_sub_tab or scene.bfu_active_object_tab == "ALL":
             return True
-
+        
+    if scene.bfu_active_tab == active_tab == "SCENE":
+        return True
+    
     return False
 
 
