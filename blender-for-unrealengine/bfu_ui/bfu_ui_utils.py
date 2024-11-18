@@ -27,9 +27,6 @@ def DisplayPropertyFilter(active_tab, active_sub_tab):
         if scene.bfu_active_object_tab == active_sub_tab or scene.bfu_active_object_tab == "ALL":
             return True
 
-    if scene.bfu_active_tab == active_tab == "SCENE":
-        if scene.bfu_active_scene_tab == active_sub_tab or scene.bfu_active_scene_tab == "ALL":
-            return True
     return False
 
 
