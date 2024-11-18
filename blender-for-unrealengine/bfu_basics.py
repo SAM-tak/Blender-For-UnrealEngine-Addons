@@ -112,16 +112,6 @@ def ValidFilename(filename):
     return filename
 
 
-def ValidDefname(filename):
-    # https://gist.github.com/seanh/93666
-    # Normalizes string, removes non-alpha characters
-    # Def name use
-
-    valid_chars = "_%s%s" % (string.ascii_letters, string.digits)
-    filename = ''.join(c for c in filename if c in valid_chars)
-    return filename
-
-
 def GetIfActionIsAssociated(action, bone_names):
     for group in action.groups:
         for fcurve in group.channels:
