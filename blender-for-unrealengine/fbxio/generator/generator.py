@@ -1,11 +1,19 @@
 import os
+import platform
 import shutil
 import re
 from . import edit_files
 from . import edit_fbx_utils
 from . import edit_export_fbx_bin
 
-blender_install_folder = "C:\\Program Files\\Blender Foundation"
+# Detect the current operating system
+current_system = platform.system()
+if current_system == "Windows":
+    blender_install_folder = r"U:\\BlenderBuilds"
+elif current_system == "Linux":
+    blender_install_folder = r"/media/bleuraven/Game Engines/BlenderBuilds"
+
+
 io_scene_fbx_prefix = "io_scene_fbx_"
 
 export_fbx_files = [
@@ -64,7 +72,7 @@ class FBXExporterGenerate:
         if new_io_fbx:
             self.io_fbx = new_io_fbx
         else:
-            self.io_fbx = "scripts\\addons\\io_scene_fbx"
+            self.io_fbx = r"scripts/addons/io_scene_fbx"
 
     def get_str_version(self):
         return str(self.version[0])+"_"+str(self.version[1])
@@ -73,7 +81,8 @@ class FBXExporterGenerate:
         return str(self.version[0])+"."+str(self.version[1])
     
     def get_addon_folder(self):
-        return os.path.join(blender_install_folder, self.folder, self.get_folder_str_version(), self.io_fbx)
+        addon_path = os.path.join(blender_install_folder, self.folder, self.io_fbx)
+        return os.path.abspath(addon_path)
         
     def run_generate(self):
         # Create the destination folder in the parent directory
@@ -172,40 +181,40 @@ def run_all_generate():
     # generated var needs to be ordered from new to older.
     generated = [] 
 
-    generate_4_3 = FBXExporterGenerate((4, 3, 0), "Blender 4.3", export_fbx_files_with_threading, "scripts\\addons_core\\io_scene_fbx")
+    generate_4_3 = FBXExporterGenerate((4, 3, 0), r"Blender_v4.3", export_fbx_files_with_threading, r"scripts/addons_core/io_scene_fbx/")
     generated.append(generate_4_3.run_generate())
 
-    generate_4_2 = FBXExporterGenerate((4, 2, 0), "Blender 4.2", export_fbx_files_with_threading, "scripts\\addons_core\\io_scene_fbx")
+    generate_4_2 = FBXExporterGenerate((4, 2, 0), r"Blender_v4.2", export_fbx_files_with_threading, r"scripts/addons_core/io_scene_fbx/")
     generated.append(generate_4_2.run_generate())
     
-    generate_4_1 = FBXExporterGenerate((4, 1, 0), "Blender 4.1", export_fbx_files_with_threading)
+    generate_4_1 = FBXExporterGenerate((4, 1, 0), r"Blender 4.1/4.1", export_fbx_files_with_threading)
     generated.append(generate_4_1.run_generate())
 
-    generate_4_0 = FBXExporterGenerate((4, 0, 0), "Blender 4.0", export_fbx_files)
+    generate_4_0 = FBXExporterGenerate((4, 0, 0), r"Blender 4.0/4.0", export_fbx_files)
     generated.append(generate_4_0.run_generate())
 
-    generate_3_6 = FBXExporterGenerate((3, 6, 0), "Blender 3.6", export_fbx_files)
+    generate_3_6 = FBXExporterGenerate((3, 6, 0), r"Blender 3.6/3.6", export_fbx_files)
     generated.append(generate_3_6.run_generate())
 
-    generate_3_5 = FBXExporterGenerate((3, 5, 0), "Blender 3.5", export_fbx_files)
+    generate_3_5 = FBXExporterGenerate((3, 5, 0), r"Blender 3.5/3.5", export_fbx_files)
     generated.append(generate_3_5.run_generate())
 
-    generate_3_4 = FBXExporterGenerate((3, 4, 0), "Blender 3.4", export_fbx_files)
+    generate_3_4 = FBXExporterGenerate((3, 4, 0), r"Blender 3.4/3.4", export_fbx_files)
     generated.append(generate_3_4.run_generate())
 
-    generate_3_3 = FBXExporterGenerate((3, 3, 0), "Blender 3.3", export_fbx_files)
+    generate_3_3 = FBXExporterGenerate((3, 3, 0), r"Blender 3.3/3.3", export_fbx_files)
     generated.append(generate_3_3.run_generate())
 
-    generate_3_2 = FBXExporterGenerate((3, 2, 0), "Blender 3.2", export_fbx_files)
+    generate_3_2 = FBXExporterGenerate((3, 2, 0), r"Blender 3.2/3.2", export_fbx_files)
     generated.append(generate_3_2.run_generate())
 
-    generate_3_1 = FBXExporterGenerate((3, 1, 0), "Blender 3.1", export_fbx_files)
+    generate_3_1 = FBXExporterGenerate((3, 1, 0), r"Blender 3.1/3.1", export_fbx_files)
     generated.append(generate_3_1.run_generate())
 
-    generate_2_93 = FBXExporterGenerate((2, 93, 0), "Blender 2.93", export_fbx_files)
+    generate_2_93 = FBXExporterGenerate((2, 93, 0), r"Blender 2.93/2.93", export_fbx_files)
     generated.append(generate_2_93.run_generate())
 
-    generate_2_83 = FBXExporterGenerate((2, 83, 0), "Blender 2.83", export_fbx_files)
+    generate_2_83 = FBXExporterGenerate((2, 83, 0), r"Blender 2.83/2.83", export_fbx_files)
     generated.append(generate_2_83.run_generate())
 
     root_init_file = create_root_init_file(generated)
