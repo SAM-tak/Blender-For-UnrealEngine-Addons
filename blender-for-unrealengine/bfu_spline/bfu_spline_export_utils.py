@@ -12,7 +12,7 @@ def ExportSingleAdditionalTrackSpline(dirpath, filename, obj, pre_bake_spline: b
     # Aperture
 
     absdirpath = bpy.path.abspath(dirpath)
-    bfu_basics.VerifiDirs(absdirpath)
+    bfu_basics.verifi_dirs(absdirpath)
     AdditionalTrack = bfu_spline_write_text.WriteSplinePointsData(obj, pre_bake_spline=pre_bake_spline)
     return bfu_write_text.ExportSingleJson(
         AdditionalTrack,

@@ -29,11 +29,13 @@ def register():
         bpy.utils.register_class(cls)
 
     bpy.types.Scene.bfu_active_tab = bpy.props.EnumProperty(
-        items=(
+            items=(
             ('OBJECT', 'Object', 'Object tab.'),
             ('SCENE', 'Scene', 'Scene and world tab.')
-            )
+            ),
+            options={"HIDDEN", "SKIP_SAVE"}
         )
+    
 
     bpy.types.Scene.bfu_active_object_tab = bpy.props.EnumProperty(
         items=(
@@ -41,14 +43,8 @@ def register():
             ('ANIM', 'Animations', 'Animations tab.'),
             ('MISC', 'Misc', 'Misc tab.'),
             ('ALL', 'All', 'All tabs.')
-            )
-        )
-
-    bpy.types.Scene.bfu_active_scene_tab = bpy.props.EnumProperty(
-        items=(
-            ('GENERAL', 'Scene', 'General scene tab'),
-            ('ALL', 'All', 'All tabs.')
-            )
+            ),
+            options={"HIDDEN", "SKIP_SAVE"}
         )
 
 
@@ -56,7 +52,6 @@ def unregister():
     for cls in reversed(classes):
         bpy.utils.unregister_class(cls)
 
-    del bpy.types.Scene.bfu_active_scene_tab
     del bpy.types.Scene.bfu_active_object_tab
     del bpy.types.Scene.bfu_active_tab
 

@@ -78,9 +78,8 @@ def ConvertToConvexHull(obj):
         bm.to_mesh(mesh)  # BMesh to Mesh
 
 
-def VerifiDirs(directory):
+def verifi_dirs(directory):
     # Check and create a folder if it does not exist
-
     if not os.path.exists(directory):
         os.makedirs(directory)
         return True
@@ -109,16 +108,6 @@ def ValidFilename(filename):
     filename = ''.join(c for c in filename if c not in illegal_chars)
     filename = ''.join(c for c in filename if c in valid_chars)
 
-    return filename
-
-
-def ValidDefname(filename):
-    # https://gist.github.com/seanh/93666
-    # Normalizes string, removes non-alpha characters
-    # Def name use
-
-    valid_chars = "_%s%s" % (string.ascii_letters, string.digits)
-    filename = ''.join(c for c in filename if c in valid_chars)
     return filename
 
 

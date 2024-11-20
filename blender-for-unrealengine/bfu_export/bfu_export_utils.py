@@ -23,6 +23,7 @@ import os
 import mathutils
 from bpy_extras.io_utils import axis_conversion
 from . import bfu_export_get_info
+from .. import bpl
 from .. import bfu_write_text
 from .. import bfu_basics
 from .. import bfu_utils
@@ -38,10 +39,18 @@ from .. import bfu_socket
 dup_temp_name = "BFU_Temp"  # DuplicateTemporarilyNameForUe4Export
 Export_temp_preFix = "_ESO_Temp"  # _ExportSubObject_TempName
 
+def print_export_fail(string):
+    print(bpl.color_set.red(string))
 
-def GetExportFullpath(dirpath, filename):
+def check_and_make_export_path(dirpath, filename):
+    # Check and create a folder if it does not exist
     absdirpath = bpy.path.abspath(dirpath)
-    bfu_basics.VerifiDirs(absdirpath)
+    if not os.path.exists(absdirpath):
+        try:
+            os.makedirs(absdirpath)
+        except Exception as e:
+            print_export_fail(f"An error occurred during makedirs: {str(e)}")
+            return False
     return os.path.join(absdirpath, filename)
 
 
@@ -641,13 +650,16 @@ def ExportAdditionalParameter(dirpath, filename, unreal_exported_asset):
     # SocketsList
 
     absdirpath = bpy.path.abspath(dirpath)
-    bfu_basics.VerifiDirs(absdirpath)
-    AdditionalTrack = bfu_write_text.WriteSingleMeshAdditionalParameter(unreal_exported_asset)
-    return bfu_write_text.ExportSingleJson(
-        AdditionalTrack,
-        absdirpath,
-        filename
-        )
+    result = check_and_make_export_path(absdirpath, filename)
+    if result:
+        AdditionalTrack = bfu_write_text.WriteSingleMeshAdditionalParameter(unreal_exported_asset)
+        return bfu_write_text.ExportSingleJson(
+            AdditionalTrack,
+            absdirpath,
+            filename
+            )
+    else:
+        return None
 
 def get_final_export_primary_bone_axis(obj):
     if obj.bfu_override_procedure_preset:

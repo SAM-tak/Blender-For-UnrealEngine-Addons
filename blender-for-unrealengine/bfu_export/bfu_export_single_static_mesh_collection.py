@@ -29,7 +29,7 @@ from .. import bfu_check_potential_error
 from .. import bfu_export_logs
 
 
-def ProcessCollectionExport(op, col):
+def ProcessCollectionExport(op, col: bpy.types.Collection):
 
     addon_prefs = bfu_basics.GetAddonPrefs()
     dirpath = bfu_utils.GetCollectionExportDir(bpy.data.collections[col.name])
@@ -48,26 +48,27 @@ def ProcessCollectionExport(op, col):
     file.file_path = dirpath
     file.file_type = "FBX"
 
-    MyAsset.StartAssetExport()
-    ExportSingleStaticMeshCollection(op, dirpath, file.GetFileWithExtension(), col.name)
+    fullpath = bfu_export_utils.check_and_make_export_path(dirpath, file.GetFileWithExtension())
+    if fullpath:
+        MyAsset.StartAssetExport()
+        ExportSingleStaticMeshCollection(op, fullpath, col.name)
 
-    if (scene.bfu_use_text_additional_data and addon_prefs.useGeneratedScripts):
-        
-        file: bfu_export_logs.BFU_OT_FileExport = MyAsset.files.add()
-        file.file_name = bfu_naming.get_collection_file_name(col, col.name+"_AdditionalTrack", "")
-        file.file_extension = "json"
-        file.file_path = dirpath
-        file.file_type = "AdditionalTrack"
-        bfu_export_utils.ExportAdditionalParameter(dirpath, file.GetFileWithExtension(), MyAsset)
+        if (scene.bfu_use_text_additional_data and addon_prefs.useGeneratedScripts):
+            
+            file: bfu_export_logs.BFU_OT_FileExport = MyAsset.files.add()
+            file.file_name = bfu_naming.get_collection_file_name(col, col.name+"_AdditionalTrack", "")
+            file.file_extension = "json"
+            file.file_path = dirpath
+            file.file_type = "AdditionalTrack"
+            bfu_export_utils.ExportAdditionalParameter(dirpath, file.GetFileWithExtension(), MyAsset)
 
-    MyAsset.EndAssetExport(True)
+        MyAsset.EndAssetExport(True)
     return MyAsset
 
 
 def ExportSingleStaticMeshCollection(
         op,
-        dirpath,
-        filename,
+        filepath,
         collection_name
         ):
 
@@ -109,7 +110,7 @@ def ExportSingleStaticMeshCollection(
         bfu_fbx_export.export_scene_fbx_with_custom_fbx_io(
             operator=op,
             context=bpy.context,
-            filepath=bfu_export_utils.GetExportFullpath(dirpath, filename),
+            filepath=filepath,
             check_existing=False,
             use_selection=True,
             global_scale=1,
@@ -131,7 +132,7 @@ def ExportSingleStaticMeshCollection(
         
     elif (static_export_procedure == "blender-standard"):
         bfu_fbx_export.export_scene_fbx(
-            filepath=bfu_export_utils.GetExportFullpath(dirpath, filename),
+            filepath=filepath,
             check_existing=False,
             use_selection=True,
             global_scale=1,

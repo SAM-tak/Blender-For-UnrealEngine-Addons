@@ -91,7 +91,7 @@ def register():
         default="SKM_")
 
     bpy.types.Scene.bfu_skeleton_prefix_export_name = bpy.props.StringProperty(
-        name="skeleton Prefix ",
+        name="Skeleton Prefix ",
         description="Prefix of skeleton",
         maxlen=32,
         default="SK_")

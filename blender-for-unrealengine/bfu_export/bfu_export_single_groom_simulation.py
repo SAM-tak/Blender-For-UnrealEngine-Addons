@@ -53,16 +53,16 @@ def ProcessGroomSimulationExport(obj):
     file.file_path = dirpath
     file.file_type = "ABC"
 
-    MyAsset.StartAssetExport()
-    ExportSingleGroomSimulation(dirpath, file.GetFileWithExtension(), obj)
-
-    MyAsset.EndAssetExport(True)
+    fullpath = bfu_export_utils.check_and_make_export_path(dirpath, file.GetFileWithExtension())
+    if fullpath:
+        MyAsset.StartAssetExport()
+        ExportSingleGroomSimulation(fullpath, obj)
+        MyAsset.EndAssetExport(True)
     return MyAsset
 
 
 def ExportSingleGroomSimulation(
-        dirpath,
-        filename,
+        fullpath,
         obj
         ):
 
@@ -85,7 +85,7 @@ def ExportSingleGroomSimulation(
     # Export
     if (groom_simulation_export_procedure == "blender-standard"):
         bpy.ops.wm.alembic_export(
-            filepath=bfu_export_utils.GetExportFullpath(dirpath, filename),
+            filepath=fullpath,
             check_existing=False,
             selected=True,
             visible_objects_only=True,

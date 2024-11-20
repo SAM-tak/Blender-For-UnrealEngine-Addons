@@ -27,34 +27,34 @@ def get_predicted_skeleton_name(obj):
 
 def get_predicted_skeleton_path(obj):
     scene = bpy.context.scene
-    skeleton_path = os.path.join("/" + scene.bfu_unreal_import_module + "/", scene.bfu_unreal_import_location, obj.bfu_export_folder_name)
-    skeleton_path = skeleton_path.replace('\\', '/')
-    return skeleton_path
+    ref_path = os.path.join("/" + scene.bfu_unreal_import_module + "/", scene.bfu_unreal_import_location, obj.bfu_export_folder_name)
+    ref_path = ref_path.replace('\\', '/')
+    return ref_path
 
 def get_predicted_skeleton_ref(obj):
     name = get_predicted_skeleton_name(obj)
     path = get_predicted_skeleton_path(obj)
-    skeleton_ref = os.path.join(path, f"{name}.{name}")
-    skeleton_ref = skeleton_ref.replace('\\', '/')
-    return f"/Script/Engine.Skeleton'{skeleton_ref}'"
+    ref_path = os.path.join(path, f"{name}.{name}")
+    ref_path = ref_path.replace('\\', '/')
+    return f"/Script/Engine.Skeleton'{ref_path}'"
 
-def get_predicted_skeleton_name(obj):
+def get_predicted_skeletal_mesh_name(obj):
     # Get the predicted SkeletalMesh name in Unreal Engine
     scene = bpy.context.scene
     return scene.bfu_skeletal_mesh_prefix_export_name + bfu_utils.ValidUnrealAssetsName(obj.name)
 
-def get_predicted_skeleton_path(obj):
+def get_predicted_skeletal_mesh_path(obj):
     scene = bpy.context.scene
-    skeleton_path = os.path.join("/" + scene.bfu_unreal_import_module + "/", scene.bfu_unreal_import_location, obj.bfu_export_folder_name)
-    skeleton_path = skeleton_path.replace('\\', '/')
-    return skeleton_path
+    ref_path = os.path.join("/" + scene.bfu_unreal_import_module + "/", scene.bfu_unreal_import_location, obj.bfu_export_folder_name)
+    ref_path = ref_path.replace('\\', '/')
+    return ref_path
 
-def get_predicted_skeleton_ref(obj):
-    name = get_predicted_skeleton_name(obj)
-    path = get_predicted_skeleton_path(obj)
-    skeleton_ref = os.path.join(path, f"{name}.{name}")
-    skeleton_ref = skeleton_ref.replace('\\', '/')
-    return f"/Script/Engine.Skeleton'{skeleton_ref}'"
+def get_predicted_skeletal_mesh_ref(obj):
+    name = get_predicted_skeletal_mesh_name(obj)
+    path = get_predicted_skeletal_mesh_path(obj)
+    ref_path = os.path.join(path, f"{name}.{name}")
+    ref_path = ref_path.replace('\\', '/')
+    return f"/Script/Engine.SkeletalMesh'{ref_path}'"
 
 def generate_name_for_unreal_engine(desired_name, current_name = ""):
     # Generate a new name with suffix number

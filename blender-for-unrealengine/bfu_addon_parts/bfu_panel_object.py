@@ -46,6 +46,7 @@ from .. import bfu_light_map
 from .. import bfu_assets_references
 from .. import bfu_collision
 
+
 class BFU_PT_BlenderForUnrealObject(bpy.types.Panel):
     # Unreal engine export panel
 
@@ -139,12 +140,10 @@ class BFU_PT_BlenderForUnrealObject(bpy.types.Panel):
         row.operator('object.add_globalproperties_preset', text='', icon='ADD')
         row.operator('object.add_globalproperties_preset', text='', icon='REMOVE').remove_active = True
 
-        # Tab Buttions
+        # Tab Buttons
         layout.row().prop(scene, "bfu_active_tab", expand=True)
         if scene.bfu_active_tab == "OBJECT":
             layout.row().prop(scene, "bfu_active_object_tab", expand=True)
-        if scene.bfu_active_tab == "SCENE":
-            layout.row().prop(scene, "bfu_active_scene_tab", expand=True)
 
         # Object
         bfu_base_object.bfu_base_obj_ui.draw_ui(layout, obj)
@@ -174,6 +173,7 @@ class BFU_PT_BlenderForUnrealObject(bpy.types.Panel):
 
         # Scene
         bfu_base_collection.bfu_base_col_ui.draw_ui(layout, context)
+
 
 # -------------------------------------------------------------------
 #   Register & Unregister

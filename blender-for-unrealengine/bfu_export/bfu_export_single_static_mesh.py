@@ -31,7 +31,7 @@ from .. import bfu_assets_manager
 
 
 
-def ProcessStaticMeshExport(op, obj, desired_name=""):
+def ProcessStaticMeshExport(op, obj: bpy.types.Object, desired_name=""):
     scene = bpy.context.scene
     addon_prefs = bfu_basics.GetAddonPrefs()
 
@@ -60,31 +60,30 @@ def ProcessStaticMeshExport(op, obj, desired_name=""):
     file.file_path = dirpath
     file.file_type = "FBX"
 
-    MyAsset.StartAssetExport()
-    ExportSingleStaticMesh(op, dirpath, file.GetFileWithExtension(), obj)
+    fullpath = bfu_export_utils.check_and_make_export_path(dirpath, file.GetFileWithExtension())
+    if fullpath:
+        MyAsset.StartAssetExport()
+        ExportSingleStaticMesh(op, fullpath, obj)
 
-    if not obj.bfu_export_as_lod_mesh:
-        if (scene.bfu_use_text_additional_data and addon_prefs.useGeneratedScripts):
-            
-            file: bfu_export_logs.BFU_OT_FileExport = MyAsset.files.add()
-            file.file_name = file_name_at
-            file.file_extension = "json"
-            file.file_path = dirpath
-            file.file_type = "AdditionalTrack"
-            bfu_export_utils.ExportAdditionalParameter(dirpath, file.GetFileWithExtension(), MyAsset)
+        if not obj.bfu_export_as_lod_mesh:
+            if (scene.bfu_use_text_additional_data and addon_prefs.useGeneratedScripts):
+                
+                file: bfu_export_logs.BFU_OT_FileExport = MyAsset.files.add()
+                file.file_name = file_name_at
+                file.file_extension = "json"
+                file.file_path = dirpath
+                file.file_type = "AdditionalTrack"
+                bfu_export_utils.ExportAdditionalParameter(dirpath, file.GetFileWithExtension(), MyAsset)
 
-    MyAsset.EndAssetExport(True)
+        MyAsset.EndAssetExport(True)
     return MyAsset
 
 
 def ExportSingleStaticMesh(
         op,
-        dirpath,
-        filename,
+        fullpath,
         obj
         ):
-    
-    print("--", dirpath, filename)
 
     '''
     #####################################################
@@ -131,7 +130,7 @@ def ExportSingleStaticMesh(
         bfu_fbx_export.export_scene_fbx_with_custom_fbx_io(
             operator=op,
             context=bpy.context,
-            filepath=bfu_export_utils.GetExportFullpath(dirpath, filename),
+            filepath=fullpath,
             check_existing=False,
             use_selection=True,
             global_matrix=bfu_export_utils.get_static_axis_conversion(active),
@@ -163,7 +162,7 @@ def ExportSingleStaticMesh(
             )
     elif (static_export_procedure == "blender-standard"):
         bfu_fbx_export.export_scene_fbx(
-            filepath=bfu_export_utils.GetExportFullpath(dirpath, filename),
+            filepath=fullpath,
             check_existing=False,
             use_selection=True,
             apply_unit_scale=True,
