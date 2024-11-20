@@ -75,16 +75,16 @@ def ImportTask(asset_data):
         origin_skeletal_mesh = None
 
 
-        if "target_skeleton_ref" in asset_data:
-            find_sk_asset = import_module_unreal_utils.load_asset(asset_data["target_skeleton_ref"])
+        if "target_skeleton_search_ref" in asset_data:
+            find_sk_asset = import_module_unreal_utils.load_asset(asset_data["target_skeleton_search_ref"])
             if isinstance(find_sk_asset, unreal.Skeleton):
                 origin_skeleton = find_sk_asset
             elif isinstance(find_sk_asset, unreal.SkeletalMesh):
                 origin_skeleton = find_sk_asset.skeleton
                 origin_skeletal_mesh = find_sk_asset
 
-        if "target_skeletal_mesh_ref" in asset_data:
-            find_skm_asset = import_module_unreal_utils.load_asset(asset_data["target_skeletal_mesh_ref"])
+        if "target_skeletal_mesh_search_ref" in asset_data:
+            find_skm_asset = import_module_unreal_utils.load_asset(asset_data["target_skeletal_mesh_search_ref"])
             if isinstance(find_skm_asset, unreal.SkeletalMesh):
                 origin_skeleton = find_skm_asset.skeleton
                 origin_skeletal_mesh = find_skm_asset
@@ -94,10 +94,13 @@ def ImportTask(asset_data):
         
         if asset_type == "Animation":
             if origin_skeleton:
-                print('"target_skeleton_ref": ' + asset_data["target_skeleton_ref"] + "was found:", origin_skeleton)
+                skeleton_search_str = f'"target_skeleton_search_ref": {asset_data["target_skeleton_search_ref"]}'
+                skeletal_mesh_search_str = f'"target_skeletal_mesh_search_ref": {asset_data["target_skeletal_mesh_search_ref"]}'
+                print(f'{skeleton_search_str} and "{skeletal_mesh_search_str} "was found for animation immport:" {str(origin_skeleton)}')
             else:
-                message = "WARNING: Could not find skeleton." + "\n"
-                message += '"target_skeleton_ref": ' + asset_data["target_skeleton_ref"]
+                message = "WARNING: Could not find skeleton for animation import." + "\n"
+                message += f" -{skeleton_search_str}" + "\n"
+                message += f" -{skeletal_mesh_search_str}" + "\n"
                 import_module_unreal_utils.show_warning_message("Skeleton not found.", message)
 
     itask = import_module_tasks_class.ImportTaks()
@@ -164,17 +167,10 @@ def ImportTask(asset_data):
                 if origin_skeleton:
                     itask.get_igap_skeletal_mesh().set_editor_property('Skeleton', origin_skeleton)
                     itask.get_igap_skeletal_mesh().set_editor_property('import_only_animations', True)
-                    print("S2.25")
-                else:
-                    fail_reason = 'Skeleton ' + asset_data["target_skeleton_ref"] + ' Not found for ' + asset_data["asset_name"] + ' asset.'
-                    return fail_reason, None
 
             else:
                 if origin_skeleton:
                     itask.get_fbx_import_ui().set_editor_property('Skeleton', origin_skeleton)
-                else:
-                    fail_reason = 'Skeleton ' + asset_data["target_skeleton_ref"] + ' Not found for ' + asset_data["asset_name"] + ' asset.'
-                    return fail_reason, None
 
         print("S2.3")
         if asset_type == "SkeletalMesh":
@@ -359,11 +355,18 @@ def ImportTask(asset_data):
 
     print("S13")
     if asset_type == "SkeletalMesh":
+        print("S13.1")
         if origin_skeleton is None:
+            print("S13.2")
             # Unreal create a new skeleton when no skeleton was selected, so addon rename it.
             skeleton = itask.get_imported_skeleton()
             if skeleton:
-                unreal.EditorAssetLibrary.rename_asset(skeleton.get_path_name(), asset_data["target_skeleton_ref"])
+                if "target_skeleton_import_ref" in asset_data:
+                    print("Start rename skeleton...")
+                    unreal.EditorAssetLibrary.rename_asset(skeleton.get_path_name(), asset_data["target_skeleton_import_ref"])
+            else:
+                print("Error: export skeleton not found after import!")
+                
 
     print("S13.5")
     if itask.use_interchange:

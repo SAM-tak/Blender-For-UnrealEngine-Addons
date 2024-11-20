@@ -26,6 +26,7 @@ from . import bfu_write_utils
 from . import bfu_unreal_utils
 from . import bfu_material
 from . import bfu_light_map
+from . import bfu_assets_references
 
 def WriteImportAssetScript():
     # Generate a script for import assets in Ue4
@@ -90,44 +91,14 @@ def WriteImportAssetScript():
         if bfu_utils.GetIsAnimation(asset.asset_type) or asset.asset_type == "SkeletalMesh":
             
             # Skeleton
-            if(asset.object.bfu_engine_ref_skeleton_search_mode) == "auto":
-                asset_data["target_skeleton_ref"] = bfu_unreal_utils.get_predicted_skeleton_ref(asset.object)
-
-            elif(asset.object.bfu_engine_ref_skeleton_search_mode) == "custom_name":
-                name = bfu_utils.ValidUnrealAssetsName(asset.object.bfu_engine_ref_skeleton_custom_name)
-                target_skeleton_ref = os.path.join("/" + scene.bfu_unreal_import_module + "/", scene.bfu_unreal_import_location, asset.folder_name, name+"."+name)
-                target_skeleton_ref = target_skeleton_ref.replace('\\', '/')
-                asset_data["target_skeleton_ref"] = target_skeleton_ref
-
-            elif(asset.object.bfu_engine_ref_skeleton_search_mode) == "custom_path_name":
-                name = bfu_utils.ValidUnrealAssetsName(asset.object.bfu_engine_ref_skeleton_custom_name)
-                target_skeleton_ref = os.path.join("/" + scene.bfu_unreal_import_module + "/", asset.object.bfu_engine_ref_skeleton_custom_path, name+"."+name)
-                target_skeleton_ref = target_skeleton_ref.replace('\\', '/')
-                asset_data["target_skeleton_ref"] = target_skeleton_ref
-
-            elif(asset.object.bfu_engine_ref_skeleton_search_mode) == "custom_reference":
-                target_skeleton_ref = asset.object.bfu_engine_ref_skeleton_custom_ref.replace('\\', '/')
-                asset_data["target_skeleton_ref"] = target_skeleton_ref
-
+            asset_data["target_skeleton_search_ref"] = bfu_assets_references.bfu_asset_ref_utils.get_skeleton_search_ref(asset.object)
             # Skeletal Mesh
-            if(asset.object.bfu_engine_ref_skeletal_mesh_search_mode) == "auto":
-                asset_data["target_skeletal_mesh_ref"] = bfu_unreal_utils.get_predicted_skeleton_ref(asset.object)
+            asset_data["target_skeletal_mesh_search_ref"] = bfu_assets_references.bfu_asset_ref_utils.get_skeletal_mesh_search_ref(asset.object)
 
-            elif(asset.object.bfu_engine_ref_skeletal_mesh_search_mode) == "custom_name":
-                name = bfu_utils.ValidUnrealAssetsName(asset.object.bfu_engine_ref_skeletal_mesh_custom_name)
-                target_skeletal_mesh_ref = os.path.join("/" + scene.bfu_unreal_import_module + "/", scene.bfu_unreal_import_location, asset.folder_name, name+"."+name)
-                target_skeletal_mesh_ref = target_skeletal_mesh_ref.replace('\\', '/')
-                asset_data["target_skeletal_mesh_ref"] = target_skeletal_mesh_ref
+            # Better to seperate to let control to uses but my default it use the Skeleton Search Ref.
+            asset_data["target_skeleton_import_ref"] = bfu_assets_references.bfu_asset_ref_utils.get_skeleton_search_ref(asset.object)
 
-            elif(asset.object.bfu_engine_ref_skeletal_mesh_search_mode) == "custom_path_name":
-                name = bfu_utils.ValidUnrealAssetsName(asset.object.bfu_engine_ref_skeletal_mesh_custom_name)
-                target_skeletal_mesh_ref = os.path.join("/" + scene.bfu_unreal_import_module + "/", asset.object.bfu_engine_ref_skeletal_mesh_custom_path, name+"."+name)
-                target_skeletal_mesh_ref = target_skeletal_mesh_ref.replace('\\', '/')
-                asset_data["target_skeletal_mesh_ref"] = target_skeletal_mesh_ref
-
-            elif(asset.object.bfu_engine_ref_skeletal_mesh_search_mode) == "custom_reference":
-                target_skeletal_mesh_ref = asset.object.bfu_engine_ref_skeletal_mesh_custom_ref.replace('\\', '/')
-                asset_data["target_skeletal_mesh_ref"] = target_skeletal_mesh_ref
+            
 
         if bfu_utils.GetIsAnimation(asset.asset_type):
             asset_data["animation_start_frame"] = asset.animation_start_frame
