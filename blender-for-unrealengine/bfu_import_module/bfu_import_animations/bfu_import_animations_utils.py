@@ -42,10 +42,10 @@ def apply_interchange_post_import(itask: import_module_tasks_class.ImportTaks, a
         if type(imported_asset) is unreal.AnimSequence:
             anim_asset_path = imported_asset.get_path_name()
             path, name = anim_asset_path.rsplit('/', 1)
-            if name == "Anim_0_Root.Anim_0_Root":
-                main_anim_path = imported_asset.get_path_name()
-            else:
+            if name == "Root_MorphAnim_0.Root_MorphAnim_0":
                 asset_paths_to_remove.append(imported_asset.get_path_name())
+            else:
+                main_anim_path = imported_asset.get_path_name()
 
     # Remove wrong animation assets
     for asset_path in asset_paths_to_remove:
@@ -56,7 +56,8 @@ def apply_interchange_post_import(itask: import_module_tasks_class.ImportTaks, a
         anim_asset_path = imported_asset.get_path_name()
         path, name = anim_asset_path.rsplit('/', 1)
         new_anim_path = path + "/" + asset_data["asset_name"] + "." + asset_data["asset_name"]
-        unreal.EditorAssetLibrary.rename_asset(main_anim_path, new_anim_path)
+        if main_anim_path != new_anim_path:
+            unreal.EditorAssetLibrary.rename_asset(main_anim_path, new_anim_path)
     else:
         fail_reason = f"animAsset {asset_data['asset_name']} not found after import: {main_anim_path}"
         return fail_reason, None

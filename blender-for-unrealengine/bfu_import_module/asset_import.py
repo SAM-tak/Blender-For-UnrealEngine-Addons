@@ -321,14 +321,14 @@ def ImportTask(asset_data):
         fail_reason = 'Error zero imported object for: ' + asset_data["asset_name"]
         return fail_reason, None
     
+
+    # ###############[ Post treatment ]################
+
     print("S11.5")
     if asset_data["asset_type"] == "Animation":
         bfu_import_animations.bfu_import_animations_utils.apply_post_import_assets_changes(itask, asset_data)
 
     print("S12")
-    # ###############[ Post treatment ]################
-
-
     if asset_type == "StaticMesh":
         if "static_mesh_lod_group" in asset_data:
             if asset_data["static_mesh_lod_group"]:
