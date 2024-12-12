@@ -33,7 +33,7 @@
     "builds": {
         "unrealengine_assets_exporter_4.3": {   
             "generate_method": "EXTENTION_COMMAND",
-            "auto_install_range": [[4,3,0], [4,3,0]],
+            "auto_install_range": [[4,3,0], [4,3,1]],
             "naming": "{Name}_{Version}-blender_4.3.zip",
             "module": "blender-for-unrealengine", 
             "pkg_id": "unrealengine_assets_exporter",
