@@ -1,3 +1,13 @@
+# --------------------------------------------- 
+# This file is a modified copy of Blender io_scene_fbx from Blender for the addon Blender-For-UnrealEngine.
+# Do not modify directly this file!
+# If you want to make modifications, you need: 
+# 1. Do the changes in generator.py and edit_files.py
+# 2. Run the file run_generator.py
+# 
+# More info: https://github.com/xavier150/Blender-For-UnrealEngine-Addons
+# --------------------------------------------- 
+
 # SPDX-FileCopyrightText: 2013 Campbell Barton
 # SPDX-FileCopyrightText: 2014 Bastien Montagne
 #
@@ -105,37 +115,37 @@ FBX_LIGHT_DECAY_TYPES = {
 
 RIGHT_HAND_AXES = {
     # Up, Forward -> FBX values (tuples of (axis, sign), Up, Front, Coord).
-    ( 'X', '-Y'): ((0,  1), (1,  1), (2,  1)),
-    ( 'X',  'Y'): ((0,  1), (1, -1), (2, -1)),
-    ( 'X', '-Z'): ((0,  1), (2,  1), (1, -1)),
-    ( 'X',  'Z'): ((0,  1), (2, -1), (1,  1)),
-    ('-X', '-Y'): ((0, -1), (1,  1), (2, -1)),
-    ('-X',  'Y'): ((0, -1), (1, -1), (2,  1)),
-    ('-X', '-Z'): ((0, -1), (2,  1), (1,  1)),
-    ('-X',  'Z'): ((0, -1), (2, -1), (1, -1)),
-    ( 'Y', '-X'): ((1,  1), (0,  1), (2, -1)),
-    ( 'Y',  'X'): ((1,  1), (0, -1), (2,  1)),
-    ( 'Y', '-Z'): ((1,  1), (2,  1), (0,  1)),
-    ( 'Y',  'Z'): ((1,  1), (2, -1), (0, -1)),
-    ('-Y', '-X'): ((1, -1), (0,  1), (2,  1)),
-    ('-Y',  'X'): ((1, -1), (0, -1), (2, -1)),
-    ('-Y', '-Z'): ((1, -1), (2,  1), (0, -1)),
-    ('-Y',  'Z'): ((1, -1), (2, -1), (0,  1)),
-    ( 'Z', '-X'): ((2,  1), (0,  1), (1,  1)),
-    ( 'Z',  'X'): ((2,  1), (0, -1), (1, -1)),
-    ( 'Z', '-Y'): ((2,  1), (1,  1), (0, -1)),
-    ( 'Z',  'Y'): ((2,  1), (1, -1), (0,  1)),  # Blender system!
-    ('-Z', '-X'): ((2, -1), (0,  1), (1, -1)),
-    ('-Z',  'X'): ((2, -1), (0, -1), (1,  1)),
-    ('-Z', '-Y'): ((2, -1), (1,  1), (0,  1)),
-    ('-Z',  'Y'): ((2, -1), (1, -1), (0, -1)),
+    ('X', '-Y'): ((0, 1), (1, 1), (2, 1)),
+    ('X', 'Y'): ((0, 1), (1, -1), (2, -1)),
+    ('X', '-Z'): ((0, 1), (2, 1), (1, -1)),
+    ('X', 'Z'): ((0, 1), (2, -1), (1, 1)),
+    ('-X', '-Y'): ((0, -1), (1, 1), (2, -1)),
+    ('-X', 'Y'): ((0, -1), (1, -1), (2, 1)),
+    ('-X', '-Z'): ((0, -1), (2, 1), (1, 1)),
+    ('-X', 'Z'): ((0, -1), (2, -1), (1, -1)),
+    ('Y', '-X'): ((1, 1), (0, 1), (2, -1)),
+    ('Y', 'X'): ((1, 1), (0, -1), (2, 1)),
+    ('Y', '-Z'): ((1, 1), (2, 1), (0, 1)),
+    ('Y', 'Z'): ((1, 1), (2, -1), (0, -1)),
+    ('-Y', '-X'): ((1, -1), (0, 1), (2, 1)),
+    ('-Y', 'X'): ((1, -1), (0, -1), (2, -1)),
+    ('-Y', '-Z'): ((1, -1), (2, 1), (0, -1)),
+    ('-Y', 'Z'): ((1, -1), (2, -1), (0, 1)),
+    ('Z', '-X'): ((2, 1), (0, 1), (1, 1)),
+    ('Z', 'X'): ((2, 1), (0, -1), (1, -1)),
+    ('Z', '-Y'): ((2, 1), (1, 1), (0, -1)),
+    ('Z', 'Y'): ((2, 1), (1, -1), (0, 1)),  # Blender system!
+    ('-Z', '-X'): ((2, -1), (0, 1), (1, -1)),
+    ('-Z', 'X'): ((2, -1), (0, -1), (1, 1)),
+    ('-Z', '-Y'): ((2, -1), (1, 1), (0, 1)),
+    ('-Z', 'Y'): ((2, -1), (1, -1), (0, -1)),
 }
 
 
 # NOTE: Not fully in enum value order, since when exporting the first entry matching the framerate value is used
 # (e.g. better have NTSC fullframe than NTSC drop frame for 29.97 framerate).
 FBX_FRAMERATES = (
-    #(-1.0, 0),  # Default framerate.
+    # (-1.0, 0),  # Default framerate.
     (-1.0, 14),  # Custom framerate.
     (120.0, 1),
     (100.0, 2),
@@ -148,7 +158,7 @@ FBX_FRAMERATES = (
     (30.0 / 1.001, 8),  # Color NTSC, drop frame.
     (25.0, 10),
     (24.0, 11),
-    #(1.0, 12),  # 1000 milli/s (use for date time?).
+    # (1.0, 12),  # 1000 milli/s (use for date time?).
     (24.0 / 1.001, 13),
     (96.0, 15),
     (72.0, 16),
@@ -260,7 +270,7 @@ def matrix4_to_array(mat):
 def array_to_matrix4(arr):
     """Convert a single 16-len tuple into a valid 4D Blender matrix"""
     # Blender matrix is row major, fbx is col major so transpose on read
-    return Matrix(tuple(zip(*[iter(arr)]*4))).transposed()
+    return Matrix(tuple(zip(*[iter(arr)] * 4))).transposed()
 
 
 def parray_as_ndarray(arr):
@@ -351,7 +361,7 @@ def _mat4_vec3_array_multiply(mat4, vec3_array, dtype=None, return_4d=False):
 
     # column_vector_multiplication in mathutils_Vector.c uses double precision math for Matrix @ Vector by casting the
     # matrix's values to double precision and then casts back to single precision when returning the result, so at least
-    # double precision math is always be used to match standard Blender behaviour.
+    # double precision math is always be used to match standard Blender behavior.
     math_precision = np.result_type(np.double, vec3_array)
 
     to_multiply = None
@@ -527,7 +537,7 @@ def fast_first_axis_unique(ar, return_unique=True, return_index=False, return_in
 
     Float type caveats:
     All elements of -0.0 in the input array will be replaced with 0.0 to ensure that both values are collapsed into one.
-    NaN values can have lots of different byte representations (e.g. signalling/quiet and custom payloads). Only the
+    NaN values can have lots of different byte representations (e.g. signaling/quiet and custom payloads). Only the
     duplicates of each unique byte representation will be collapsed into one."""
     # At least something should always be returned.
     assert(return_unique or return_index or return_inverse or return_counts)
@@ -721,7 +731,7 @@ class AttributeDescription:
     domain: str
     # Some attributes are required to exist if certain conditions are met. If a required attribute does not exist when
     # attempting to get it, an AssertionError is raised.
-    is_required_check: Callable[[bpy.types.AttributeGroup], bool] = None
+    is_required_check: Callable[[bpy.types.AttributeGroupMesh], bool] = None
     # NumPy dtype that matches the internal C data of this attribute.
     dtype: np.dtype = field(init=False)
     # The default attribute name to use with foreach_get and foreach_set.
@@ -838,7 +848,7 @@ def _key_to_uuid(uuids, key):
             uuid += inc
             if 0 > uuid >= 2**63:
                 # Note that this is more that unlikely, but does not harm anyway...
-                raise ValueError("Unable to generate an UUID for key {}".format(key))
+                raise ValueError("Unable to generate an UUID for key {!r}".format(key))
     return UUID(uuid)
 
 
@@ -1518,7 +1528,7 @@ class AnimationCurveNodeWrapper:
 
         force_keep = force_keep or self.force_keying
         for elem_key, fbx_group, fbx_gname, fbx_props in \
-            zip(self.elem_keys, self.fbx_group, self.fbx_gname, self.fbx_props):
+                zip(self.elem_keys, self.fbx_group, self.fbx_gname, self.fbx_props):
             group_key = get_blender_anim_curve_node_key(scene, ref_id, elem_key, fbx_group)
             group = {}
             for c, def_val, fbx_item in zip(curves, self.default_values, fbx_props):
@@ -1667,7 +1677,7 @@ class ObjectWrapper(metaclass=MetaObjectWrapper):
     def get_parent(self):
         if self._tag == 'OB':
             if (self.bdata.parent and self.bdata.parent.type == 'ARMATURE' and
-                self.bdata.parent_type == 'BONE' and self.bdata.parent_bone):
+                    self.bdata.parent_type == 'BONE' and self.bdata.parent_bone):
                 # Try to parent to a bone.
                 bo_par = self.bdata.parent.pose.bones.get(self.bdata.parent_bone, None)
                 if (bo_par):
@@ -1736,11 +1746,10 @@ class ObjectWrapper(metaclass=MetaObjectWrapper):
                 if par_type in {'OBJECT', 'BONE'}:
                     return True
                 else:
-                    print("Sorry, “{}” parenting type is not supported".format(par_type))
+                    print("Sorry, \"{:s}\" parenting type is not supported".format(par_type))
                     return False
             return True
         return False
-
     LEG_NAME_PATTERN = re.compile(r'[^a-zA-Z]?(thigh|calf)([^a-zA-Z]|$)', re.IGNORECASE)
 
     def is_leg_bone(self):
@@ -1795,6 +1804,7 @@ class ObjectWrapper(metaclass=MetaObjectWrapper):
                 if self.bdata.parent.name in bone_aligns[self.armature.name]:
                     return bone_aligns[self.armature.name][self.bdata.parent.name][1]
         return None
+
 
     def use_bake_space_transform(self, scene_data):
         # NOTE: Only applies to object types supporting this!!! Currently, only meshes and the like...
@@ -1951,7 +1961,7 @@ class ObjectWrapper(metaclass=MetaObjectWrapper):
     def dupli_list_gen(self, depsgraph):
         if self._tag == 'OB' and self.bdata.is_instancer:
             return (ObjectWrapper(dup) for dup in depsgraph.object_instances
-                                       if dup.parent and ObjectWrapper(dup.parent.original) == self)
+                    if dup.parent and ObjectWrapper(dup.parent.original) == self)
         return ()
 
 

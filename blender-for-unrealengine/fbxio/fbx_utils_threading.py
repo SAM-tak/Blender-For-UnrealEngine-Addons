@@ -1,3 +1,13 @@
+# --------------------------------------------- 
+# This file is a modified copy of Blender io_scene_fbx from Blender for the addon Blender-For-UnrealEngine.
+# Do not modify directly this file!
+# If you want to make modifications, you need: 
+# 1. Do the changes in generator.py and edit_files.py
+# 2. Run the file run_generator.py
+# 
+# More info: https://github.com/xavier150/Blender-For-UnrealEngine-Addons
+# --------------------------------------------- 
+
 # SPDX-FileCopyrightText: 2023 Blender Foundation
 #
 # SPDX-License-Identifier: GPL-2.0-or-later
@@ -98,7 +108,7 @@ class MultiThreadedTaskConsumer:
         Any task that fails with an exception will cause all task consumer threads to stop.
 
         The maximum number of threads used matches the number of cpus available up to a maximum of `hard_max_threads`.
-        `hard_max_threads`'s default of 32 matches ThreadPoolExecutor's default behaviour.
+        `hard_max_threads`'s default of 32 matches ThreadPoolExecutor's default behavior.
 
         The maximum number of threads used is decreased by `other_cpu_bound_threads_in_use`. Defaulting to `1`, assuming
         that the calling thread will also be doing CPU-bound work.
