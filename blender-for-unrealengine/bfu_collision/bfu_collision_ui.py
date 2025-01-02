@@ -37,7 +37,7 @@ def draw_ui_object(layout: bpy.types.UILayout, obj: bpy.types.Object):
     is_skeletal_mesh = bfu_skeletal_mesh.bfu_skeletal_mesh_utils.is_skeletal_mesh(obj)
     if addon_prefs.useGeneratedScripts is False:
         return
-    if bfu_utils.GetExportAsProxy(obj):
+    if not bfu_utils.draw_proxy_propertys(obj):
         return
     if obj.bfu_export_type != "export_recursive":
         return

@@ -37,7 +37,7 @@ def draw_ui(layout: bpy.types.UILayout, obj: bpy.types.Object):
     if obj is None:
         layout.row().label(text='No active object.')
         return
-    if bfu_utils.GetExportAsProxy(obj):
+    if not bfu_utils.draw_proxy_propertys(obj):
         return
     if bfu_ui.bfu_ui_utils.DisplayPropertyFilter("OBJECT", "GENERAL"):
         scene.bfu_object_properties_expanded.draw(layout)
@@ -63,7 +63,7 @@ def draw_ui(layout: bpy.types.UILayout, obj: bpy.types.Object):
                 folderNameProperty.prop(obj, 'bfu_export_folder_name', icon='FILE_FOLDER')
 
                 ProxyProp = layout.column()
-                if bfu_utils.GetExportAsProxy(obj):
+                if not bfu_utils.draw_proxy_propertys(obj):
                     ProxyProp.label(text="The Armature was detected as a proxy.")
                     proxy_child = bfu_utils.GetExportProxyChild(obj)
                     if proxy_child:
@@ -71,7 +71,7 @@ def draw_ui(layout: bpy.types.UILayout, obj: bpy.types.Object):
                     else:
                         ProxyProp.label(text="Proxy child not found")
 
-                if not bfu_utils.GetExportAsProxy(obj):
+                if bfu_utils.draw_proxy_propertys(obj):
                     # exportCustomName
                     exportCustomName = layout.row()
                     exportCustomName.prop(obj, "bfu_use_custom_export_name")
