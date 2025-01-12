@@ -52,6 +52,7 @@ You simply need to paste it into Unreal Engine, for example, the cameras, spline
 - [Cameras](https://github.com/xavier150/Blender-For-UnrealEngine-Addons/wiki/Cameras)
 - [Camera Depth of Field](https://github.com/xavier150/Blender-For-UnrealEngine-Addons/wiki/Camera-Depth-of-Field)
 - [Camera Shift](https://github.com/xavier150/Blender-For-UnrealEngine-Addons/wiki/Camera-Shift)
+- [Camera Axis](https://github.com/xavier150/Blender-For-UnrealEngine-Addons/wiki/Camera-Axis)
 - [Curves and Splines](https://github.com/xavier150/Blender-For-UnrealEngine-Addons/wiki/Curve-and-Spline)
 - [Animations](https://github.com/xavier150/Blender-For-UnrealEngine-Addons/wiki/Animations)
 - [Materials](https://github.com/xavier150/Blender-For-UnrealEngine-Addons/wiki/Material)
