@@ -19,6 +19,7 @@
 
 
 import bpy
+import math
 from . import bfu_camera_utils
 from . import bfu_camera_write_paste_commands
 from .. import bfu_basics
@@ -64,10 +65,37 @@ def draw_ui_object_camera(layout: bpy.types.UILayout, obj: bpy.types.Object):
                     camera_ui_pop.prop(obj, 'bfu_custom_camera_default_actor')
                     camera_ui_pop.prop(obj, 'bfu_custom_camera_component')
                 camera_ui_pop.prop(obj, 'bfu_export_fbx_camera')
-                camera_ui_fix_axis = camera_ui_pop.row()
-                camera_ui_fix_axis.prop(obj, 'bfu_fix_axis_flippings')
-                bbpl.blender_layout.layout_doc_button.add_doc_page_operator(camera_ui_fix_axis, text="", url="https://github.com/xavier150/Blender-For-UnrealEngine-Addons/wiki/Camera-Axis")
-                
+                camera_ui_fix_axis = camera_ui_pop.box()
+                camera_ui_fix_axis_prop = camera_ui_fix_axis.row()
+                camera_ui_fix_axis_prop.prop(obj, 'bfu_fix_axis_flippings')
+                bbpl.blender_layout.layout_doc_button.add_doc_page_operator(camera_ui_fix_axis_prop, text="", url="https://github.com/xavier150/Blender-For-UnrealEngine-Addons/wiki/Camera-Axis")
+                if obj.bfu_fix_axis_flippings:
+                    camera_ui_fix_axis.prop(obj, 'bfu_fix_axis_flippings_warp_target', text="")
+
+                    invalid = False
+                    warp_target_degrees = [math.degrees(v) for v in obj.bfu_fix_axis_flippings_warp_target]
+                    tolerance = 1e-4
+
+                    for axis_value in obj.bfu_fix_axis_flippings_warp_target:
+                        if axis_value == 0.0:
+                            invalid = True
+                            camera_ui_fix_axis.label(
+                                text="Error: Axis value cannot be 0!",
+                                icon='ERROR'
+                            )
+                            break  # Stop check
+
+                    if not invalid:
+                        for axis_value in warp_target_degrees:
+                            if abs(axis_value % 90) > tolerance:
+                                camera_ui_fix_axis.label(
+                                    text=(
+                                        f"Warning: {axis_value:.1f}° is not a multiple of 90°. "
+                                        "It is recommended to use 360° or multiples of 90°."
+                                    ),
+                                    icon='INFO'
+                                )
+
                 camera_ui_pop.enabled = obj.bfu_export_type == "export_recursive"
                 camera_ui.operator("object.bfu_copy_active_camera_data", icon="COPYDOWN")
 
@@ -139,9 +167,17 @@ def register():
         )
     bpy.types.Object.bfu_fix_axis_flippings = bpy.props.BoolProperty(
         name="Fix Camera Axis",
-        description=('Disable only if you use extrem camera animation in one frame.'),
+        description=('Enable this option to fix axis flipping caused by rotation wrapping. '
+                    'Disable only if you use extreme camera animations in a single frame.'),
         override={'LIBRARY_OVERRIDABLE'},
         default=True,
+        )
+    bpy.types.Object.bfu_fix_axis_flippings_warp_target = bpy.props.FloatVectorProperty(
+        name="Fix Camera Axis Warp Target",
+        description=('Target rotation values (in degrees) used to fix camera axis wrapping issues.'),
+        override={'LIBRARY_OVERRIDABLE'},
+        default=(math.radians(360.0), math.radians(360.0), math.radians(360.0)),  # Convert to radians
+        subtype='EULER'
         )
     bpy.types.Object.bfu_desired_camera_type = bpy.props.EnumProperty(
         name="Camera Type",
