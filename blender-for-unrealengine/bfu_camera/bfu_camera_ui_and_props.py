@@ -64,7 +64,10 @@ def draw_ui_object_camera(layout: bpy.types.UILayout, obj: bpy.types.Object):
                     camera_ui_pop.prop(obj, 'bfu_custom_camera_default_actor')
                     camera_ui_pop.prop(obj, 'bfu_custom_camera_component')
                 camera_ui_pop.prop(obj, 'bfu_export_fbx_camera')
-                camera_ui_pop.prop(obj, 'bfu_fix_axis_flippings')
+                camera_ui_fix_axis = camera_ui_pop.row()
+                camera_ui_fix_axis.prop(obj, 'bfu_fix_axis_flippings')
+                bbpl.blender_layout.layout_doc_button.add_doc_page_operator(camera_ui_fix_axis, text="", url="https://github.com/xavier150/Blender-For-UnrealEngine-Addons/wiki/Camera-Axis")
+                
                 camera_ui_pop.enabled = obj.bfu_export_type == "export_recursive"
                 camera_ui.operator("object.bfu_copy_active_camera_data", icon="COPYDOWN")
 
@@ -135,7 +138,7 @@ def register():
         default=False,
         )
     bpy.types.Object.bfu_fix_axis_flippings = bpy.props.BoolProperty(
-        name="Fix camera axis flippings",
+        name="Fix Camera Axis",
         description=('Disable only if you use extrem camera animation in one frame.'),
         override={'LIBRARY_OVERRIDABLE'},
         default=True,
