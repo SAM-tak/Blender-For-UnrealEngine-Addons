@@ -161,16 +161,17 @@ class BFU_CameraTracks():
         elif target_use == "UnrealEngine":
             transform_track = self.ue_transform_track
 
+        warp_value_fix = 360.0
         new_array_rotation = array_rotation.copy()
         if frame-1 in transform_track:  # Previous frame
             previous_rotation_x = transform_track[frame-1]["rotation_x"]
             previous_rotation_y = transform_track[frame-1]["rotation_y"]
             previous_rotation_z = transform_track[frame-1]["rotation_z"]
-            diff = round((array_rotation[0] - previous_rotation_x) / 180.0) * 180.0
+            diff = round((array_rotation[0] - previous_rotation_x) / warp_value_fix) * warp_value_fix
             new_array_rotation[0] = array_rotation[0] - diff
-            diff = round((array_rotation[1] - previous_rotation_y) / 180.0) * 180.0
+            diff = round((array_rotation[1] - previous_rotation_y) / warp_value_fix) * warp_value_fix
             new_array_rotation[1] = array_rotation[1] - diff
-            diff = round((array_rotation[2] - previous_rotation_z) / 180.0) * 180.0
+            diff = round((array_rotation[2] - previous_rotation_z) / warp_value_fix) * warp_value_fix
             new_array_rotation[2] = array_rotation[2] - diff
         return new_array_rotation
 
