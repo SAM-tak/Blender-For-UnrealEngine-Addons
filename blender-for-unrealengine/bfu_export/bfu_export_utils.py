@@ -224,35 +224,42 @@ def ResetDuplicateNameAfterExport(duplicate_data):
         user_selected.name = bfu_utils.GetObjOriginName(user_selected)
         bfu_utils.ClearObjOriginNameVar(user_selected)
 
-def ConvertSelectedCurveToMesh():
-    # Have to convert curve to mesh before MakeSelectVisualReal for avoid double duplicate issue.
+def ConvertSelectedToMesh():
+    # Have to convert text and curve objects to mesh before MakeSelectVisualReal to avoid duplicate issue.
+    type_to_convert = ["CURVE", "SURFACE", "META", "FONT"]
+
     scene = bpy.context.scene
-    select = bbpl.save_data.select_save.UserSelectSave()
-    select.save_current_select()
-    
-    bpy.ops.object.select_all(action='DESELECT')
 
-    
-    for selected_obj in select.user_selecteds:
-        if selected_obj.type == "CURVE":
-            selected_obj.select_set(False)
-
-    # Save object list
+    # Save current scene object list
     previous_objects = []
     for obj in scene.objects:
         previous_objects.append(obj)
 
-    # Convert to mesh
+    # Save Select
+    select = bbpl.save_data.select_save.UserSelectSave()
+    select.save_current_select()
+    
+    # Select all object
+    bpy.ops.object.select_all(action='DESELECT')
+
+    # Select object to convert
+    for selected_obj in select.user_selecteds:
+        if selected_obj.type in type_to_convert:
+            selected_obj.select_set(True)
+
+    # Convert selct to mesh
     if bpy.context.selected_objects:
         bpy.context.view_layer.objects.active = bpy.context.selected_objects[0] #Convert fail if active is none.
         bpy.ops.object.convert(target='MESH')
 
+    # Reset select
     select.reset_select(use_names = True)
     
     # Select the new objects
     for obj in scene.objects:
         if obj not in previous_objects:
             obj.select_set(True)
+
 
 def MakeSelectVisualReal():
     scene = bpy.context.scene
@@ -267,7 +274,8 @@ def MakeSelectVisualReal():
     # Visual Transform Apply
     bpy.ops.object.visual_transform_apply()
 
-    # Make Instances Real
+    # Make Instances Real 
+    # Note:Text and curve need to be converted to mesh before Make Instances Real to avoid duplicate issue.
     bpy.ops.object.duplicates_make_real(
         use_base_parent=False,
         use_hierarchy=True
