@@ -268,6 +268,9 @@ def ImportTask(asset_data):
                 itask.get_igap_mesh().set_editor_property('generate_lightmap_u_vs', asset_data["generate_lightmap_u_vs"])
             itask.get_igap_mesh().set_editor_property('import_morph_targets', True)
 
+            itask.get_igap_common_mesh().set_editor_property('recompute_normals', False)
+            itask.get_igap_common_mesh().set_editor_property('recompute_tangents', False)
+
         else:
             if asset_type == "StaticMesh":
                 # unreal.FbxStaticMeshImportData
@@ -371,18 +374,25 @@ def ImportTask(asset_data):
     print("S13.5")
     if itask.use_interchange:
         if asset_type == "StaticMesh":
+            itask.get_igap_common_mesh().set_editor_property('recompute_normals', False)
+            itask.get_igap_common_mesh().set_editor_property('recompute_tangents', False)
+
             if "generate_lightmap_u_vs" in asset_data:
                 mesh_pipeline = itask.get_imported_static_mesh().get_editor_property('asset_import_data').get_pipelines()[0].get_editor_property('mesh_pipeline')
                 mesh_pipeline.set_editor_property('generate_lightmap_u_vs', asset_data["generate_lightmap_u_vs"])  # Import data
                 unreal.EditorStaticMeshLibrary.set_generate_lightmap_uv(itask.get_imported_static_mesh(), asset_data["generate_lightmap_u_vs"])  # Build settings at lod
         
         if asset_type == "SkeletalMesh":
+            itask.get_igap_common_mesh().set_editor_property('recompute_normals', False)
+            itask.get_igap_common_mesh().set_editor_property('recompute_tangents', False)
+
             if "enable_skeletal_mesh_per_poly_collision" in asset_data:
                 itask.get_imported_skeletal_mesh().set_editor_property('enable_per_poly_collision', asset_data["enable_skeletal_mesh_per_poly_collision"])
         
     else:
         if asset_type == "StaticMesh":
             asset_import_data = itask.get_imported_static_mesh().get_editor_property('asset_import_data')
+            asset_import_data.set_editor_property('normal_import_method', unreal.FBXNormalImportMethod.FBXNIM_IMPORT_NORMALS_AND_TANGENTS)
             if "generate_lightmap_u_vs" in asset_data:
                 asset_import_data.set_editor_property('generate_lightmap_u_vs', asset_data["generate_lightmap_u_vs"])  # Import data
                 unreal.EditorStaticMeshLibrary.set_generate_lightmap_uv(itask.get_imported_static_mesh(), asset_data["generate_lightmap_u_vs"])  # Build settings at lod

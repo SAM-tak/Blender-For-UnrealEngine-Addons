@@ -582,6 +582,16 @@ def SelectCollectionObjects(collection):
 
     return selectedObjs
 
+def draw_proxy_propertys(obj):
+    addon_prefs = bpy.context.preferences.addons[__package__].preferences
+    # Debug option to alway show linked propertys
+    if addon_prefs.show_hiden_linked_propertys:
+        return True
+
+    # Hide likned object propertys
+    if GetExportAsProxy(obj):
+        return False
+    return True
 
 def GetExportAsProxy(obj):
     if GetObjProxyChild(obj):

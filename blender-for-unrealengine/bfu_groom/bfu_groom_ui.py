@@ -38,7 +38,7 @@ def draw_general_ui_object(layout: bpy.types.UILayout, obj: bpy.types.Object):
         if scene.bfu_object_properties_expanded.is_expend():
             if obj.bfu_export_type == "export_recursive":
                 if bfu_groom_utils.is_groom(obj) or bfu_static_mesh.bfu_static_mesh_utils.is_static_mesh(obj) or bfu_skeletal_mesh.bfu_skeletal_mesh_utils.is_skeletal_mesh(obj):
-                    if not bfu_utils.GetExportAsProxy(obj):
+                    if bfu_utils.draw_proxy_propertys(obj):
                         AlembicProp = layout.column()
                         AlembicProp.prop(obj, 'bfu_export_as_groom_simulation')
 

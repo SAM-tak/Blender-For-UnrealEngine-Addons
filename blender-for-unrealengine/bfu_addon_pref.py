@@ -127,6 +127,12 @@ class BFU_AP_AddonPreferences(bpy.types.AddonPreferences):
         default=False,
         )
 
+    show_hiden_linked_propertys: bpy.props.BoolProperty(
+        name=('Show Hiden Linked Propertys'),
+        description=('Show hiden linked propertys. (Debug)'),
+        default=False,
+        )
+
     useGeneratedScripts: bpy.props.BoolProperty(
         name=(languages.ti('use_generated_scripts_name')),
         description=(languages.tt('use_generated_scripts_desc')),
@@ -232,6 +238,7 @@ class BFU_AP_AddonPreferences(bpy.types.AddonPreferences):
         other.label(text='OTHER')
         other.prop(self, "collisionColor")
         other.prop(self, "notifyUnitScalePotentialError")
+        other.prop(self, "show_hiden_linked_propertys")
 
         script = ColumnRight.box()
         script.label(text='IMPORT SCRIPT')

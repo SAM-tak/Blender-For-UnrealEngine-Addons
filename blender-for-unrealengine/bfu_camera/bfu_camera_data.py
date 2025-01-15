@@ -155,23 +155,36 @@ class BFU_CameraTracks():
     
 
 
-    def fix_transform_axis_flippings(self,array_rotation, frame: int, target_use: str):
-        if target_use == "Blender":
-            transform_track = self.transform_track
-        elif target_use == "UnrealEngine":
-            transform_track = self.ue_transform_track
+    def fix_transform_axis_flippings(self, camera: bpy.types.Object, array_rotation, frame: int, target_use: str):
 
+        # Define constants for target use
+        TRANSFORM_TRACKS = {
+            "Blender": self.transform_track,
+            "UnrealEngine": self.ue_transform_track,
+        }
+
+        # Get the correct transform track
+        transform_track = TRANSFORM_TRACKS.get(target_use)
+        if transform_track is None:
+            raise ValueError(f"Invalid target_use: {target_use}. Must be 'Blender' or 'UnrealEngine'.")
+           
+        # convert warp_target to degrees        
+        warp_target_degrees = [round(math.degrees(v), 1) for v in camera.bfu_fix_axis_flippings_warp_target]
+
+        # Create a copy of the current rotation array
         new_array_rotation = array_rotation.copy()
-        if frame-1 in transform_track:  # Previous frame
-            previous_rotation_x = transform_track[frame-1]["rotation_x"]
-            previous_rotation_y = transform_track[frame-1]["rotation_y"]
-            previous_rotation_z = transform_track[frame-1]["rotation_z"]
-            diff = round((array_rotation[0] - previous_rotation_x) / 180.0) * 180.0
-            new_array_rotation[0] = array_rotation[0] - diff
-            diff = round((array_rotation[1] - previous_rotation_y) / 180.0) * 180.0
-            new_array_rotation[1] = array_rotation[1] - diff
-            diff = round((array_rotation[2] - previous_rotation_z) / 180.0) * 180.0
-            new_array_rotation[2] = array_rotation[2] - diff
+
+        # Check if a previous frame exists in the transform track
+        if frame - 1 in transform_track:
+            previous_rotation = transform_track[frame - 1]
+            
+            # Calculate new rotations for each axis (X, Y, Z)
+            for i, axis in enumerate(["rotation_x", "rotation_y", "rotation_z"]):
+                previous_value = previous_rotation[axis]
+                # Compute the difference based on the warp target
+                diff = round((array_rotation[i] - previous_value) / warp_target_degrees[i]) * warp_target_degrees[i]
+                # Adjust the current rotation to eliminate flipping
+                new_array_rotation[i] = array_rotation[i] - diff
         return new_array_rotation
 
     def evaluate_camera_transform(self, camera: bpy.types.Object, frame: int, target_use: str):
@@ -185,7 +198,7 @@ class BFU_CameraTracks():
 
         # Fix axis flippings
         if camera.bfu_fix_axis_flippings:
-            array_rotation = self.fix_transform_axis_flippings(array_rotation, frame, target_use)
+            array_rotation = self.fix_transform_axis_flippings(camera, array_rotation, frame, target_use)
 
         transform = {}
         transform["location_x"] = round(array_location.x, 8)
