@@ -3,12 +3,12 @@ Release Logs: https://github.com/xavier150/Blender-For-UnrealEngine-Addons/wiki/
 
 ### Version 4.3.11
 
-- New option to show hiden linked propertys (debug).
-- Change: "Fix Camera Axis" can now choose the warp target degress for specific use.
-- Fixed: NLA export may not use correct animated influence or blend in/out in NLA Strips.
-- Fixed: NLA export always create a key on first frame of animated influence curve.
-- Fixed: NLA export loose animated influence curve key data. (Select and Handle vectors)
-- Fixed: With Unit Scale not at 0.01, keyframes transfert from driver curves fail.
-- Fixed: Import script don't import Blender Normals in Unreal 5.5 (Interchange Pipline)
-- Fixed: "Fix Camera Axis" use wrong warp target (180 degress before and 360 degress now.)
-- Fixed: Some object type as Text or Surface is duplicated during export.
+- New: Option to show hidden linked properties (debug option in addon preferences).
+- New: "Fix Camera Axis" can now choose the warp target degrees for specific use.
+- Fixed: NLA export may not use the correct animated influence or blend in/out in NLA Strips.
+- Fixed: NLA export always creates a key on the first frame of the animated influence curve.
+- Fixed: NLA export loses animated influence curve key data (Select and Handle vectors).
+- Fixed: When the Unit Scale is not set to 0.01, keyframes transfer from driver curves fails.
+- Fixed: Import script does not import Blender Normals in Unreal 5.5 (Interchange Pipeline).
+- Fixed: "Fix Camera Axis" used the wrong warp target (180 degrees previously, now 360 degrees).
+- Fixed: Some object types, such as Text or Surface, are duplicated during export.
