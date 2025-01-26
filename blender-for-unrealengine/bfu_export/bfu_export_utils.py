@@ -34,6 +34,7 @@ from .. import bfu_vertex_color
 from .. import bfu_export_procedure
 from .. import bfu_collision
 from .. import bfu_socket
+from .. import bfu_export_logs
 
 
 dup_temp_name = "BFU_Temp"  # DuplicateTemporarilyNameForUe4Export
@@ -139,6 +140,8 @@ def BakeArmatureAnimation(armature, frame_start, frame_end):
 
 
 def DuplicateSelectForExport():
+    duplicate_time_log = bfu_export_logs.bfu_process_time_logs_utils.start_time_log(f"Duplicate asset selection", 3)
+
     # Note: Need look for a optimized duplicate, This is too long
 
     class DuplicateData():
@@ -208,6 +211,7 @@ def DuplicateSelectForExport():
 
     duplicate_data.SetDuplicateSelect()
 
+    duplicate_time_log.end_time_log()
     return duplicate_data
 
 

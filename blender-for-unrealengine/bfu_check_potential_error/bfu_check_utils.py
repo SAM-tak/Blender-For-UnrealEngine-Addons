@@ -35,11 +35,13 @@ from .. import bfu_groom
 from .. import bfu_spline
 from .. import bfu_skeletal_mesh
 from .. import bfu_static_mesh
+from .. import bfu_export_logs
 
 
 
 
 def process_general_fix():
+    time_log = bfu_export_logs.bfu_process_time_logs_utils.start_time_log("Clean before export")
     fixed_collisions = bfu_collision.bfu_collision_utils.fix_export_type_on_collision()
     fixed_collision_names = bfu_collision.bfu_collision_utils.fix_name_on_collision()
     fixed_sockets = bfu_socket.bfu_socket_utils.fix_export_type_on_socket()
@@ -52,6 +54,7 @@ def process_general_fix():
         "Fixed Socket Names(s)": fixed_socket_names,
     }
 
+    time_log.end_time_log()
     return fix_info
     
 

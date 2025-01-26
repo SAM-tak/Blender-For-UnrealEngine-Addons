@@ -3,4 +3,5 @@ Release Logs: https://github.com/xavier150/Blender-For-UnrealEngine-Addons/wiki/
 
 ### Version 4.3.12
 
+- New: Console logs show now how details about the export steps and how many time it take.
 - Change: Better logs details + clear logs after export to avoid useless used space in blender file.

@@ -98,9 +98,6 @@ class ProgressionBarClass():
         # Print the progress message on the same line
         print(msg, end='', flush=True)
 
-
-
-
 def print_formatted_text(text, width=60, fill_char="=", 
                          left_border="# ", left_padding=" ", 
                          right_padding=" ", right_border=" #"):

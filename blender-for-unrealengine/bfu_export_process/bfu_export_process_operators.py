@@ -103,17 +103,9 @@ class BFU_OT_ExportForUnrealEngineButton(bpy.types.Operator):
         bfu_export_logs.clear_all_logs()
 
         counter = bpl.utils.CounterTimer()
-        prepare_export_time = bfu_export_logs.bfu_process_time_logs_utils.start_time_log("Prepare Export")
         bfu_check_potential_error.bfu_check_utils.process_general_fix()
-        prepare_export_time.finish_process()
-
-        export_time = bfu_export_logs.bfu_process_time_logs_utils.start_time_log("Export")
         bfu_export.bfu_export_asset.process_export(self)
-        export_time.finish_process()
-
-        write_text_file_time = bfu_export_logs.bfu_process_time_logs_utils.start_time_log("Write text files")
         bfu_write_text.WriteAllTextFiles()
-        write_text_file_time.finish_process()
         
         
         asset_list = str(bfu_export_logs.bfu_asset_export_logs_utils.get_exported_asset_number())

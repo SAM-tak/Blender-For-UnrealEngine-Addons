@@ -1,6 +1,7 @@
 import bpy
 from typing import List
 from .. import bfu_utils
+from .. import bpl
 
 from . import bfu_asset_export_logs
 
@@ -22,70 +23,72 @@ def get_exported_asset_number():
     len(scene.bfu_unreal_exported_assets_logs)
 
 def get_export_asset_logs_details():
-    # Write Export log with exported assets in scene.bfu_unreal_exported_assets_logs
+    """
+    Generate a detailed export log for assets exported in the scene.
+    The log includes counts and details for each asset type.
 
+    Returns:
+        str: The formatted export log.
+    """
+
+    # Initialize variables
     scene = bpy.context.scene
-    StaticNum = 0
-    SkeletalNum = 0
-    AlembicNum = 0
-    AnimNum = 0
-    CameraNum = 0
-    SplineNum = 0
+    asset_counts = {
+        "StaticMesh": 0,
+        "SkeletalMesh": 0,
+        "Alembic": 0,
+        "Animation": 0,
+        "Camera": 0,
+        "Spline": 0
+    }
 
-    # Get number per asset type
-    for assets in get_exported_assets_logs():
-        if assets.asset_type == "StaticMesh":
-            StaticNum += 1
-        if assets.asset_type == "SkeletalMesh":
-            SkeletalNum += 1
-        if assets.asset_type == "Alembic":
-            AlembicNum += 1
-        if bfu_utils.GetIsAnimation(assets.asset_type):
-            AnimNum += 1
-        if assets.asset_type == "Camera":
-            CameraNum += 1
-        if assets.asset_type == "Spline":
-            SplineNum += 1
-
-    asset_number = len(scene.bfu_unreal_exported_assets_logs)
-    exported_assets = StaticNum+SkeletalNum+AlembicNum+AnimNum+CameraNum+SplineNum
-
-    OtherNum = asset_number - exported_assets
-
-    # Asset number string
-    AssetNumberByType = str(StaticNum)+" StaticMesh(s) | "
-    AssetNumberByType += str(SkeletalNum)+" SkeletalMesh(s) | "
-    AssetNumberByType += str(AlembicNum)+" Alembic(s) | "
-    AssetNumberByType += str(AnimNum)+" Animation(s) | "
-    AssetNumberByType += str(CameraNum)+" Camera(s) | "
-    AssetNumberByType += str(CameraNum)+" Spline(s) | "
-    AssetNumberByType += str(OtherNum)+" Other(s)" + "\n"
-
-    ExportLog = ""
-    ExportLog += AssetNumberByType
-    ExportLog += "\n"
+    # Count assets by type
     for asset in get_exported_assets_logs():
+        if asset.asset_type in asset_counts:
+            asset_counts[asset.asset_type] += 1
+        elif bfu_utils.GetIsAnimation(asset.asset_type):
+            asset_counts["Animation"] += 1
 
-        if (asset.asset_type == "NlAnim"):
-            primaryInfo = "Animation (NLA)"
-        elif (asset.asset_type == "Action"):
-            primaryInfo = "Animation (Action)"
-        elif (asset.asset_type == "Pose"):
-            primaryInfo = "Animation (Pose)"
+    # Calculate totals
+    total_assets = len(scene.bfu_unreal_exported_assets_logs)
+    exported_assets = sum(asset_counts.values())
+    other_assets = total_assets - exported_assets
+
+    # Build asset type summary
+    asset_summary = " | ".join(
+        f"{count} {asset_type}(s)" for asset_type, count in asset_counts.items()
+    )
+    asset_summary += f" | {other_assets} Other(s)\n"
+
+    # Build asset type summary with color formatting
+    def colorize_count(count, text):
+        if count == 0:
+            return bpl.color_set.red(text)
+        return bpl.color_set.green(text)
+
+    asset_summary = " | ".join(
+        colorize_count(count, f"{count} {asset_type}(s)") for asset_type, count in asset_counts.items()
+    )
+    asset_summary += f" | {colorize_count(other_assets, f'{other_assets} Other(s)')}\n"
+
+    # Build export log
+    export_log = asset_summary + "\n"
+
+    for asset in get_exported_assets_logs():
+        # Determine primary information for the asset
+        if asset.asset_type in ["NlAnim", "Action", "Pose"]:
+            primary_info = f"Animation ({asset.asset_type})"
         else:
-            if asset.object:
-                if asset.object.bfu_export_as_lod_mesh:
-                    primaryInfo = asset.asset_type+" (LOD)"
-                else:
-                    primaryInfo = asset.asset_type
-            else:
-                primaryInfo = asset.asset_type
+            primary_info = f"{asset.asset_type} (LOD)" if asset.object and asset.object.bfu_export_as_lod_mesh else asset.asset_type
 
-        ExportLog += (
-            asset.asset_name+" ["+primaryInfo+"] EXPORTED IN " + str(round(asset.GetExportTime(), 2))+"s\r\n")
+        # Format export time
+        export_time = bpl.color_set.yellow(bpl.utils.get_formatted_time(asset.GetExportTime()))
+
+        # Append asset details to the log
+        export_log += f"Asset [{primary_info}] '{asset.asset_name}' EXPORTED IN {export_time}\r\n"
+
+        # Append file details
         for file in asset.files:
-            
-            ExportLog += (file.file_path + "\\" + file.file_name + "\n")
-        ExportLog += "\n"
+            export_log += f"- {file.file_path}\\{file.file_name}\n"
 
-    return ExportLog
+    return export_log

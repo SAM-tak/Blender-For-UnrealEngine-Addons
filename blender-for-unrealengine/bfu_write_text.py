@@ -135,7 +135,7 @@ def WriteSingleMeshAdditionalParameter(unreal_exported_asset):
 
 
 def WriteAllTextFiles():
-
+    time_log = bfu_export_logs.bfu_process_time_logs_utils.start_time_log("Write text files")
     scene = bpy.context.scene
     addon_prefs = bfu_basics.GetAddonPrefs()
     
@@ -169,3 +169,4 @@ def WriteAllTextFiles():
         filename = bfu_basics.ValidFilename(scene.bfu_file_import_sequencer_script_name)
         destination = os.path.join(root_dirpath, filename)
         copyfile(source, destination)
+    time_log.end_time_log()

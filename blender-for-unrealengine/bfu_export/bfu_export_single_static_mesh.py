@@ -32,6 +32,7 @@ from .. import bfu_assets_manager
 
 
 def ProcessStaticMeshExport(op, obj: bpy.types.Object, desired_name=""):
+    init_export_time_log = bfu_export_logs.bfu_process_time_logs_utils.start_time_log(f"Init export", 2)
     scene = bpy.context.scene
     addon_prefs = bfu_basics.GetAddonPrefs()
 
@@ -61,6 +62,7 @@ def ProcessStaticMeshExport(op, obj: bpy.types.Object, desired_name=""):
     file.file_type = "FBX"
 
     fullpath = bfu_export_utils.check_and_make_export_path(dirpath, file.GetFileWithExtension())
+    init_export_time_log.end_time_log()
     if fullpath:
         MyAsset.StartAssetExport()
         ExportSingleStaticMesh(op, fullpath, obj)
@@ -92,19 +94,25 @@ def ExportSingleStaticMesh(
     '''
     # Export a single Mesh
 
+    prepare_export_time_log = bfu_export_logs.bfu_process_time_logs_utils.start_time_log(f"Prepare export", 2)
+    print("s1", prepare_export_time_log.process_info)
     scene = bpy.context.scene
-    addon_prefs = bfu_basics.GetAddonPrefs()
 
     bbpl.utils.safe_mode_set('OBJECT')
 
+    print("s2", prepare_export_time_log.process_info)
     bfu_utils.SelectParentAndDesiredChilds(obj)
     asset_name = bfu_export_utils.PrepareExportName(obj, False)
+    print("s2.1", prepare_export_time_log.process_info)
     duplicate_data = bfu_export_utils.DuplicateSelectForExport()
+    print("s2.2", prepare_export_time_log.process_info)
     bfu_export_utils.SetDuplicateNameForExport(duplicate_data)
-    
+
+    print("s3", prepare_export_time_log.process_info)
     bfu_export_utils.ConvertSelectedToMesh()
     bfu_export_utils.MakeSelectVisualReal()
 
+    print("s4", prepare_export_time_log.process_info)
     bfu_utils.ApplyNeededModifierToSelect()
     for selected_obj in bpy.context.selected_objects:
         if obj.bfu_convert_geometry_node_attribute_to_uv:
@@ -115,17 +123,24 @@ def ExportSingleStaticMesh(
         bfu_export_utils.SetSocketsExportTransform(selected_obj)
         bfu_export_utils.SetSocketsExportName(selected_obj)
 
+    print("s5", prepare_export_time_log.process_info)
     active = bpy.context.view_layer.objects.active
     asset_name.target_object = active
 
+    print("s6", prepare_export_time_log.process_info)
     bfu_utils.ApplyExportTransform(active, "Object")
 
+    print("s7", prepare_export_time_log.process_info)
     asset_name.SetExportName()
     static_export_procedure = obj.bfu_static_export_procedure
 
+    print("s8", prepare_export_time_log.process_info)
     save_use_simplify = bbpl.utils.SaveUserRenderSimplify()
     scene.render.use_simplify = False
+    print("s10", prepare_export_time_log.process_info)
+    prepare_export_time_log.end_time_log()
 
+    process_export_time_log = bfu_export_logs.bfu_process_time_logs_utils.start_time_log(f"Process export", 2)
     if (static_export_procedure == "ue-standard"):
         bfu_fbx_export.export_scene_fbx_with_custom_fbx_io(
             operator=op,
@@ -185,7 +200,9 @@ def ExportSingleStaticMesh(
             axis_up=bfu_export_utils.get_static_export_axis_up(active),
             bake_space_transform=False
             )
+    process_export_time_log.end_time_log()
 
+    post_export_time_log = bfu_export_logs.bfu_process_time_logs_utils.start_time_log(f"Clean after export", 2)
     save_use_simplify.LoadUserRenderSimplify()
     asset_name.ResetNames()
 
@@ -200,3 +217,4 @@ def ExportSingleStaticMesh(
 
     for obj in scene.objects:
         bfu_utils.ClearAllBFUTempVars(obj)
+    post_export_time_log.end_time_log()

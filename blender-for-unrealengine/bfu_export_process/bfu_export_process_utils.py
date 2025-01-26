@@ -29,7 +29,7 @@ def print_exported_asset_detail():
     for line in lines:
         print(line)
     print("")
-    bpl.advprint.print_simple_title("Export time details")
+    bpl.advprint.print_simple_title("Timed steps")
     print("")
     lines = bfu_export_logs.bfu_process_time_logs_utils.get_process_time_logs_details().splitlines()
     for line in lines:
