@@ -24,6 +24,7 @@ from .. import bfu_utils
 from .. import bfu_naming
 from .. import bfu_export_logs
 from .. import bfu_assets_manager
+from .. import bfu_export_logs
 
 
 
@@ -35,7 +36,7 @@ def ProcessAlembicAnimationExport(obj):
     dirpath = asset_class.get_obj_export_directory_path(obj, True)
     file_name = asset_class.get_obj_file_name(obj, obj.name, "")
 
-    MyAsset: bfu_export_logs.BFU_OT_UnrealExportedAsset = scene.UnrealExportedAssetsList.add()
+    MyAsset = bfu_export_logs.bfu_asset_export_logs_utils.create_new_asset_log()
     MyAsset.object = obj
     MyAsset.asset_name = obj.name
     MyAsset.asset_global_scale = obj.bfu_export_global_scale

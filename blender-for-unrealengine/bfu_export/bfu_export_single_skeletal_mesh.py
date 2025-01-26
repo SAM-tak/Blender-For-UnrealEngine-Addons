@@ -47,7 +47,7 @@ def ProcessSkeletalMeshExport(op, armature, mesh_parts, desired_name=""):
     file_name = asset_class.get_obj_file_name(armature, final_name, "")
     file_name_at = asset_class.get_obj_file_name(armature, final_name+"_AdditionalTrack", "") 
 
-    MyAsset: bfu_export_logs.BFU_OT_UnrealExportedAsset = scene.UnrealExportedAssetsList.add()
+    MyAsset = bfu_export_logs.bfu_asset_export_logs_utils.create_new_asset_log()
     MyAsset.object = armature
     MyAsset.skeleton_name = armature.name
     MyAsset.asset_name = armature.name

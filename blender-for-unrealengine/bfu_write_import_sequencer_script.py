@@ -19,6 +19,7 @@
 import bpy
 from . import languages
 from . import bfu_write_utils
+from . import bfu_export_logs
 
 
 def WriteImportSequencerTracks():
@@ -47,7 +48,7 @@ def WriteImportSequencerTracks():
 
     # Import camera
     data['cameras'] = []
-    for asset in scene.UnrealExportedAssetsList:
+    for asset in bfu_export_logs.bfu_asset_export_logs_utils.get_asset_list():
         if (asset.asset_type == "Camera"):
             camera = asset.object
 

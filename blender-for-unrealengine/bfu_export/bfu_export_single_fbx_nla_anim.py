@@ -39,7 +39,7 @@ def ProcessNLAAnimExport(op, obj):
 
     scene.frame_end += 1  # Why ?
 
-    MyAsset: bfu_export_logs.BFU_OT_UnrealExportedAsset = scene.UnrealExportedAssetsList.add()
+    MyAsset = bfu_export_logs.bfu_asset_export_logs_utils.create_new_asset_log()
     MyAsset.object = obj
     MyAsset.skeleton_name = obj.name
     MyAsset.asset_name = bfu_naming.get_nonlinear_animation_file_name(obj)

@@ -73,79 +73,6 @@ def ExportSingleJson(json_data, dirpath, filename):
     return([filename, "TextFile", absdirpath, exportTime])
 
 
-def WriteExportLog():
-    # Write Export log with exported assets in scene.UnrealExportedAssetsList
-
-    scene = bpy.context.scene
-    StaticNum = 0
-    SkeletalNum = 0
-    AlembicNum = 0
-    AnimNum = 0
-    CameraNum = 0
-    SplineNum = 0
-
-    # Get number per asset type
-    for assets in scene.UnrealExportedAssetsList:
-        if assets.asset_type == "StaticMesh":
-            StaticNum += 1
-        if assets.asset_type == "SkeletalMesh":
-            SkeletalNum += 1
-        if assets.asset_type == "Alembic":
-            AlembicNum += 1
-        if bfu_utils.GetIsAnimation(assets.asset_type):
-            AnimNum += 1
-        if assets.asset_type == "Camera":
-            CameraNum += 1
-        if assets.asset_type == "Spline":
-            SplineNum += 1
-
-    asset_number = len(scene.UnrealExportedAssetsList)
-    exported_assets = StaticNum+SkeletalNum+AlembicNum+AnimNum+CameraNum+SplineNum
-
-    OtherNum = asset_number - exported_assets
-
-    # Asset number string
-    AssetNumberByType = str(StaticNum)+" StaticMesh(s) | "
-    AssetNumberByType += str(SkeletalNum)+" SkeletalMesh(s) | "
-    AssetNumberByType += str(AlembicNum)+" Alembic(s) | "
-    AssetNumberByType += str(AnimNum)+" Animation(s) | "
-    AssetNumberByType += str(CameraNum)+" Camera(s) | "
-    AssetNumberByType += str(CameraNum)+" Spline(s) | "
-    AssetNumberByType += str(OtherNum)+" Other(s)" + "\n"
-
-    ExportLog = ""
-    ExportLog += AssetNumberByType
-    ExportLog += "\n"
-    for asset in scene.UnrealExportedAssetsList:
-        file: bfu_export_logs.BFU_OT_UnrealExportedAsset
-
-        if (asset.asset_type == "NlAnim"):
-            primaryInfo = "Animation (NLA)"
-        elif (asset.asset_type == "Action"):
-            primaryInfo = "Animation (Action)"
-        elif (asset.asset_type == "Pose"):
-            primaryInfo = "Animation (Pose)"
-        else:
-            if asset.object:
-                if asset.object.bfu_export_as_lod_mesh:
-                    primaryInfo = asset.asset_type+" (LOD)"
-                else:
-                    primaryInfo = asset.asset_type
-            else:
-                primaryInfo = asset.asset_type
-
-        ExportLog += (
-            asset.asset_name+" ["+primaryInfo+"] EXPORTED IN " + str(round(asset.GetExportTime(), 2))+"s\r\n")
-        for file in asset.files:
-            file: bfu_export_logs.BFU_OT_FileExport
-            ExportLog += (file.file_path + "\\" + file.file_name + "\n")
-        ExportLog += "\n"
-
-    return ExportLog
-
-
-
-
 def WriteSingleMeshAdditionalParameter(unreal_exported_asset):
 
     scene = bpy.context.scene
@@ -216,7 +143,7 @@ def WriteAllTextFiles():
     if scene.bfu_use_text_export_log:
         Text = languages.ti("write_text_additional_track_start") + "\n"
         Text += "" + "\n"
-        Text += WriteExportLog()
+        Text += bfu_export_logs.bfu_asset_export_logs_utils.get_export_asset_logs()
         if Text is not None:
             Filename = bfu_basics.ValidFilename(scene.bfu_file_export_log_name)
             ExportSingleText(Text, root_dirpath, Filename)

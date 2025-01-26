@@ -237,9 +237,6 @@ def register():
     bfu_cached_asset_list.register()
 
 def unregister():
-    for cls in reversed(classes):
-        bpy.utils.unregister_class(cls)
-
     bfu_cached_asset_list.unregister()
     bfu_backward_compatibility.unregister()
     bfu_check_potential_error.unregister()
@@ -278,3 +275,6 @@ def unregister():
     bfu_propertys.unregister()
     bfu_assets_manager.unregister()
     bbpl.unregister()
+
+    for cls in reversed(classes):
+        bpy.utils.unregister_class(cls)

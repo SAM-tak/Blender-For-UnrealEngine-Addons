@@ -35,7 +35,7 @@ def ProcessActionExport(op, obj, action, action_curve_scale):
     asset_class = bfu_assets_manager.bfu_asset_manager_utils.get_asset_class(obj, "SkeletalAnimation")
     dirpath = asset_class.get_obj_export_directory_path(obj, True)
 
-    MyAsset: bfu_export_logs.BFU_OT_UnrealExportedAsset = scene.UnrealExportedAssetsList.add()
+    MyAsset = bfu_export_logs.bfu_asset_export_logs_utils.create_new_asset_log()
     MyAsset.object = obj
     MyAsset.skeleton_name = obj.name
     MyAsset.asset_name = bfu_naming.get_animation_file_name(obj, action, "")

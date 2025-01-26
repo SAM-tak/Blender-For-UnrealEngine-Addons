@@ -39,7 +39,7 @@ def ProcessCameraExport(op, obj, pre_bake_camera: bfu_camera.bfu_camera_data.BFU
     file_name = asset_class.get_obj_file_name(obj, obj.name, "")
     file_name_at = asset_class.get_obj_file_name(obj, obj.name+"_AdditionalTrack", "") 
 
-    MyAsset: bfu_export_logs.BFU_OT_UnrealExportedAsset = scene.UnrealExportedAssetsList.add()
+    MyAsset = bfu_export_logs.bfu_asset_export_logs_utils.create_new_asset_log()
     MyAsset.object = obj
     MyAsset.asset_name = obj.name
     MyAsset.asset_global_scale = obj.bfu_export_global_scale

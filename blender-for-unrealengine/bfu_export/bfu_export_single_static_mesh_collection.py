@@ -35,7 +35,7 @@ def ProcessCollectionExport(op, col: bpy.types.Collection):
     dirpath = bfu_utils.GetCollectionExportDir(bpy.data.collections[col.name])
     scene = bpy.context.scene
 
-    MyAsset: bfu_export_logs.BFU_OT_UnrealExportedAsset = scene.UnrealExportedAssetsList.add()
+    MyAsset = bfu_export_logs.bfu_asset_export_logs_utils.create_new_asset_log()
     MyAsset.asset_name = col.name
     MyAsset.asset_global_scale = 1.0 #col.bfu_export_global_scale
     MyAsset.collection = col
