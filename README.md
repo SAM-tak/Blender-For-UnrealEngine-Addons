@@ -62,6 +62,7 @@ You simply need to paste it into Unreal Engine, for example, the cameras, spline
 - [Generate UV Light Maps](https://github.com/xavier150/Blender-For-UnrealEngine-Addons/wiki/Generate-UV-Light-Maps)
 - [Alembic animations](https://github.com/xavier150/Blender-For-UnrealEngine-Addons/wiki/Alembic)
 - [Groom Simulation](https://github.com/xavier150/Blender-For-UnrealEngine-Addons/wiki/Groom)
+- [Chaos Flesh](https://github.com/xavier150/Blender-For-UnrealEngine-Addons/wiki/Chaos-Flesh)
 - [Custom Properties Animation to Curves UE](https://github.com/xavier150/Blender-For-UnrealEngine-Addons/wiki/Custom-Properties-Animation-to-Curves-UE)
 - [Export Collection like a StaticMesh](https://github.com/xavier150/Blender-For-UnrealEngine-Addons/wiki/Export-collection-like-a-StaticMesh)
 - [Import Exported Assets to UE](https://github.com/xavier150/Blender-For-UnrealEngine-Addons/wiki/How-import-assets)
