@@ -20,6 +20,7 @@
 import bpy
 import fnmatch
 import math
+from typing import List, TYPE_CHECKING
 
 from . import bfu_check_props
 from .. import bbpl
@@ -33,10 +34,21 @@ from .. import bfu_socket
 from .. import bfu_skeletal_mesh
 from .. import bfu_export_logs
 
+def get_potential_errors() -> List[bfu_check_props.BFU_OT_UnrealPotentialError]:
+    scene = bpy.context.scene
+    return scene.bfu_export_potential_errors
+
+def get_potential_error_by_index(index) -> bfu_check_props.BFU_OT_UnrealPotentialError:
+    scene = bpy.context.scene
+    return scene.bfu_export_potential_errors[index]
 
 def create_new_potential_error()-> bfu_check_props.BFU_OT_UnrealPotentialError:
     scene = bpy.context.scene
     return scene.bfu_export_potential_errors.add()
+
+def remove_potential_by_index(index):
+    scene = bpy.context.scene
+    scene.bfu_export_potential_errors.remove(index)
 
 def clear_potential_errors():
     scene = bpy.context.scene
@@ -105,7 +117,6 @@ def update_unreal_potential_error():
     # Find and reset list of all potential error in scene
 
     addon_prefs = bfu_basics.GetAddonPrefs()
-    potential_errors = bpy.context.scene.bfu_export_potential_errors
     clear_potential_errors()
 
     # prepares the data to avoid unnecessary loops
@@ -135,7 +146,7 @@ def update_unreal_potential_error():
         if addon_prefs.notifyUnitScalePotentialError:
             if not bfu_utils.get_scene_unit_scale_is_close(0.01):
                 str_unit_scale = str(bfu_utils.get_scene_unit_scale())
-                my_po_error = potential_errors.add()
+                my_po_error = create_new_potential_error()
                 my_po_error.name = bpy.context.scene.name
                 my_po_error.type = 1
                 my_po_error.text = (f'Scene "{bpy.context.scene.name}" has a Unit Scale equal to {str_unit_scale}.')
@@ -161,7 +172,7 @@ def update_unreal_potential_error():
                     f'- Denominator: {denominator} -> {new_denominator}\n'
                     f'- Numerator: {numerator} -> {new_numerator}')
 
-            my_po_error = potential_errors.add()
+            my_po_error = create_new_potential_error()
             my_po_error.name = bpy.context.scene.name
             my_po_error.type = 2
             my_po_error.text = (message)
@@ -174,7 +185,7 @@ def update_unreal_potential_error():
         non_recommended_types = {"SURFACE", "META", "FONT"}
         for obj in obj_to_check:
             if obj.type in non_recommended_types:
-                my_po_error = potential_errors.add()
+                my_po_error = create_new_potential_error()
                 my_po_error.name = obj.name
                 my_po_error.type = 1
                 my_po_error.text = (
@@ -194,7 +205,7 @@ def update_unreal_potential_error():
                 # Check that no modifiers is destructive for the key shapes
                 for modif in obj.modifiers:
                     if modif.type in destructive_modifiers:
-                        my_po_error = potential_errors.add()
+                        my_po_error = create_new_potential_error()
                         my_po_error.name = obj.name
                         my_po_error.type = 2
                         my_po_error.object = obj
@@ -213,7 +224,7 @@ def update_unreal_potential_error():
                 for key in shape_keys.key_blocks:
                     # Min check
                     if key.slider_min < unreal_engine_shape_key_min:
-                        my_po_error = potential_errors.add()
+                        my_po_error = create_new_potential_error()
                         my_po_error.name = obj.name
                         my_po_error.type = 1
                         my_po_error.object = obj
@@ -227,7 +238,7 @@ def update_unreal_potential_error():
 
                     # Max check
                     if key.slider_max > unreal_engine_shape_key_max:
-                        my_po_error = potential_errors.add()
+                        my_po_error = create_new_potential_error()
                         my_po_error.name = obj.name
                         my_po_error.type = 1
                         my_po_error.object = obj
@@ -243,7 +254,7 @@ def update_unreal_potential_error():
         # Check that the objects have at least one UV map valid
         for obj in mesh_type_without_col:
             if len(obj.data.uv_layers) < 1:
-                my_po_error = potential_errors.add()
+                my_po_error = create_new_potential_error()
                 my_po_error.name = obj.name
                 my_po_error.type = 1
                 my_po_error.text = (f'Object "{obj.name}" does not have any UV Layer.')
@@ -256,7 +267,7 @@ def update_unreal_potential_error():
         for obj in mesh_type_to_check:
             for modif in obj.modifiers:
                 if modif.type == "ARMATURE" and obj.bfu_export_type == "export_recursive":
-                    my_po_error = potential_errors.add()
+                    my_po_error = create_new_potential_error()
                     my_po_error.name = obj.name
                     my_po_error.type = 1
                     my_po_error.text = (
@@ -273,7 +284,7 @@ def update_unreal_potential_error():
         for obj in obj_to_check:
             if bfu_skeletal_mesh.bfu_skeletal_mesh_utils.is_skeletal_mesh(obj):
                 if obj.scale.z != obj.scale.y or obj.scale.z != obj.scale.x:
-                    my_po_error = potential_errors.add()
+                    my_po_error = create_new_potential_error()
                     my_po_error.name = obj.name
                     my_po_error.type = 2
                     my_po_error.text = (
@@ -295,7 +306,7 @@ def update_unreal_potential_error():
 
                 # Check if the total number of ARMATURE modifiers and constraints is greater than 1
                 if armature_modifiers + armature_constraints > 1:
-                    my_po_error = potential_errors.add()
+                    my_po_error = create_new_potential_error()
                     my_po_error.name = mesh.name
                     my_po_error.type = 2
                     my_po_error.text = (
@@ -307,7 +318,7 @@ def update_unreal_potential_error():
 
                 # Check if no ARMATURE modifiers or constraints are found
                 if armature_modifiers + armature_constraints == 0:
-                    my_po_error = potential_errors.add()
+                    my_po_error = create_new_potential_error()
                     my_po_error.name = mesh.name
                     my_po_error.type = 2
                     my_po_error.text = (
@@ -322,7 +333,7 @@ def update_unreal_potential_error():
             for mod in obj.modifiers:
                 if mod.type == "ARMATURE":
                     if mod.use_deform_preserve_volume:
-                        my_po_error = potential_errors.add()
+                        my_po_error = create_new_potential_error()
                         my_po_error.name = obj.name
                         my_po_error.type = 2
                         my_po_error.text = (
@@ -352,7 +363,7 @@ def update_unreal_potential_error():
                             (bone.use_deform and obj.bfu_export_deform_only)):
 
                         if bone.bbone_segments > 1:
-                            my_po_error = potential_errors.add()
+                            my_po_error = create_new_potential_error()
                             my_po_error.name = obj.name
                             my_po_error.type = 1
                             my_po_error.text = (
@@ -384,7 +395,7 @@ def update_unreal_potential_error():
                     valid_child += 1
 
                 if valid_child < 1:
-                    my_po_error = potential_errors.add()
+                    my_po_error = create_new_potential_error()
                     my_po_error.name = obj.name
                     my_po_error.type = 2
                     my_po_error.text = (
@@ -400,7 +411,7 @@ def update_unreal_potential_error():
                 childs = bfu_utils.GetExportDesiredChilds(obj)
                 for child in childs:
                     if child.type == "MESH" and child.parent_type == 'BONE':
-                        my_po_error = potential_errors.add()
+                        my_po_error = create_new_potential_error()
                         my_po_error.name = child.name
                         my_po_error.type = 2
                         my_po_error.text = (
@@ -424,7 +435,7 @@ def update_unreal_potential_error():
                         root_bones_str += bone.name + "(def child(s)), "
 
                 if len(root_bones) > 1:
-                    my_po_error = potential_errors.add()
+                    my_po_error = create_new_potential_error()
                     my_po_error.name = obj.name
                     my_po_error.type = 1
                     my_po_error.text = f'Object "{obj.name}" has multiple root bones. Unreal only supports a single root bone.'
@@ -439,7 +450,7 @@ def update_unreal_potential_error():
                 if obj.bfu_export_deform_only:
                     has_deform_bone = any(bone.use_deform for bone in obj.data.bones)
                     if not has_deform_bone:
-                        my_po_error = potential_errors.add()
+                        my_po_error = create_new_potential_error()
                         my_po_error.name = obj.name
                         my_po_error.type = 2
                         my_po_error.text = (
@@ -453,7 +464,7 @@ def update_unreal_potential_error():
         used_frames = []
         for marker in bpy.context.scene.timeline_markers:
             if marker.frame in used_frames:
-                my_po_error = potential_errors.add()
+                my_po_error = create_new_potential_error()
                 my_po_error.type = 2
                 my_po_error.text = (
                     f'In the scene timeline, the frame "{marker.frame}" contains overlapping markers.'
@@ -472,7 +483,7 @@ def update_unreal_potential_error():
                     # Get vertices with zero weight
                     vertices_with_zero_weight = GetVertexWithZeroWeight(obj, mesh)
                     if vertices_with_zero_weight:
-                        my_po_error = potential_errors.add()
+                        my_po_error = create_new_potential_error()
                         my_po_error.name = mesh.name
                         my_po_error.type = 1
                         my_po_error.text = (
@@ -499,7 +510,7 @@ def update_unreal_potential_error():
                                 x_curve, y_curve = key.co
                                 if y_curve == 0:
                                     bone_name = fcurve.data_path.split('"')[1]
-                                    my_po_error = potential_errors.add()
+                                    my_po_error = create_new_potential_error()
                                     my_po_error.type = 2
                                     my_po_error.text = (
                                         f'In action "{action.name}" at frame {x_curve}, '
@@ -526,16 +537,14 @@ def update_unreal_potential_error():
     check_vertex_group_weight()
     check_zero_scale_keyframe()
 
-    return potential_errors
-
-
 def select_potential_error_object(errorIndex):
     # Select potential error
 
     bbpl.utils.safe_mode_set('OBJECT', bpy.context.active_object)
     scene = bpy.context.scene
-    error = scene.bfu_export_potential_errors[errorIndex]
-    obj = error.object
+    my_po_error = get_potential_error_by_index(errorIndex)
+
+    obj = my_po_error.object
 
     bpy.ops.object.select_all(action='DESELECT')
     obj.hide_viewport = False
@@ -558,13 +567,13 @@ def SelectPotentialErrorVertex(errorIndex):
     bbpl.utils.safe_mode_set('EDIT')
 
     scene = bpy.context.scene
-    error = scene.bfu_export_potential_errors[errorIndex]
-    obj = error.object
+    my_po_error = get_potential_error_by_index(errorIndex)
+    obj = my_po_error.object
     bpy.ops.mesh.select_mode(type="VERT")
     bpy.ops.mesh.select_all(action='DESELECT')
 
     bbpl.utils.safe_mode_set('OBJECT')
-    if error.selectOption == "VertexWithZeroWeight":
+    if my_po_error.selectOption == "VertexWithZeroWeight":
         for vertex in GetVertexWithZeroWeight(obj.parent, obj):
             vertex.select = True
     bbpl.utils.safe_mode_set('EDIT')
@@ -578,9 +587,9 @@ def SelectPotentialErrorPoseBone(errorIndex):
     bbpl.utils.safe_mode_set('POSE')
 
     scene = bpy.context.scene
-    error = scene.bfu_export_potential_errors[errorIndex]
-    obj = error.object
-    bone = obj.data.bones[error.itemName]
+    my_po_error = get_potential_error_by_index(errorIndex)
+    obj = my_po_error.object
+    bone = obj.data.bones[my_po_error.itemName]
 
     # Make bone visible if hide in a layer
     for x, layer in enumerate(bone.layers):
@@ -599,7 +608,7 @@ def TryToCorrectPotentialError(errorIndex):
     # Try to correct potential error
 
     scene = bpy.context.scene
-    error = scene.bfu_export_potential_errors[errorIndex]
+    my_po_error = get_potential_error_by_index(errorIndex)
     global successCorrect
     successCorrect = False
 
@@ -619,30 +628,30 @@ def TryToCorrectPotentialError(errorIndex):
 
     # Correction list
 
-    if error.correctRef == "SetUnrealUnit":
+    if my_po_error.correctRef == "SetUnrealUnit":
         bpy.context.scene.unit_settings.scale_length = 0.01
         successCorrect = True
 
-    if error.correctRef == "ConvertToMesh":
-        obj = error.object
+    if my_po_error.correctRef == "ConvertToMesh":
+        obj = my_po_error.object
         SelectObj(obj)
         bpy.ops.object.convert(target='MESH')
         successCorrect = True
 
-    if error.correctRef == "SetKeyRangeMin":
-        obj = error.object
-        key = obj.data.shape_keys.key_blocks[error.itemName]
+    if my_po_error.correctRef == "SetKeyRangeMin":
+        obj = my_po_error.object
+        key = obj.data.shape_keys.key_blocks[my_po_error.itemName]
         key.slider_min = -5
         successCorrect = True
 
-    if error.correctRef == "SetKeyRangeMax":
-        obj = error.object
-        key = obj.data.shape_keys.key_blocks[error.itemName]
+    if my_po_error.correctRef == "SetKeyRangeMax":
+        obj = my_po_error.object
+        key = obj.data.shape_keys.key_blocks[my_po_error.itemName]
         key.slider_max = 5
         successCorrect = True
 
-    if error.correctRef == "CreateUV":
-        obj = error.object
+    if my_po_error.correctRef == "CreateUV":
+        obj = my_po_error.object
         SelectObj(obj)
         if bbpl.utils.safe_mode_set("EDIT", obj):
             bpy.ops.uv.smart_project()
@@ -650,27 +659,27 @@ def TryToCorrectPotentialError(errorIndex):
         else:
             successCorrect = False
 
-    if error.correctRef == "RemoveModfier":
-        obj = error.object
-        mod = obj.modifiers[error.itemName]
+    if my_po_error.correctRef == "RemoveModfier":
+        obj = my_po_error.object
+        mod = obj.modifiers[my_po_error.itemName]
         obj.modifiers.remove(mod)
         successCorrect = True
 
-    if error.correctRef == "PreserveVolume":
-        obj = error.object
-        mod = obj.modifiers[error.itemName]
+    if my_po_error.correctRef == "PreserveVolume":
+        obj = my_po_error.object
+        mod = obj.modifiers[my_po_error.itemName]
         mod.use_deform_preserve_volume = False
         successCorrect = True
 
-    if error.correctRef == "BoneSegments":
-        obj = error.object
-        bone = obj.data.bones[error.itemName]
+    if my_po_error.correctRef == "BoneSegments":
+        obj = my_po_error.object
+        bone = obj.data.bones[my_po_error.itemName]
         bone.bbone_segments = 1
         successCorrect = True
 
-    if error.correctRef == "InheritScale":
-        obj = error.object
-        bone = obj.data.bones[error.itemName]
+    if my_po_error.correctRef == "InheritScale":
+        obj = my_po_error.object
+        bone = obj.data.bones[my_po_error.itemName]
         bone.use_inherit_scale = True
         successCorrect = True
 
@@ -682,8 +691,8 @@ def TryToCorrectPotentialError(errorIndex):
     # ----------------------------------------
 
     if successCorrect:
-        scene.bfu_export_potential_errors.remove(errorIndex)
-        print("end correct, Error: " + error.correctRef)
+        print("end correct, Error: " + my_po_error.correctRef)
+        remove_potential_by_index(errorIndex)
         return "Corrected"
     print("end correct, Error not found")
     return "Correct fail"

@@ -18,6 +18,7 @@
 
 
 import bpy
+from typing import TYPE_CHECKING
 from . import bfu_check_operators
 
 
@@ -43,6 +44,9 @@ class BFU_OT_UnrealPotentialError(bpy.types.PropertyGroup):
     correctlabel: bpy.props.StringProperty(default="Fix it !")
     correctDesc: bpy.props.StringProperty(default="Correct target error")
     docsOcticon: bpy.props.StringProperty(default="None")
+
+    if TYPE_CHECKING:
+        object: bpy.types.Object
 
 # -------------------------------------------------------------------
 #   Register & Unregister
