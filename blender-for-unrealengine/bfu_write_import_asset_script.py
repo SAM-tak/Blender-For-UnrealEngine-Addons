@@ -45,7 +45,7 @@ def WriteImportAssetScript():
 
     # Import assets
     data['assets'] = []
-    for asset in bfu_export_logs.bfu_asset_export_logs_utils.get_asset_list():
+    for asset in bfu_export_logs.bfu_asset_export_logs_utils.get_exported_assets_logs():
         asset_data = {}
         asset_data["scene_unit_scale"] = bfu_utils.get_scene_unit_scale()
 

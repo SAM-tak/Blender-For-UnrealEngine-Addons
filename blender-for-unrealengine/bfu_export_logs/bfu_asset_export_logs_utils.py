@@ -4,11 +4,11 @@ from .. import bfu_utils
 
 from . import bfu_asset_export_logs
 
-def get_asset_list() -> List[bfu_asset_export_logs.BFU_OT_UnrealExportedAsset]:
+def get_exported_assets_logs() -> List[bfu_asset_export_logs.BFU_OT_UnrealExportedAssetLog]:
     scene = bpy.context.scene
     return scene.bfu_unreal_exported_assets_logs
 
-def create_new_asset_log()-> bfu_asset_export_logs.BFU_OT_UnrealExportedAsset:
+def create_new_asset_log()-> bfu_asset_export_logs.BFU_OT_UnrealExportedAssetLog:
     scene = bpy.context.scene
     return scene.bfu_unreal_exported_assets_logs.add()
 
@@ -16,12 +16,12 @@ def clear_asset_logs():
     scene = bpy.context.scene
     scene.bfu_unreal_exported_assets_logs.clear()
 
-def get_exported_asset_list():
+def get_exported_asset_number():
     # TODO Need add a check to know how many asset is realy exported
     scene = bpy.context.scene
     len(scene.bfu_unreal_exported_assets_logs)
 
-def get_export_asset_logs():
+def get_export_asset_logs_details():
     # Write Export log with exported assets in scene.bfu_unreal_exported_assets_logs
 
     scene = bpy.context.scene
@@ -33,7 +33,7 @@ def get_export_asset_logs():
     SplineNum = 0
 
     # Get number per asset type
-    for assets in get_asset_list():
+    for assets in get_exported_assets_logs():
         if assets.asset_type == "StaticMesh":
             StaticNum += 1
         if assets.asset_type == "SkeletalMesh":
@@ -64,7 +64,7 @@ def get_export_asset_logs():
     ExportLog = ""
     ExportLog += AssetNumberByType
     ExportLog += "\n"
-    for asset in get_asset_list():
+    for asset in get_exported_assets_logs():
 
         if (asset.asset_type == "NlAnim"):
             primaryInfo = "Animation (NLA)"

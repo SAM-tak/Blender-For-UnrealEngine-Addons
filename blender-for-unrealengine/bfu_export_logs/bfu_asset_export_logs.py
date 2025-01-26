@@ -1,8 +1,6 @@
 import bpy
 import os
 import time
-from .. import bfu_utils
-from .. import bfu_naming
 from .. import bfu_export_logs
 
 class BFU_OT_FileExport(bpy.types.PropertyGroup):
@@ -24,7 +22,7 @@ class BFU_OT_FileExport(bpy.types.PropertyGroup):
         return os.path.join(bpy.path.abspath(self.file_path), self.GetFileWithExtension())
 
 
-class BFU_OT_UnrealExportedAsset(bpy.types.PropertyGroup):
+class BFU_OT_UnrealExportedAssetLog(bpy.types.PropertyGroup):
     # [AssetName , AssetType , ExportPath, ExportTime]
 
     asset_name: bpy.props.StringProperty(default="None")
@@ -69,7 +67,7 @@ class BFU_OT_UnrealExportedAsset(bpy.types.PropertyGroup):
 
 classes = (
     BFU_OT_FileExport,
-    BFU_OT_UnrealExportedAsset,
+    BFU_OT_UnrealExportedAssetLog,
 )
 
 def register():
@@ -77,7 +75,7 @@ def register():
         bpy.utils.register_class(cls)
 
     bpy.types.Scene.bfu_unreal_exported_assets_logs = bpy.props.CollectionProperty(
-        type=BFU_OT_UnrealExportedAsset)
+        type=BFU_OT_UnrealExportedAssetLog)
 
 
 def unregister():

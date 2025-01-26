@@ -143,7 +143,7 @@ def WriteAllTextFiles():
     if scene.bfu_use_text_export_log:
         Text = languages.ti("write_text_additional_track_start") + "\n"
         Text += "" + "\n"
-        Text += bfu_export_logs.bfu_asset_export_logs_utils.get_export_asset_logs()
+        Text += bfu_export_logs.bfu_asset_export_logs_utils.get_export_asset_logs_details()
         if Text is not None:
             Filename = bfu_basics.ValidFilename(scene.bfu_file_export_log_name)
             ExportSingleText(Text, root_dirpath, Filename)

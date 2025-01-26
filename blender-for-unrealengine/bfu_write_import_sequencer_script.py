@@ -48,7 +48,7 @@ def WriteImportSequencerTracks():
 
     # Import camera
     data['cameras'] = []
-    for asset in bfu_export_logs.bfu_asset_export_logs_utils.get_asset_list():
+    for asset in bfu_export_logs.bfu_asset_export_logs_utils.get_exported_assets_logs():
         if (asset.asset_type == "Camera"):
             camera = asset.object
 
