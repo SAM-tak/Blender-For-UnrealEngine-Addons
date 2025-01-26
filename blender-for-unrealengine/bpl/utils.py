@@ -76,7 +76,7 @@ def format_property_name(name):
 
 def get_formatted_time(time_in_seconds):
     """
-    Formats the elapsed time into a readable string.
+    Formats the elapsed time into a readable string, including milliseconds.
 
     Args:
         time_in_seconds (float): Time in seconds to format.
@@ -84,12 +84,16 @@ def get_formatted_time(time_in_seconds):
     Returns:
         str: Formatted elapsed time as a string.
     """
-    if time_in_seconds < 60:
-        return f"{time_in_seconds:.2f} seconds"
+    milliseconds = int((time_in_seconds - int(time_in_seconds)) * 1000)
+    
+    if time_in_seconds < 1:
+        return f"{milliseconds} ms"
+    elif time_in_seconds < 60:
+        return f"{int(time_in_seconds)} seconds and {milliseconds} ms"
     elif time_in_seconds < 3600:
         minutes, seconds = divmod(time_in_seconds, 60)
-        return f"{int(minutes)} minutes and {seconds:.2f} seconds"
+        return f"{int(minutes)} minutes, {int(seconds)} seconds and {milliseconds} ms"
     else:
         hours, remainder = divmod(time_in_seconds, 3600)
         minutes, seconds = divmod(remainder, 60)
-        return f"{int(hours)} hours, {int(minutes)} minutes and {seconds:.2f} seconds"
+        return f"{int(hours)} hours, {int(minutes)} minutes, {int(seconds)} seconds and {milliseconds} ms"
