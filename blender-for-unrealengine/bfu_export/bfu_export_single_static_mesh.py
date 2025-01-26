@@ -48,14 +48,14 @@ def ProcessStaticMeshExport(op, obj: bpy.types.Object, desired_name=""):
     file_name = asset_class.get_obj_file_name(obj, final_name, "")
     file_name_at = asset_class.get_obj_file_name(obj, final_name+"_AdditionalTrack", "") 
 
-    MyAsset = bfu_export_logs.bfu_asset_export_logs_utils.create_new_asset_log()
-    MyAsset.object = obj
-    MyAsset.asset_name = obj.name
-    MyAsset.asset_global_scale = obj.bfu_export_global_scale
-    MyAsset.folder_name = obj.bfu_export_folder_name
-    MyAsset.asset_type = asset_type
+    my_asset_log = bfu_export_logs.bfu_asset_export_logs_utils.create_new_asset_log()
+    my_asset_log.object = obj
+    my_asset_log.asset_name = obj.name
+    my_asset_log.asset_global_scale = obj.bfu_export_global_scale
+    my_asset_log.folder_name = obj.bfu_export_folder_name
+    my_asset_log.asset_type = asset_type
 
-    file: bfu_export_logs.BFU_OT_FileExport = MyAsset.files.add()
+    file: bfu_export_logs.BFU_OT_FileExport = my_asset_log.files.add()
     file.file_name = file_name
     file.file_extension = "fbx"
     file.file_path = dirpath
@@ -64,21 +64,21 @@ def ProcessStaticMeshExport(op, obj: bpy.types.Object, desired_name=""):
     fullpath = bfu_export_utils.check_and_make_export_path(dirpath, file.GetFileWithExtension())
     init_export_time_log.end_time_log()
     if fullpath:
-        MyAsset.StartAssetExport()
+        my_asset_log.StartAssetExport()
         ExportSingleStaticMesh(op, fullpath, obj)
 
         if not obj.bfu_export_as_lod_mesh:
             if (scene.bfu_use_text_additional_data and addon_prefs.useGeneratedScripts):
                 
-                file: bfu_export_logs.BFU_OT_FileExport = MyAsset.files.add()
+                file: bfu_export_logs.BFU_OT_FileExport = my_asset_log.files.add()
                 file.file_name = file_name_at
                 file.file_extension = "json"
                 file.file_path = dirpath
                 file.file_type = "AdditionalTrack"
-                bfu_export_utils.ExportAdditionalParameter(dirpath, file.GetFileWithExtension(), MyAsset)
+                bfu_export_utils.ExportAdditionalParameter(dirpath, file.GetFileWithExtension(), my_asset_log)
 
-        MyAsset.EndAssetExport(True)
-    return MyAsset
+        my_asset_log.EndAssetExport(True)
+    return my_asset_log
 
 
 def ExportSingleStaticMesh(

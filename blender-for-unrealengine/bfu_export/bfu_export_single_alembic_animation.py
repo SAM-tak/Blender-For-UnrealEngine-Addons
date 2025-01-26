@@ -36,16 +36,16 @@ def ProcessAlembicAnimationExport(obj):
     dirpath = asset_class.get_obj_export_directory_path(obj, True)
     file_name = asset_class.get_obj_file_name(obj, obj.name, "")
 
-    MyAsset = bfu_export_logs.bfu_asset_export_logs_utils.create_new_asset_log()
-    MyAsset.object = obj
-    MyAsset.asset_name = obj.name
-    MyAsset.asset_global_scale = obj.bfu_export_global_scale
-    MyAsset.folder_name = obj.bfu_export_folder_name
-    MyAsset.asset_type = "Alembic"
-    MyAsset.animation_start_frame = scene.frame_start + obj.bfu_anim_action_start_frame_offset
-    MyAsset.animation_end_frame = scene.frame_end + obj.bfu_anim_action_end_frame_offset
+    my_asset_log = bfu_export_logs.bfu_asset_export_logs_utils.create_new_asset_log()
+    my_asset_log.object = obj
+    my_asset_log.asset_name = obj.name
+    my_asset_log.asset_global_scale = obj.bfu_export_global_scale
+    my_asset_log.folder_name = obj.bfu_export_folder_name
+    my_asset_log.asset_type = "Alembic"
+    my_asset_log.animation_start_frame = scene.frame_start + obj.bfu_anim_action_start_frame_offset
+    my_asset_log.animation_end_frame = scene.frame_end + obj.bfu_anim_action_end_frame_offset
 
-    file: bfu_export_logs.BFU_OT_FileExport = MyAsset.files.add()
+    file: bfu_export_logs.BFU_OT_FileExport = my_asset_log.files.add()
     file.file_name = file_name
     file.file_extension = "abc"
     file.file_path = dirpath
@@ -53,10 +53,10 @@ def ProcessAlembicAnimationExport(obj):
 
     fullpath = bfu_export_utils.check_and_make_export_path(dirpath, file.GetFileWithExtension())
     if fullpath:
-        MyAsset.StartAssetExport()
+        my_asset_log.StartAssetExport()
         ExportSingleAlembicAnimation(fullpath, obj)
-        MyAsset.EndAssetExport(True)
-    return MyAsset
+        my_asset_log.EndAssetExport(True)
+    return my_asset_log
 
 
 def ExportSingleAlembicAnimation(

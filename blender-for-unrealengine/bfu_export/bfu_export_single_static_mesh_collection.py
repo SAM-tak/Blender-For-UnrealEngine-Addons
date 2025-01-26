@@ -35,14 +35,14 @@ def ProcessCollectionExport(op, col: bpy.types.Collection):
     dirpath = bfu_utils.GetCollectionExportDir(bpy.data.collections[col.name])
     scene = bpy.context.scene
 
-    MyAsset = bfu_export_logs.bfu_asset_export_logs_utils.create_new_asset_log()
-    MyAsset.asset_name = col.name
-    MyAsset.asset_global_scale = 1.0 #col.bfu_export_global_scale
-    MyAsset.collection = col
-    MyAsset.asset_type = bfu_utils.GetCollectionType(col)
-    MyAsset.folder_name = col.bfu_export_folder_name
+    my_asset_log = bfu_export_logs.bfu_asset_export_logs_utils.create_new_asset_log()
+    my_asset_log.asset_name = col.name
+    my_asset_log.asset_global_scale = 1.0 #col.bfu_export_global_scale
+    my_asset_log.collection = col
+    my_asset_log.asset_type = bfu_utils.GetCollectionType(col)
+    my_asset_log.folder_name = col.bfu_export_folder_name
 
-    file: bfu_export_logs.BFU_OT_FileExport = MyAsset.files.add()
+    file: bfu_export_logs.BFU_OT_FileExport = my_asset_log.files.add()
     file.file_name = bfu_naming.get_collection_file_name(col, col.name, "")
     file.file_extension = "fbx"
     file.file_path = dirpath
@@ -50,20 +50,20 @@ def ProcessCollectionExport(op, col: bpy.types.Collection):
 
     fullpath = bfu_export_utils.check_and_make_export_path(dirpath, file.GetFileWithExtension())
     if fullpath:
-        MyAsset.StartAssetExport()
+        my_asset_log.StartAssetExport()
         ExportSingleStaticMeshCollection(op, fullpath, col.name)
 
         if (scene.bfu_use_text_additional_data and addon_prefs.useGeneratedScripts):
             
-            file: bfu_export_logs.BFU_OT_FileExport = MyAsset.files.add()
+            file: bfu_export_logs.BFU_OT_FileExport = my_asset_log.files.add()
             file.file_name = bfu_naming.get_collection_file_name(col, col.name+"_AdditionalTrack", "")
             file.file_extension = "json"
             file.file_path = dirpath
             file.file_type = "AdditionalTrack"
-            bfu_export_utils.ExportAdditionalParameter(dirpath, file.GetFileWithExtension(), MyAsset)
+            bfu_export_utils.ExportAdditionalParameter(dirpath, file.GetFileWithExtension(), my_asset_log)
 
-        MyAsset.EndAssetExport(True)
-    return MyAsset
+        my_asset_log.EndAssetExport(True)
+    return my_asset_log
 
 
 def ExportSingleStaticMeshCollection(

@@ -35,17 +35,17 @@ def ProcessActionExport(op, obj, action, action_curve_scale):
     asset_class = bfu_assets_manager.bfu_asset_manager_utils.get_asset_class(obj, "SkeletalAnimation")
     dirpath = asset_class.get_obj_export_directory_path(obj, True)
 
-    MyAsset = bfu_export_logs.bfu_asset_export_logs_utils.create_new_asset_log()
-    MyAsset.object = obj
-    MyAsset.skeleton_name = obj.name
-    MyAsset.asset_name = bfu_naming.get_animation_file_name(obj, action, "")
-    MyAsset.asset_global_scale = obj.bfu_export_global_scale
-    MyAsset.folder_name = obj.bfu_export_folder_name
-    MyAsset.asset_type = bfu_utils.GetActionType(action)
-    MyAsset.animation_start_frame = bfu_utils.GetDesiredActionStartEndTime(obj, action)[0]
-    MyAsset.animation_end_frame = bfu_utils.GetDesiredActionStartEndTime(obj, action)[1]
+    my_asset_log = bfu_export_logs.bfu_asset_export_logs_utils.create_new_asset_log()
+    my_asset_log.object = obj
+    my_asset_log.skeleton_name = obj.name
+    my_asset_log.asset_name = bfu_naming.get_animation_file_name(obj, action, "")
+    my_asset_log.asset_global_scale = obj.bfu_export_global_scale
+    my_asset_log.folder_name = obj.bfu_export_folder_name
+    my_asset_log.asset_type = bfu_utils.GetActionType(action)
+    my_asset_log.animation_start_frame = bfu_utils.GetDesiredActionStartEndTime(obj, action)[0]
+    my_asset_log.animation_end_frame = bfu_utils.GetDesiredActionStartEndTime(obj, action)[1]
 
-    file: bfu_export_logs.BFU_OT_FileExport = MyAsset.files.add()
+    file: bfu_export_logs.BFU_OT_FileExport = my_asset_log.files.add()
     file.file_name = bfu_naming.get_animation_file_name(obj, action, "")
     file.file_extension = "fbx"
     file.file_path = dirpath
@@ -53,9 +53,9 @@ def ProcessActionExport(op, obj, action, action_curve_scale):
 
     fullpath = bfu_export_utils.check_and_make_export_path(dirpath, file.GetFileWithExtension())
     if fullpath:
-        MyAsset.StartAssetExport()
+        my_asset_log.StartAssetExport()
         action_curve_scale = ExportSingleFbxAction(op, scene, fullpath, obj, action, action_curve_scale)
-        MyAsset.EndAssetExport(True)
+        my_asset_log.EndAssetExport(True)
     return action_curve_scale
 
 
