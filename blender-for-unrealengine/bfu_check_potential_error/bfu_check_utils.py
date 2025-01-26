@@ -21,6 +21,7 @@ import bpy
 import fnmatch
 import math
 
+from . import bfu_check_props
 from .. import bbpl
 from .. import bfu_basics
 from .. import bfu_assets_manager
@@ -29,16 +30,17 @@ from .. import bfu_cached_asset_list
 
 from .. import bfu_collision
 from .. import bfu_socket
-from .. import bfu_camera
-from .. import bfu_alembic_animation
-from .. import bfu_groom
-from .. import bfu_spline
 from .. import bfu_skeletal_mesh
-from .. import bfu_static_mesh
 from .. import bfu_export_logs
 
 
+def create_new_potential_error()-> bfu_check_props.BFU_OT_UnrealPotentialError:
+    scene = bpy.context.scene
+    return scene.bfu_export_potential_errors.add()
 
+def clear_potential_errors():
+    scene = bpy.context.scene
+    scene.bfu_export_potential_errors.clear()
 
 def process_general_fix():
     time_log = bfu_export_logs.bfu_process_time_logs_utils.start_time_log("Clean before export")
@@ -56,9 +58,6 @@ def process_general_fix():
 
     time_log.end_time_log()
     return fix_info
-    
-
-
 
 def GetVertexWithZeroWeight(Armature, Mesh):
     vertices = []
@@ -87,7 +86,6 @@ def GetVertexWithZeroWeight(Armature, Mesh):
     
     return vertices
 
-
 def ContainsArmatureModifier(obj):
     for mod in obj.modifiers:
         if mod.type == "ARMATURE":
@@ -103,13 +101,12 @@ def GetSkeletonMeshs(obj):
                 meshs.append(child)
     return meshs
 
-
 def update_unreal_potential_error():
     # Find and reset list of all potential error in scene
 
     addon_prefs = bfu_basics.GetAddonPrefs()
-    potential_errors = bpy.context.scene.potentialErrorList
-    potential_errors.clear()
+    potential_errors = bpy.context.scene.bfu_export_potential_errors
+    clear_potential_errors()
 
     # prepares the data to avoid unnecessary loops
     obj_to_check = []
@@ -537,7 +534,7 @@ def select_potential_error_object(errorIndex):
 
     bbpl.utils.safe_mode_set('OBJECT', bpy.context.active_object)
     scene = bpy.context.scene
-    error = scene.potentialErrorList[errorIndex]
+    error = scene.bfu_export_potential_errors[errorIndex]
     obj = error.object
 
     bpy.ops.object.select_all(action='DESELECT')
@@ -561,7 +558,7 @@ def SelectPotentialErrorVertex(errorIndex):
     bbpl.utils.safe_mode_set('EDIT')
 
     scene = bpy.context.scene
-    error = scene.potentialErrorList[errorIndex]
+    error = scene.bfu_export_potential_errors[errorIndex]
     obj = error.object
     bpy.ops.mesh.select_mode(type="VERT")
     bpy.ops.mesh.select_all(action='DESELECT')
@@ -581,7 +578,7 @@ def SelectPotentialErrorPoseBone(errorIndex):
     bbpl.utils.safe_mode_set('POSE')
 
     scene = bpy.context.scene
-    error = scene.potentialErrorList[errorIndex]
+    error = scene.bfu_export_potential_errors[errorIndex]
     obj = error.object
     bone = obj.data.bones[error.itemName]
 
@@ -602,7 +599,7 @@ def TryToCorrectPotentialError(errorIndex):
     # Try to correct potential error
 
     scene = bpy.context.scene
-    error = scene.potentialErrorList[errorIndex]
+    error = scene.bfu_export_potential_errors[errorIndex]
     global successCorrect
     successCorrect = False
 
@@ -685,7 +682,7 @@ def TryToCorrectPotentialError(errorIndex):
     # ----------------------------------------
 
     if successCorrect:
-        scene.potentialErrorList.remove(errorIndex)
+        scene.bfu_export_potential_errors.remove(errorIndex)
         print("end correct, Error: " + error.correctRef)
         return "Corrected"
     print("end correct, Error not found")
