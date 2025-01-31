@@ -93,9 +93,10 @@ def ImportTask(asset_data):
         
         
         if asset_type == "Animation":
+            skeleton_search_str = f'"target_skeleton_search_ref": {asset_data["target_skeleton_search_ref"]}'
+            skeletal_mesh_search_str = f'"target_skeletal_mesh_search_ref": {asset_data["target_skeletal_mesh_search_ref"]}'
+    
             if origin_skeleton:
-                skeleton_search_str = f'"target_skeleton_search_ref": {asset_data["target_skeleton_search_ref"]}'
-                skeletal_mesh_search_str = f'"target_skeletal_mesh_search_ref": {asset_data["target_skeletal_mesh_search_ref"]}'
                 print(f'{skeleton_search_str} and "{skeletal_mesh_search_str} "was found for animation immport:" {str(origin_skeleton)}')
             else:
                 message = "WARNING: Could not find skeleton for animation import." + "\n"
@@ -317,6 +318,7 @@ def ImportTask(asset_data):
                 unreal.EditorAssetLibrary.delete_asset(asset_path)
 
     print("S10.5")
+    print("--->", itask.get_task().automated)
     itask.import_asset_task()
     print("S11")
     

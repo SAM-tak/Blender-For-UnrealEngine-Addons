@@ -34,9 +34,9 @@ class BFU_OT_ExportProcessTimeLog(bpy.types.PropertyGroup):
         if self.finished_success:
             result = "Success"
         else:
-            result = "Never finished"
+            result = bpl.color_set.red("Never finished")
         str_time = bpl.color_set.yellow(bpl.utils.get_formatted_time(self.end_time - self.start_time))
-        str_sub_steps = self.sub_step * 4 * " "
+        str_sub_steps = self.sub_step * "   |" 
         return f"{str_sub_steps}{self.process_info}, {str_time}, {result}"
 
 

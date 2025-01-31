@@ -53,7 +53,7 @@ class ImportTaks():
     def set_task_option(self, new_task_option):
         self.task_option = new_task_option
 
-    def get_task(self):
+    def get_task(self) -> unreal.AssetImportTask:
         return self.task
     
     def get_fbx_import_ui(self) -> unreal.FbxImportUI:
