@@ -114,11 +114,6 @@ def write_single_asset_data(unreal_exported_asset: bfu_export_logs.bfu_asset_exp
                 asset_data["static_mesh_lod_group"] = unreal_exported_asset.object.bfu_static_mesh_lod_group
             else:
                 asset_data["static_mesh_lod_group"] = None
-            
-            asset_data["generate_lightmap_u_vs"] = unreal_exported_asset.object.bfu_generate_light_map_uvs
-            
-            asset_data["use_custom_light_map_resolution"] = bfu_utils.GetUseCustomLightMapResolution(unreal_exported_asset.object)
-            asset_data["light_map_resolution"] = bfu_light_map.bfu_light_map_utils.GetCompuntedLightMap(unreal_exported_asset.object)
         
             asset_data["collision_trace_flag"] = unreal_exported_asset.object.bfu_collision_trace_flag
 
@@ -131,4 +126,5 @@ def write_single_asset_data(unreal_exported_asset: bfu_export_logs.bfu_asset_exp
 
     asset_data.update(bfu_vertex_color.bfu_vertex_color_utils.get_vertex_color_asset_data(unreal_exported_asset))
     asset_data.update(bfu_material.bfu_material_utils.get_material_asset_data(unreal_exported_asset))
+    asset_data.update(bfu_light_map.bfu_light_map_utils.get_light_map_asset_data(unreal_exported_asset))
     asset_data.update(bfu_nanite.bfu_nanite_utils.get_nanite_asset_data(unreal_exported_asset))

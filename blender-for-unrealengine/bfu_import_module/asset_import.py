@@ -341,13 +341,6 @@ def ImportTask(asset_data):
         if "static_mesh_lod_group" in asset_data:
             if asset_data["static_mesh_lod_group"]:
                 itask.get_imported_static_mesh().set_editor_property('lod_group', asset_data["static_mesh_lod_group"])
-        if "use_custom_light_map_resolution" in asset_data:
-            if asset_data["use_custom_light_map_resolution"]:
-                if "light_map_resolution" in asset_data:
-                    itask.get_imported_static_mesh().set_editor_property('light_map_resolution', asset_data["light_map_resolution"])
-                    build_settings = unreal.EditorStaticMeshLibrary.get_lod_build_settings(itask.get_imported_static_mesh(), 0)
-                    build_settings.min_lightmap_resolution = asset_data["light_map_resolution"]
-                    unreal.EditorStaticMeshLibrary.set_lod_build_settings(itask.get_imported_static_mesh(), 0, build_settings)
 
         if "collision_trace_flag" in asset_data:
             collision_data = itask.get_imported_static_mesh().get_editor_property('body_setup')

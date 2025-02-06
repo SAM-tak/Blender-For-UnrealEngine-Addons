@@ -25,6 +25,7 @@ from .. import languages
 from .. import bfu_assets_manager
 from .. import bfu_basics
 from .. import bfu_socket
+from .. import bfu_light_map
 from .. import bfu_nanite
 from .. import bfu_static_mesh
 from .. import bfu_skeletal_mesh
@@ -75,6 +76,7 @@ def write_single_asset_additional_data(unreal_exported_asset: bfu_export_logs.bf
 
     asset_additional_data.update(bfu_vertex_color.bfu_vertex_color_utils.get_vertex_color_additional_data(unreal_exported_asset))
     asset_additional_data.update(bfu_material.bfu_material_utils.get_material_asset_additional_data(unreal_exported_asset))
+    asset_additional_data.update(bfu_light_map.bfu_light_map_utils.get_light_map_asset_data(unreal_exported_asset))
     asset_additional_data.update(bfu_nanite.bfu_nanite_utils.get_nanite_asset_additional_data(unreal_exported_asset))
 
     asset_additional_data["preview_import_path"] = unreal_exported_asset.GetFilenameWithExtension()

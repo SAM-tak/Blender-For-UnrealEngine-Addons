@@ -54,14 +54,22 @@ def apply_asset_settings(itask: import_module_tasks_class.ImportTaks, asset_addi
     if static_mesh is None:
         return
     
+    if "use_custom_light_map_resolution" in asset_additional_data:
+        if asset_additional_data["use_custom_light_map_resolution"]:
+            if "light_map_resolution" in asset_additional_data:
+                static_mesh.set_editor_property('light_map_resolution', asset_additional_data["light_map_resolution"])
+                build_settings = unreal.EditorStaticMeshLibrary.get_lod_build_settings(static_mesh, 0)
+                build_settings.min_lightmap_resolution = asset_additional_data["light_map_resolution"]
+                unreal.EditorStaticMeshLibrary.set_lod_build_settings(static_mesh, 0, build_settings)
+
     if itask.use_interchange:
         if "generate_lightmap_u_vs" in asset_additional_data:
             mesh_pipeline = static_mesh.get_editor_property('asset_import_data').get_pipelines()[0].get_editor_property('mesh_pipeline')
             mesh_pipeline.set_editor_property('generate_lightmap_u_vs', asset_additional_data["generate_lightmap_u_vs"])  # Import data
-            unreal.EditorStaticMeshLibrary.set_generate_lightmap_uv(itask.get_imported_static_mesh(), asset_additional_data["generate_lightmap_u_vs"])  # Build settings at lod
+            unreal.EditorStaticMeshLibrary.set_generate_lightmap_uv(static_mesh, asset_additional_data["generate_lightmap_u_vs"])  # Build settings at lod
 
     else:
         asset_import_data = static_mesh.get_editor_property('asset_import_data')
         if "generate_lightmap_u_vs" in asset_additional_data:
             asset_import_data.set_editor_property('generate_lightmap_u_vs', asset_additional_data["generate_lightmap_u_vs"])  # Import data
-            unreal.EditorStaticMeshLibrary.set_generate_lightmap_uv(itask.get_imported_static_mesh(), asset_additional_data["generate_lightmap_u_vs"])  # Build settings at lod
+            unreal.EditorStaticMeshLibrary.set_generate_lightmap_uv(static_mesh, asset_additional_data["generate_lightmap_u_vs"])  # Build settings at lod

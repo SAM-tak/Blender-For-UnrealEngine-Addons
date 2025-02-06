@@ -526,14 +526,6 @@ def GetDesiredNLAStartEndTime(obj):
         return (startTime, endTime)
 
 
-def GetUseCustomLightMapResolution(obj):
-    if obj.bfu_static_mesh_light_map_mode == "Default":
-        return False
-    return True
-
-
-
-
 def GetActionType(action):
     # return action type
 

@@ -18,11 +18,14 @@
 
 import bpy
 import fnmatch
+from . import bfu_light_map_utils
 from .. import bpl
 from .. import bbpl
 from .. import bfu_basics
 from .. import bfu_utils
 from .. import bfu_static_mesh
+from .. import bfu_export_logs
+
 
 
 def GetExportRealSurfaceArea(obj):
@@ -116,3 +119,23 @@ def UpdateAreaLightMapList(objects_to_update=None):
         UpdatedRes += 1
         bfu_utils.UpdateProgress("Update LightMap",(UpdatedRes/len(objs)),counter.get_time())
     return UpdatedRes
+
+def GetUseCustomLightMapResolution(obj):
+    if obj.bfu_static_mesh_light_map_mode == "Default":
+        return False
+    return True
+
+def get_light_map_asset_data(asset: bfu_export_logs.bfu_asset_export_logs.BFU_OT_UnrealExportedAssetLog):
+    asset_data = {}
+    return asset_data
+
+def get_light_map_additional_data(asset: bfu_export_logs.bfu_asset_export_logs.BFU_OT_UnrealExportedAssetLog):
+    asset_data = {}
+    if asset.asset_type in ["StaticMesh"]:
+        if asset.object:
+            asset_data["generate_lightmap_u_vs"] = asset.object.bfu_generate_light_map_uvs
+        
+            asset_data["use_custom_light_map_resolution"] = GetUseCustomLightMapResolution(asset.object)
+            asset_data["light_map_resolution"] = GetCompuntedLightMap(asset.object)
+
+    return asset_data
