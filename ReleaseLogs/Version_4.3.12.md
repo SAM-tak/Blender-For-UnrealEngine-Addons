@@ -4,5 +4,6 @@ Release Logs: https://github.com/xavier150/Blender-For-UnrealEngine-Addons/wiki/
 ### Version 4.3.12
 
 - New: Console logs show now how details about the export steps and how many time it take.
+- New: New option to force Nanite build or set non Nanite.
 - Change: Better logs details + clear logs after export to avoid useless used space in blender file.
 - Fixed: In the import script origin_skeleton may produce issue when not found.

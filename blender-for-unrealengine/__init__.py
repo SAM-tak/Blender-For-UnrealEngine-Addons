@@ -58,6 +58,7 @@ from . import bfu_vertex_color
 from . import bfu_lod
 from . import bfu_uv_map
 from . import bfu_light_map
+from . import bfu_nanite
 from . import bfu_assets_references
 from . import bfu_custom_property
 from . import bfu_addon_parts
@@ -136,6 +137,8 @@ if "bfu_uv_map" in locals():
     importlib.reload(bfu_uv_map)
 if "bfu_light_map" in locals():
     importlib.reload(bfu_light_map)
+if "bfu_nanite" in locals():
+    importlib.reload(bfu_nanite)
 if "bfu_assets_references" in locals():
     importlib.reload(bfu_assets_references)
 if "bfu_custom_property" in locals():
@@ -222,6 +225,7 @@ def register():
     bfu_lod.register()
     bfu_uv_map.register()
     bfu_light_map.register()
+    bfu_nanite.register()
     bfu_assets_references.register()
     bfu_custom_property.register()
     bfu_addon_parts.register()
@@ -250,6 +254,7 @@ def unregister():
     bfu_addon_parts.unregister()
     bfu_custom_property.unregister()
     bfu_assets_references.unregister()
+    bfu_nanite.unregister()
     bfu_light_map.unregister()
     bfu_uv_map.unregister()
     bfu_lod.unregister()
