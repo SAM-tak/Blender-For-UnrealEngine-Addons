@@ -24,7 +24,7 @@ from .. import bfu_utils
 from .. import bfu_ui
 from .. import bbpl
 from .. import bfu_static_mesh
-
+from .. import bfu_skeletal_mesh
 
 def draw_obj_ui(layout: bpy.types.UILayout, obj: bpy.types.Object):
 
@@ -41,6 +41,11 @@ def draw_obj_ui(layout: bpy.types.UILayout, obj: bpy.types.Object):
     if obj.bfu_export_type != "export_recursive":
         return
     
+    is_static_mesh = bfu_static_mesh.bfu_static_mesh_utils.is_static_mesh(obj)
+    is_skeletal_mesh = bfu_skeletal_mesh.bfu_skeletal_mesh_utils.is_skeletal_mesh(obj)
+    if is_static_mesh == False and is_skeletal_mesh == False:
+        return # Check only static and skeletal meshs for the moment.
+
     if bfu_ui.bfu_ui_utils.DisplayPropertyFilter("OBJECT", "MISC"):
         header, panel = scene.bfu_object_nanite_properties_expanded.draw(layout)
         if scene.bfu_object_nanite_properties_expanded.is_expend():
