@@ -29,6 +29,7 @@ support_interchange = import_module_unreal_utils.get_support_interchange()
 
 
 def apply_import_settings(itask: import_module_tasks_class.ImportTaks, asset_data: dict, asset_additional_data: dict) -> None:
+    print("Set Light Map import settings.")
 
     asset_type = asset_additional_data.get("asset_type")
     if asset_type not in ["StaticMesh"]:
@@ -46,6 +47,7 @@ def apply_import_settings(itask: import_module_tasks_class.ImportTaks, asset_dat
 
 
 def apply_asset_settings(itask: import_module_tasks_class.ImportTaks, asset_additional_data: dict) -> None:
+    print("Set Light Map post import settings.")
 
     # Check   
     static_mesh = itask.get_imported_static_mesh()

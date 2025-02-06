@@ -26,8 +26,7 @@ except ImportError:
 
 def apply_import_settings(itask: import_module_tasks_class.ImportTaks, asset_data: dict, asset_additional_data: dict) -> None:
     """Applies material and texture import settings to StaticMesh and SkeletalMesh assets."""
-    
-    print("Mat S0")
+    print("Set Materials import settings.")
     
     asset_type = asset_data.get("asset_type")
     if asset_type not in ["StaticMesh", "SkeletalMesh"]:
