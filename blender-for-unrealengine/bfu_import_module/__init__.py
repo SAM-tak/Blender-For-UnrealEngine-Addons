@@ -17,6 +17,7 @@
 # ======================= END GPL LICENSE BLOCK =============================
 
 import importlib
+import traceback
 
 from . import bpl
 from . import config
@@ -70,10 +71,22 @@ if "import_module_tasks_helper" in locals():
     importlib.reload(import_module_tasks_helper)
 
 def run_asset_import(assets_data, show_finished_popup=False):
-    if asset_import.ready_for_asset_import():
-        return asset_import.ImportAllAssets(assets_data, show_finished_popup)
+    try:
+        if asset_import.ready_for_asset_import():
+            return asset_import.ImportAllAssets(assets_data, show_finished_popup)
+        else:
+            print("Error: Asset import is not ready.")
+    except Exception as e:
+        print(f"Error during asset import: {e}")
+        traceback.print_exc()
 
 def run_sequencer_import(sequence_data, show_finished_popup=False):
-    if sequencer_import.ready_for_sequence_import():
-        return sequencer_import.CreateSequencer(sequence_data, show_finished_popup)
+    try:
+        if sequencer_import.ready_for_sequence_import():
+            return sequencer_import.CreateSequencer(sequence_data, show_finished_popup)
+        else:
+            print("Error: Sequencer import is not ready.")
+    except Exception as e:
+        print(f"Error during sequencer import: {e}")
+        traceback.print_exc()
     

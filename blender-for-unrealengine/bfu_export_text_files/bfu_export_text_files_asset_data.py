@@ -128,3 +128,5 @@ def write_single_asset_data(unreal_exported_asset: bfu_export_logs.bfu_asset_exp
     asset_data.update(bfu_material.bfu_material_utils.get_material_asset_data(unreal_exported_asset))
     asset_data.update(bfu_light_map.bfu_light_map_utils.get_light_map_asset_data(unreal_exported_asset))
     asset_data.update(bfu_nanite.bfu_nanite_utils.get_nanite_asset_data(unreal_exported_asset))
+
+    return asset_data
