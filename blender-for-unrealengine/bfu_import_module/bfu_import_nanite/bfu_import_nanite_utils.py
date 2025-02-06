@@ -29,7 +29,6 @@ support_interchange = import_module_unreal_utils.get_support_interchange()
 
 
 def apply_import_settings(itask: import_module_tasks_class.ImportTaks, asset_data: dict, asset_additional_data: dict) -> None:
-    print(asset_additional_data)
     print("Set Nanite import settings.")
 
     asset_type = asset_additional_data.get("asset_type")
@@ -37,16 +36,12 @@ def apply_import_settings(itask: import_module_tasks_class.ImportTaks, asset_dat
         # Only apply settings for StaticMesh and SkeletalMesh
         return
     
-
     if "build_nanite" in asset_additional_data:
         build_nanite = asset_additional_data["build_nanite"]
 
         if itask.use_interchange:
-            print("s1")
             if asset_type == "StaticMesh":
-                print("s2")
                 if "build_nanite" in asset_additional_data:
-                    print("s3", build_nanite)
                     itask.get_igap_mesh().set_editor_property('build_nanite', build_nanite)
             if asset_type == "SkeletalMesh":
                 if "build_nanite" in asset_additional_data:
@@ -83,10 +78,8 @@ def apply_one_asset_settings(itask: import_module_tasks_class.ImportTaks, asset:
         return
     
     # Apply asset Nanite
-    print("s1")
     if "build_nanite" in asset_additional_data:
         build_nanite = asset_additional_data["build_nanite"]
-        print("s2", build_nanite)
 
         if isinstance(asset, unreal.StaticMesh): 
             nanite_settings = asset.get_editor_property("nanite_settings")
