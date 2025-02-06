@@ -19,12 +19,7 @@ def WriteCameraAnimationTracks(obj, target_frame_start=None, target_frame_end=No
 
     scene = bpy.context.scene
     data = {}
-    data['comment'] = {
-        '1/3': languages.ti('write_text_additional_track_start'),
-        '2/3': languages.ti('write_text_additional_track_camera'),
-        '3/3': languages.ti('write_text_additional_track_end'),
-    }
-
+    bfu_export_text_files.bfu_export_text_files_utils.add_generated_json_header(data, languages.ti('write_text_additional_track_camera'))
     bfu_export_text_files.bfu_export_text_files_utils.add_generated_json_meta_data(data)
 
     data["frame_start"] = target_frame_start
@@ -42,5 +37,6 @@ def WriteCameraAnimationTracks(obj, target_frame_start=None, target_frame_end=No
 
     data.update(camera_tracks)
 
+    bfu_export_text_files.bfu_export_text_files_utils.add_generated_json_footer(data)
     return data
 

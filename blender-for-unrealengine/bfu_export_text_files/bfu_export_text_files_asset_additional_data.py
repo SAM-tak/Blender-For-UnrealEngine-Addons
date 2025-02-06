@@ -38,12 +38,8 @@ def WriteSingleMeshAdditionalParameter(unreal_exported_asset: bfu_export_logs.bf
 
     data = {}
 
-    # Comment
-    data['Coment'] = {
-        '1/3': languages.ti('write_text_additional_track_start'),
-        '2/3': languages.ti('write_text_additional_track_all'),
-        '3/3': languages.ti('write_text_additional_track_end'),
-    }
+    bfu_export_text_files_utils.add_generated_json_header(data, languages.ti('write_text_additional_track_all'))
+    bfu_export_text_files_utils.add_generated_json_meta_data(data)
 
     # Defaultsettings
     data['DefaultSettings'] = {}
@@ -89,4 +85,6 @@ def WriteSingleMeshAdditionalParameter(unreal_exported_asset: bfu_export_logs.bf
         data.update(bfu_nanite.bfu_nanite_utils.get_nanite_asset_additional_data(unreal_exported_asset))
 
     data["preview_import_path"] = unreal_exported_asset.GetFilenameWithExtension()
+
+    bfu_export_text_files_utils.add_generated_json_footer(data)
     return data

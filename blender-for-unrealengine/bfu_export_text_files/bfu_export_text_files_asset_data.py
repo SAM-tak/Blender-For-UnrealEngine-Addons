@@ -33,12 +33,8 @@ def WriteImportAssetScript():
     scene = bpy.context.scene
 
     data = {}
-    data['comment'] = {
-        '1/3': languages.ti('write_text_additional_track_start'),
-        '2/3': languages.ti('write_text_additional_track_all'),
-        '3/3': languages.ti('write_text_additional_track_end'),
-    }
 
+    bfu_export_text_files_utils.add_generated_json_header(data, languages.ti('write_text_additional_track_all'))
     bfu_export_text_files_utils.add_generated_json_meta_data(data)
 
     data['bfu_unreal_import_location'] = '/' + scene.bfu_unreal_import_module + '/' + scene.bfu_unreal_import_location
@@ -129,4 +125,5 @@ def WriteImportAssetScript():
         asset_data.update(bfu_nanite.bfu_nanite_utils.get_nanite_asset_data(asset))
         data['assets'].append(asset_data)
 
+    bfu_export_text_files_utils.add_generated_json_footer(data)
     return data

@@ -67,6 +67,18 @@ def WriteImportPythonHeadComment(useSequencer=False):
     ImportScript += "\n"
     return ImportScript
 
+def add_generated_json_header(json_data, text: str):
+
+    json_data['comment'] = {
+        '1/3': languages.ti('write_text_additional_track_start'),
+        '2/3': text,
+        '3/3': languages.ti('write_text_additional_track_end'),
+    }
+
+def add_generated_json_footer(json_data):
+    # Empty for the momment.
+    pass
+
 def add_generated_json_meta_data(json_data):
     
     current_datetime = datetime.datetime.now()

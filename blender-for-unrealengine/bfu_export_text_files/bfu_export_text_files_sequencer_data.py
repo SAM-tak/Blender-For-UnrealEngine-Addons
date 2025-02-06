@@ -26,12 +26,7 @@ def WriteImportSequencerTracks():
     scene = bpy.context.scene
 
     data = {}
-    data['comment'] = {
-        '1/3': languages.ti('write_text_additional_track_start'),
-        '2/3': languages.ti('write_text_additional_track_all'),
-        '3/3': languages.ti('write_text_additional_track_end'),
-    }
-
+    bfu_export_text_files_utils.add_generated_json_header(data, languages.ti('write_text_additional_track_all'))
     bfu_export_text_files_utils.add_generated_json_meta_data(data)
 
     data['spawnable_camera'] = True  # Default but open for change
@@ -107,4 +102,5 @@ def WriteImportSequencerTracks():
 
         data['marker_sections'].append(marker_sections)
 
+    bfu_export_text_files_utils.add_generated_json_footer(data)
     return data
