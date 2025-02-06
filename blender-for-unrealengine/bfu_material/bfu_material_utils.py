@@ -26,6 +26,10 @@ from .. import bfu_export_logs
 
 def get_material_asset_data(asset: bfu_export_logs.bfu_asset_export_logs.BFU_OT_UnrealExportedAssetLog):
     asset_data = {}
+    return asset_data
+
+def get_material_asset_additional_data(asset: bfu_export_logs.bfu_asset_export_logs.BFU_OT_UnrealExportedAssetLog):
+    asset_data = {}
     if asset.object:
         if asset.asset_type in ["StaticMesh", "SkeletalMesh"]:
             asset_data["import_materials"] = asset.object.bfu_import_materials

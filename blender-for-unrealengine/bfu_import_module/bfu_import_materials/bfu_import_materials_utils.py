@@ -37,24 +37,24 @@ def apply_import_settings(itask: import_module_tasks_class.ImportTaks, asset_dat
     
     # Material and texture import settings
     if itask.use_interchange:
-        if "import_materials" in asset_data:
-            itask.get_igap_material().set_editor_property('import_materials', asset_data["import_materials"])
+        if "import_materials" in asset_additional_data:
+            itask.get_igap_material().set_editor_property('import_materials', asset_additional_data["import_materials"])
 
-        if "import_textures" in asset_data:
-            itask.get_igap_texture().set_editor_property('import_textures', asset_data["import_textures"])
+        if "import_textures" in asset_additional_data:
+            itask.get_igap_texture().set_editor_property('import_textures', asset_additional_data["import_textures"])
     else:
-        if "import_materials" in asset_data:
-            itask.get_fbx_import_ui().set_editor_property('import_materials', asset_data["import_materials"])
+        if "import_materials" in asset_additional_data:
+            itask.get_fbx_import_ui().set_editor_property('import_materials', asset_additional_data["import_materials"])
 
-        if "import_textures" in asset_data:
-            itask.get_fbx_import_ui().set_editor_property('import_textures', asset_data["import_textures"])
+        if "import_textures" in asset_additional_data:
+            itask.get_fbx_import_ui().set_editor_property('import_textures', asset_additional_data["import_textures"])
 
     print("Mat S2")
     
     # Material search location and normal map green channel flip
     if itask.use_interchange:
-        if "material_search_location" in asset_data:
-            search_location = asset_data["material_search_location"]
+        if "material_search_location" in asset_additional_data:
+            search_location = asset_additional_data["material_search_location"]
             location_enum = {
                 "Local": unreal.InterchangeMaterialSearchLocation.LOCAL,
                 "UnderParent": unreal.InterchangeMaterialSearchLocation.UNDER_PARENT,
@@ -64,14 +64,14 @@ def apply_import_settings(itask: import_module_tasks_class.ImportTaks, asset_dat
             if search_location in location_enum:
                 itask.get_igap_material().set_editor_property('search_location', location_enum[search_location])
 
-        if "flip_normal_map_green_channel" in asset_data:
-            itask.get_igap_texture().set_editor_property('flip_normal_map_green_channel', asset_data["flip_normal_map_green_channel"])
+        if "flip_normal_map_green_channel" in asset_additional_data:
+            itask.get_igap_texture().set_editor_property('flip_normal_map_green_channel', asset_additional_data["flip_normal_map_green_channel"])
 
     else:
         texture_import_data = itask.get_texture_import_data()
         
-        if "material_search_location" in asset_data:
-            search_location = asset_data["material_search_location"]
+        if "material_search_location" in asset_additional_data:
+            search_location = asset_additional_data["material_search_location"]
             location_enum = {
                 "Local": unreal.MaterialSearchLocation.LOCAL,
                 "UnderParent": unreal.MaterialSearchLocation.UNDER_PARENT,
@@ -81,8 +81,8 @@ def apply_import_settings(itask: import_module_tasks_class.ImportTaks, asset_dat
             if search_location in location_enum:
                 texture_import_data.set_editor_property('material_search_location', location_enum[search_location])
 
-        if "flip_normal_map_green_channel" in asset_data:
-            texture_import_data.set_editor_property('invert_normal_maps', asset_data["flip_normal_map_green_channel"])
+        if "flip_normal_map_green_channel" in asset_additional_data:
+            texture_import_data.set_editor_property('invert_normal_maps', asset_additional_data["flip_normal_map_green_channel"])
 
     print("Mat S3")
     
@@ -94,12 +94,12 @@ def apply_import_settings(itask: import_module_tasks_class.ImportTaks, asset_dat
 
     else:
         if asset_type =="StaticMesh":
-            if "reorder_material_to_fbx_order" in asset_data:
-                itask.get_static_mesh_import_data().set_editor_property('reorder_material_to_fbx_order', asset_data["reorder_material_to_fbx_order"])
+            if "reorder_material_to_fbx_order" in asset_additional_data:
+                itask.get_static_mesh_import_data().set_editor_property('reorder_material_to_fbx_order', asset_additional_data["reorder_material_to_fbx_order"])
 
         elif asset_type == "SkeletalMesh":
-            if "reorder_material_to_fbx_order" in asset_data:
-                itask.get_skeletal_mesh_import_data().set_editor_property('reorder_material_to_fbx_order', asset_data["reorder_material_to_fbx_order"])
+            if "reorder_material_to_fbx_order" in asset_additional_data:
+                itask.get_skeletal_mesh_import_data().set_editor_property('reorder_material_to_fbx_order', asset_additional_data["reorder_material_to_fbx_order"])
 
 
 def apply_asset_settings(itask: import_module_tasks_class.ImportTaks, asset_additional_data: dict) -> None:
