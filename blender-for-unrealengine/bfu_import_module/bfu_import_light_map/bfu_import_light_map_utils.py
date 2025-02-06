@@ -28,7 +28,7 @@ except ImportError:
 support_interchange = import_module_unreal_utils.get_support_interchange()
 
 
-def apply_import_settings(itask: import_module_tasks_class.ImportTaks, asset_additional_data: dict) -> None:
+def apply_import_settings(itask: import_module_tasks_class.ImportTaks, asset_data: dict, asset_additional_data: dict) -> None:
 
     asset_type = asset_additional_data.get("asset_type")
     if asset_type not in ["StaticMesh"]:

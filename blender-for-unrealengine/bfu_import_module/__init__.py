@@ -31,6 +31,7 @@ from . import bfu_import_animations
 from . import bfu_import_materials
 from . import bfu_import_vertex_color
 from . import bfu_import_light_map
+from . import bfu_import_nanite
 from . import bfu_import_sequencer
 from . import import_module_tasks_class
 from . import import_module_tasks_helper
@@ -59,6 +60,8 @@ if "bfu_import_vertex_color" in locals():
     importlib.reload(bfu_import_vertex_color)
 if "bfu_import_light_map" in locals():
     importlib.reload(bfu_import_light_map)
+if "bfu_import_nanite" in locals():
+    importlib.reload(bfu_import_nanite)
 if "bfu_import_sequencer" in locals():
     importlib.reload(bfu_import_sequencer)
 if "import_module_tasks_class" in locals():

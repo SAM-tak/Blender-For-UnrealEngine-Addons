@@ -28,6 +28,7 @@ from . import bfu_import_animations
 from . import bfu_import_materials
 from . import bfu_import_vertex_color
 from . import bfu_import_light_map
+from . import bfu_import_nanite
 from . import config
 
 try:
@@ -250,13 +251,16 @@ def ImportTask(asset_data):
 
         print("S7")
         # Vertex color
-        bfu_import_vertex_color.bfu_import_vertex_color_utils.apply_import_settings(itask, asset_additional_data)
+        bfu_import_vertex_color.bfu_import_vertex_color_utils.apply_import_settings(itask, asset_data, asset_additional_data)
 
         # Materials
-        bfu_import_materials.bfu_import_materials_utils.apply_import_settings(itask, asset_data)
+        bfu_import_materials.bfu_import_materials_utils.apply_import_settings(itask, asset_data, asset_additional_data)
 
         # Light Maps
-        bfu_import_light_map.bfu_import_light_map_utils.apply_import_settings(itask, asset_data)
+        bfu_import_light_map.bfu_import_light_map_utils.apply_import_settings(itask, asset_data, asset_additional_data)
+
+        # Nanite
+        bfu_import_nanite.bfu_import_nanite_utils.apply_import_settings(itask, asset_data, asset_additional_data)
 
         print("S8")
         if itask.use_interchange:
@@ -446,6 +450,9 @@ def ImportTask(asset_data):
 
     # Light maps
     bfu_import_light_map.bfu_import_light_map_utils.apply_asset_settings(itask, asset_additional_data)
+
+    # Nanite
+    bfu_import_nanite.bfu_import_nanite_utils.apply_asset_settings(itask, asset_additional_data)
 
     print("S15.4")
     if asset_type == "Alembic":

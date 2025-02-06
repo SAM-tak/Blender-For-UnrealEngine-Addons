@@ -79,7 +79,7 @@ def get_vertex_color_import_option(asset_additional_data: dict) -> Optional[unre
     
 
 
-def apply_import_settings(itask: import_module_tasks_class.ImportTaks, asset_additional_data: dict) -> None:
+def apply_import_settings(itask: import_module_tasks_class.ImportTaks, asset_data: dict, asset_additional_data: dict) -> None:
     """Applies vertex color settings during the import process."""
 
     asset_type = asset_additional_data.get("asset_type")

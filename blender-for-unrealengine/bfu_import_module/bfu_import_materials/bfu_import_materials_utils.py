@@ -24,7 +24,7 @@ try:
 except ImportError:
     import unreal_engine as unreal
 
-def apply_import_settings(itask: import_module_tasks_class.ImportTaks, asset_data: dict) -> None:
+def apply_import_settings(itask: import_module_tasks_class.ImportTaks, asset_data: dict, asset_additional_data: dict) -> None:
     """Applies material and texture import settings to StaticMesh and SkeletalMesh assets."""
     
     print("Mat S0")

@@ -28,6 +28,10 @@ from .. import bfu_export_logs
 
 def get_nanite_asset_data(asset: bfu_export_logs.bfu_asset_export_logs.BFU_OT_UnrealExportedAssetLog):
     asset_data = {}
+    return asset_data
+
+def get_nanite_asset_additional_data(asset: bfu_export_logs.bfu_asset_export_logs.BFU_OT_UnrealExportedAssetLog):
+    asset_data = {}
     if asset.object:
         if asset.asset_type in ["StaticMesh", "SkeletalMesh"]: # Check only static and skeletal meshs for the moment.
             if asset.object.bfu_build_nanite_mode == "build_nanite_true":
