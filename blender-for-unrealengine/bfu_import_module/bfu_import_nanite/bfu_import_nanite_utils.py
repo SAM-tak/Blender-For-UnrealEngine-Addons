@@ -45,7 +45,9 @@ def apply_import_settings(itask: import_module_tasks_class.ImportTaks, asset_dat
                     itask.get_igap_mesh().set_editor_property('build_nanite', build_nanite)
             if asset_type == "SkeletalMesh":
                 if "build_nanite" in asset_additional_data:
-                    pass # Not possible with Skeletal mesh ?
+                    # Unreal Engine 5.5 support Nanite with Skeletal Mesh 
+                    # but that was not yet added in Python API.
+                    pass
                     #itask.get_igap_mesh().set_editor_property('build_nanite', build_nanite)
         else:
             if asset_type == "StaticMesh":
@@ -53,7 +55,9 @@ def apply_import_settings(itask: import_module_tasks_class.ImportTaks, asset_dat
                     itask.get_static_mesh_import_data().set_editor_property('build_nanite', build_nanite)
             if asset_type == "SkeletalMesh":
                 if "build_nanite" in asset_additional_data:
-                    pass # Not possible with Skeletal mesh ?
+                    # Unreal Engine 5.5 support Nanite with Skeletal Mesh 
+                    # but that was not yet added in Python API.
+                    pass
                     #itask.get_static_mesh_import_data().set_editor_property('build_nanite', build_nanite)
 
 
@@ -88,3 +92,16 @@ def apply_one_asset_settings(itask: import_module_tasks_class.ImportTaks, asset:
             # Apply changes
             static_mesh_subsystem = unreal.get_editor_subsystem(unreal.StaticMeshEditorSubsystem)
             static_mesh_subsystem.set_nanite_settings(asset, nanite_settings, apply_changes=True)
+            
+        if isinstance(asset, unreal.SkeletalMesh): 
+            # Unreal Engine 5.5 support Nanite with Skeletal Mesh 
+            # but that was not yet added in Python API.
+            pass
+            '''
+            nanite_settings = asset.get_editor_property("nanite_settings")
+            nanite_settings.enabled = build_nanite
+        
+            # Apply changes
+            skeletal_mesh_subsystem = unreal.get_editor_subsystem(unreal.SkeletalMeshEditorSubsystem)
+            skeletal_mesh_subsystem.set_nanite_settings(asset, nanite_settings, apply_changes=True)
+            '''
