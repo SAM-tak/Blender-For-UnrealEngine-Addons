@@ -101,3 +101,8 @@ def apply_import_settings(itask: import_module_tasks_class.ImportTaks, asset_dat
         elif asset_type == "SkeletalMesh":
             if "reorder_material_to_fbx_order" in asset_data:
                 itask.get_skeletal_mesh_import_data().set_editor_property('reorder_material_to_fbx_order', asset_data["reorder_material_to_fbx_order"])
+
+
+def apply_asset_settings(itask: import_module_tasks_class.ImportTaks, asset_additional_data: dict) -> None:
+    # Empty for the momment
+    pass

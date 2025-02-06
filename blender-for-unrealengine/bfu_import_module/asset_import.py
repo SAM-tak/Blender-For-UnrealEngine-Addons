@@ -27,6 +27,7 @@ from . import import_module_tasks_helper
 from . import bfu_import_animations
 from . import bfu_import_materials
 from . import bfu_import_vertex_color
+from . import bfu_import_light_map
 from . import config
 
 try:
@@ -152,10 +153,6 @@ def ImportTask(asset_data):
 
     print("S2")
 
-    if asset_type in ["SkeletalMesh", "StaticMesh"]:
-        # Vertex color
-        bfu_import_vertex_color.bfu_import_vertex_color_utils.apply_import_settings(itask, asset_type, asset_additional_data)
-
     if asset_type == "Alembic":
         print("S2.1")
         itask.get_abc_import_settings().set_editor_property('import_type', unreal.AlembicImportType.SKELETAL)
@@ -251,9 +248,15 @@ def ImportTask(asset_data):
                 if "create_physics_asset" in asset_data:
                     itask.get_fbx_import_ui().set_editor_property('create_physics_asset', asset_data["create_physics_asset"])
 
-        # unreal.FbxMeshImportData
         print("S7")
+        # Vertex color
+        bfu_import_vertex_color.bfu_import_vertex_color_utils.apply_import_settings(itask, asset_additional_data)
+
+        # Materials
         bfu_import_materials.bfu_import_materials_utils.apply_import_settings(itask, asset_data)
+
+        # Light Maps
+        bfu_import_light_map.bfu_import_light_map_utils.apply_import_settings(itask, asset_data)
 
         print("S8")
         if itask.use_interchange:
@@ -265,8 +268,6 @@ def ImportTask(asset_data):
                 lod_group = asset_data["static_mesh_lod_group"]
                 if lod_group:
                     itask.get_igap_mesh().set_editor_property('lod_group', lod_group)
-            if "generate_lightmap_u_vs" in asset_data:
-                itask.get_igap_mesh().set_editor_property('generate_lightmap_u_vs', asset_data["generate_lightmap_u_vs"])
             itask.get_igap_mesh().set_editor_property('import_morph_targets', True)
 
             itask.get_igap_common_mesh().set_editor_property('recompute_normals', False)
@@ -282,8 +283,6 @@ def ImportTask(asset_data):
                     lod_group = asset_data["static_mesh_lod_group"]
                     if lod_group:
                         itask.get_static_mesh_import_data().set_editor_property('static_mesh_lod_group', lod_group)
-                if "generate_lightmap_u_vs" in asset_data:
-                    itask.get_static_mesh_import_data().set_editor_property('generate_lightmap_u_vs', asset_data["generate_lightmap_u_vs"])
 
             if asset_type == "SkeletalMesh" or asset_type == "Animation":
                 # unreal.FbxSkeletalMeshImportData
@@ -301,7 +300,7 @@ def ImportTask(asset_data):
             if find_target_asset:
 
                 # Vertex color
-                bfu_import_vertex_color.bfu_import_vertex_color_utils.apply_asset_settings(itask, find_target_asset, asset_additional_data)
+                bfu_import_vertex_color.bfu_import_vertex_color_utils.apply_one_asset_settings(itask, find_target_asset, asset_additional_data)
                     
     # ###############[ import asset ]################
     print("S10")
@@ -379,11 +378,6 @@ def ImportTask(asset_data):
             itask.get_igap_common_mesh().set_editor_property('recompute_normals', False)
             itask.get_igap_common_mesh().set_editor_property('recompute_tangents', False)
 
-            if "generate_lightmap_u_vs" in asset_data:
-                mesh_pipeline = itask.get_imported_static_mesh().get_editor_property('asset_import_data').get_pipelines()[0].get_editor_property('mesh_pipeline')
-                mesh_pipeline.set_editor_property('generate_lightmap_u_vs', asset_data["generate_lightmap_u_vs"])  # Import data
-                unreal.EditorStaticMeshLibrary.set_generate_lightmap_uv(itask.get_imported_static_mesh(), asset_data["generate_lightmap_u_vs"])  # Build settings at lod
-        
         if asset_type == "SkeletalMesh":
             itask.get_igap_common_mesh().set_editor_property('recompute_normals', False)
             itask.get_igap_common_mesh().set_editor_property('recompute_tangents', False)
@@ -395,9 +389,6 @@ def ImportTask(asset_data):
         if asset_type == "StaticMesh":
             asset_import_data = itask.get_imported_static_mesh().get_editor_property('asset_import_data')
             asset_import_data.set_editor_property('normal_import_method', unreal.FBXNormalImportMethod.FBXNIM_IMPORT_NORMALS_AND_TANGENTS)
-            if "generate_lightmap_u_vs" in asset_data:
-                asset_import_data.set_editor_property('generate_lightmap_u_vs', asset_data["generate_lightmap_u_vs"])  # Import data
-                unreal.EditorStaticMeshLibrary.set_generate_lightmap_uv(itask.get_imported_static_mesh(), asset_data["generate_lightmap_u_vs"])  # Build settings at lod
 
         elif asset_type == "SkeletalMesh":
             asset_import_data = itask.get_imported_skeletal_mesh().get_editor_property('asset_import_data')
@@ -447,10 +438,14 @@ def ImportTask(asset_data):
         import_module_post_treatment.set_sequence_preview_skeletal_mesh(itask.get_imported_anim_sequence(), origin_skeletal_mesh)
 
     print("S15.3")
-    if asset_type in ["SkeletalMesh", "StaticMesh"]:
-        # Vertex color
-        bfu_import_vertex_color.bfu_import_vertex_color_utils.apply_asset_settings(itask, itask.get_imported_static_mesh(), asset_additional_data)
-        bfu_import_vertex_color.bfu_import_vertex_color_utils.apply_asset_settings(itask, itask.get_imported_skeletal_mesh(), asset_additional_data)
+    # Vertex color
+    bfu_import_vertex_color.bfu_import_vertex_color_utils.apply_asset_settings(itask, asset_additional_data)
+
+    # Materials
+    bfu_import_materials.bfu_import_materials_utils.apply_asset_settings(itask, asset_additional_data)
+
+    # Light maps
+    bfu_import_light_map.bfu_import_light_map_utils.apply_asset_settings(itask, asset_additional_data)
 
     print("S15.4")
     if asset_type == "Alembic":

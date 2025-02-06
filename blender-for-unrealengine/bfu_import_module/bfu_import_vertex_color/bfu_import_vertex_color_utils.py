@@ -79,8 +79,14 @@ def get_vertex_color_import_option(asset_additional_data: dict) -> Optional[unre
     
 
 
-def apply_import_settings(itask: import_module_tasks_class.ImportTaks, asset_type: str, asset_additional_data: dict) -> None:
+def apply_import_settings(itask: import_module_tasks_class.ImportTaks, asset_additional_data: dict) -> None:
     """Applies vertex color settings during the import process."""
+
+    asset_type = asset_additional_data.get("asset_type")
+    if asset_type not in ["StaticMesh", "SkeletalMesh"]:
+        # Only apply settings for StaticMesh and SkeletalMesh
+        return
+
     vertex_override_color = get_vertex_override_color(asset_additional_data)
     if itask.use_interchange:
         vertex_color_import_option = get_interchange_vertex_color_import_option(asset_additional_data)
@@ -103,8 +109,23 @@ def apply_import_settings(itask: import_module_tasks_class.ImportTaks, asset_typ
                 itask.get_skeletal_mesh_import_data().set_editor_property('vertex_override_color', vertex_override_color.to_rgbe())
 
 
-def apply_asset_settings(itask: import_module_tasks_class.ImportTaks, asset: unreal.Object, asset_additional_data: dict) -> None:
+def apply_asset_settings(itask: import_module_tasks_class.ImportTaks, asset_additional_data: dict) -> None:
     """Applies vertex color settings to an already imported asset."""
+
+    # Check   
+    static_mesh = itask.get_imported_static_mesh()
+    skeletal_mesh = itask.get_imported_skeletal_mesh()
+
+    # Loop for static and skeletal meshs
+    for asset in [static_mesh, skeletal_mesh]:
+        if asset:
+            apply_one_asset_settings(itask, asset, asset_additional_data)
+
+
+def apply_one_asset_settings(itask: import_module_tasks_class.ImportTaks, asset: unreal.Object, asset_additional_data: dict) -> None:
+    """Applies vertex color settings to an already imported asset."""
+
+    # Check   
     if asset is None:
         return
 
