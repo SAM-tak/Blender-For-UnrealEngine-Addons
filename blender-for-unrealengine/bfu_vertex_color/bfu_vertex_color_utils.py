@@ -21,6 +21,9 @@ import bpy
 from . import bfu_vertex_color_utils
 from .. import bbpl
 from .. import bfu_utils
+from .. import bfu_export_logs
+from .. import bfu_static_mesh
+from .. import bfu_skeletal_mesh
 
 class VertexColorExportData:
     def __init__(self, obj, parent=None):
@@ -142,3 +145,22 @@ def get_export_colors_type(obj: bpy.types.Object):
     if obj.bfu_vertex_color_import_option in ["REPLACE", "OVERRIDE"]:
         return obj.bfu_vertex_color_type
     return "NONE"
+
+def get_vertex_color_asset_data(asset: bfu_export_logs.bfu_asset_export_logs.BFU_OT_UnrealExportedAssetLog):
+    asset_data = {}
+    return asset_data
+
+def get_vertex_color_additional_data(asset: bfu_export_logs.bfu_asset_export_logs.BFU_OT_UnrealExportedAssetLog):
+    asset_data = {}
+    if asset.object:
+        if bfu_static_mesh.bfu_static_mesh_utils.is_static_mesh(asset.object) or bfu_skeletal_mesh.bfu_skeletal_mesh_utils.is_skeletal_mesh(asset.object):
+            vced = VertexColorExportData(asset.object)
+            asset_data["vertex_color_import_option"] = vced.export_type
+            vertex_override_color = (
+                vced.color[0],  # R
+                vced.color[1],  # G
+                vced.color[2]  # B
+            )  # Color to Json
+            asset_data["vertex_override_color"] = vertex_override_color
+
+    return asset_data

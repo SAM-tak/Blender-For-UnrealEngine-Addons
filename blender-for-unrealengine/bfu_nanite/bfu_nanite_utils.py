@@ -25,7 +25,6 @@ from .. import bfu_utils
 from .. import bfu_static_mesh
 from .. import bfu_export_logs
 
-
 def get_nanite_asset_data(asset: bfu_export_logs.bfu_asset_export_logs.BFU_OT_UnrealExportedAssetLog):
     asset_data = {}
     return asset_data
