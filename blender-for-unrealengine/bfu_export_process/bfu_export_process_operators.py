@@ -28,7 +28,7 @@ from .. import bfu_assets_manager
 from .. import bfu_cached_asset_list
 from .. import bfu_check_potential_error
 from .. import bfu_export
-from .. import bfu_write_text
+from .. import bfu_export_text_files
 from .. import bfu_export_logs
 
 
@@ -105,7 +105,7 @@ class BFU_OT_ExportForUnrealEngineButton(bpy.types.Operator):
         counter = bpl.utils.CounterTimer()
         bfu_check_potential_error.bfu_check_utils.process_general_fix()
         bfu_export.bfu_export_asset.process_export(self)
-        bfu_write_text.WriteAllTextFiles()
+        bfu_export_text_files.bfu_export_text_files_process.WriteAllTextFiles()
         
         
         asset_list = str(bfu_export_logs.bfu_asset_export_logs_utils.get_exported_asset_number())

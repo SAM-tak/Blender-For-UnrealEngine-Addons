@@ -19,15 +19,14 @@
 
 import os
 import bpy
-from . import bfu_export_logs
-from . import languages
-from . import bfu_utils
-from . import bfu_write_utils
-from . import bfu_unreal_utils
-from . import bfu_material
-from . import bfu_nanite
-from . import bfu_light_map
-from . import bfu_assets_references
+from . import bfu_export_text_files_utils
+from .. import bfu_export_logs
+from .. import languages
+from .. import bfu_utils
+from .. import bfu_material
+from .. import bfu_nanite
+from .. import bfu_light_map
+from .. import bfu_assets_references
 
 def WriteImportAssetScript():
     # Generate a script for import assets in Ue4
@@ -40,7 +39,7 @@ def WriteImportAssetScript():
         '3/3': languages.ti('write_text_additional_track_end'),
     }
 
-    bfu_write_utils.add_generated_json_meta_data(data)
+    bfu_export_text_files_utils.add_generated_json_meta_data(data)
 
     data['bfu_unreal_import_location'] = '/' + scene.bfu_unreal_import_module + '/' + scene.bfu_unreal_import_location
 

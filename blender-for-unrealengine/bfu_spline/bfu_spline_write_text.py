@@ -2,7 +2,7 @@ import bpy
 
 from . import bfu_spline_data
 from .. import languages
-from .. import bfu_write_utils
+from .. import bfu_export_text_files
 
 def WriteSplinePointsData(obj, pre_bake_spline: bfu_spline_data.BFU_SplinesList = None):
     # Write as data spline animation tracks
@@ -17,7 +17,7 @@ def WriteSplinePointsData(obj, pre_bake_spline: bfu_spline_data.BFU_SplinesList 
         '3/3': languages.ti('write_text_additional_track_end'),
     }
 
-    bfu_write_utils.add_generated_json_meta_data(data)
+    bfu_export_text_files.bfu_export_text_files_utils.add_generated_json_meta_data(data)
 
  
     if pre_bake_spline:

@@ -2,7 +2,7 @@ import bpy
 
 from . import bfu_camera_data
 from .. import languages
-from .. import bfu_write_utils
+from .. import bfu_export_text_files
 
 def WriteOneFrameCameraAnimationTracks(obj, target_frame=None, pre_bake_camera: bfu_camera_data.BFU_CameraTracks = None):
     return WriteCameraAnimationTracks(obj, target_frame, target_frame+1, pre_bake_camera)
@@ -25,7 +25,7 @@ def WriteCameraAnimationTracks(obj, target_frame_start=None, target_frame_end=No
         '3/3': languages.ti('write_text_additional_track_end'),
     }
 
-    bfu_write_utils.add_generated_json_meta_data(data)
+    bfu_export_text_files.bfu_export_text_files_utils.add_generated_json_meta_data(data)
 
     data["frame_start"] = target_frame_start
     data["frame_end"] = target_frame_end

@@ -19,10 +19,15 @@
 import os
 import bpy
 import datetime
+import json
 
-from . import bbpl
-from . import bfu_basics
-from . import bfu_utils
+from .. import bpl
+from .. import bbpl
+from .. import languages
+from .. import bfu_basics
+from .. import bfu_utils
+from .. import bfu_export_logs
+
 
 
 def WriteImportPythonHeadComment(useSequencer=False):
@@ -88,3 +93,34 @@ def add_generated_json_meta_data(json_data):
         'import_modiule_path': import_modiule_path,
     }
 
+def ExportSingleText(text, dirpath, filename):
+    # Export single text
+
+    counter = bpl.utils.CounterTimer()
+
+    absdirpath = bpy.path.abspath(dirpath)
+    bfu_basics.verifi_dirs(absdirpath)
+    fullpath = os.path.join(absdirpath, filename)
+
+    with open(fullpath, "w") as file:
+        file.write(text)
+
+    exportTime = counter.get_time()
+    # This return [AssetName , AssetType , ExportPath, ExportTime]
+    return([filename, "TextFile", absdirpath, exportTime])
+
+def ExportSingleJson(json_data, dirpath, filename):
+    # Export single Json
+
+    counter = bpl.utils.CounterTimer()
+
+    absdirpath = bpy.path.abspath(dirpath)
+    bfu_basics.verifi_dirs(absdirpath)
+    fullpath = os.path.join(absdirpath, filename)
+
+    with open(fullpath, 'w') as json_file:
+        json.dump(json_data, json_file, ensure_ascii=False, sort_keys=False, indent=4)
+
+    exportTime = counter.get_time()
+    # This return [AssetName , AssetType , ExportPath, ExportTime]
+    return([filename, "TextFile", absdirpath, exportTime])

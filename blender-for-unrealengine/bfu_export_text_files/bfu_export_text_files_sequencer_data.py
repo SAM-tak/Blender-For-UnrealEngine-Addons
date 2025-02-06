@@ -17,9 +17,9 @@
 # ======================= END GPL LICENSE BLOCK =============================
 
 import bpy
-from . import languages
-from . import bfu_write_utils
-from . import bfu_export_logs
+from . import bfu_export_text_files_utils
+from .. import languages
+from .. import bfu_export_logs
 
 
 def WriteImportSequencerTracks():
@@ -32,7 +32,7 @@ def WriteImportSequencerTracks():
         '3/3': languages.ti('write_text_additional_track_end'),
     }
 
-    bfu_write_utils.add_generated_json_meta_data(data)
+    bfu_export_text_files_utils.add_generated_json_meta_data(data)
 
     data['spawnable_camera'] = True  # Default but open for change
     data['sequencer_frame_start'] = scene.frame_start

@@ -70,10 +70,7 @@ from . import bfu_addon_pref
 from . import bfu_export_logs
 from . import bfu_ui
 from . import bfu_check_potential_error
-from . import bfu_write_text
-from . import bfu_write_utils
-from . import bfu_write_import_asset_script
-from . import bfu_write_import_sequencer_script
+from . import bfu_export_text_files
 from . import bfu_basics
 from . import bfu_utils
 from . import bfu_unreal_utils
@@ -161,14 +158,8 @@ if "bfu_ui" in locals():
     importlib.reload(bfu_ui)
 if "bfu_check_potential_error" in locals():
     importlib.reload(bfu_check_potential_error)
-if "bfu_write_text" in locals():
-    importlib.reload(bfu_write_text)
-if "bfu_write_utils" in locals():
-    importlib.reload(bfu_write_utils)
-if "bfu_write_import_asset_script" in locals():
-    importlib.reload(bfu_write_import_asset_script)
-if "bfu_write_import_sequencer_script" in locals():
-    importlib.reload(bfu_write_import_sequencer_script)
+if "bfu_export_text_files" in locals():
+    importlib.reload(bfu_export_text_files)
 if "bfu_basics" in locals():
     importlib.reload(bfu_basics)
 if "bfu_utils" in locals():
