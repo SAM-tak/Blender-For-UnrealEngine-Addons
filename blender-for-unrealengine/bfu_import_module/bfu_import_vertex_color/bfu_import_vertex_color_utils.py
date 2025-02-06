@@ -85,7 +85,7 @@ def apply_import_settings(itask: import_module_tasks_class.ImportTaks, asset_dat
     """Applies vertex color settings during the import process."""
     print("Set Vertex Color post import settings.")
 
-    asset_type = asset_additional_data.get("asset_type")
+    asset_type = asset_data.get("asset_type")
     if asset_type not in ["StaticMesh", "SkeletalMesh"]:
         # Only apply settings for StaticMesh and SkeletalMesh
         return
