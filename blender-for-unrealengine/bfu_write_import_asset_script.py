@@ -25,6 +25,7 @@ from . import bfu_utils
 from . import bfu_write_utils
 from . import bfu_unreal_utils
 from . import bfu_material
+from . import bfu_nanite
 from . import bfu_light_map
 from . import bfu_assets_references
 
@@ -112,6 +113,7 @@ def WriteImportAssetScript():
                     asset_data["static_mesh_lod_group"] = None
                 
                 asset_data["generate_lightmap_u_vs"] = asset.object.bfu_generate_light_map_uvs
+                
                 asset_data["use_custom_light_map_resolution"] = bfu_utils.GetUseCustomLightMapResolution(asset.object)
                 asset_data["light_map_resolution"] = bfu_light_map.bfu_light_map_utils.GetCompuntedLightMap(asset.object)
             
@@ -125,6 +127,7 @@ def WriteImportAssetScript():
                 asset_data["do_not_import_curve_with_zero"] = asset.object.bfu_do_not_import_curve_with_zero
 
         asset_data.update(bfu_material.bfu_material_utils.get_material_asset_data(asset))
+        asset_data.update(bfu_nanite.bfu_nanite_utils.get_nanite_asset_data(asset))
         data['assets'].append(asset_data)
 
     return data

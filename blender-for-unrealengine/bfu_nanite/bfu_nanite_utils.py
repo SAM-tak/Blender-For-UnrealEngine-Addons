@@ -23,5 +23,16 @@ from .. import bbpl
 from .. import bfu_basics
 from .. import bfu_utils
 from .. import bfu_static_mesh
+from .. import bfu_export_logs
 
 
+def get_nanite_asset_data(asset: bfu_export_logs.bfu_asset_export_logs.BFU_OT_UnrealExportedAssetLog):
+    asset_data = {}
+    if asset.object:
+        if asset.asset_type in ["StaticMesh", "SkeletalMesh"]: # Check only static and skeletal meshs for the moment.
+            if asset.object.bfu_build_nanite_mode == "build_nanite_true":
+                asset_data["build_nanite"] = True
+            elif asset.object.bfu_build_nanite_mode == "build_nanite_false":
+                asset_data["build_nanite"] = False
+            # Keep empty for auto
+    return asset_data
