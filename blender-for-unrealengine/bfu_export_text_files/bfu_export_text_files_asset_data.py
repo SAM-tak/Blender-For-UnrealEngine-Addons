@@ -28,6 +28,7 @@ from .. import bfu_nanite
 from .. import bfu_light_map
 from .. import bfu_assets_references
 from .. import bfu_vertex_color
+from .. import bfu_lod
 
 def write_main_assets_data():
     # Generate a script for import assets in Ue4
@@ -110,11 +111,6 @@ def write_single_asset_data(unreal_exported_asset: bfu_export_logs.bfu_asset_exp
     if unreal_exported_asset.object:
         if unreal_exported_asset.asset_type in ["StaticMesh"]:
             asset_data["auto_generate_collision"] = unreal_exported_asset.object.bfu_auto_generate_collision
-            if (unreal_exported_asset.object.bfu_use_static_mesh_lod_group):
-                asset_data["static_mesh_lod_group"] = unreal_exported_asset.object.bfu_static_mesh_lod_group
-            else:
-                asset_data["static_mesh_lod_group"] = None
-        
             asset_data["collision_trace_flag"] = unreal_exported_asset.object.bfu_collision_trace_flag
 
         if unreal_exported_asset.asset_type in ["SkeletalMesh"]:
@@ -124,6 +120,7 @@ def write_single_asset_data(unreal_exported_asset: bfu_export_logs.bfu_asset_exp
         if bfu_utils.GetIsAnimation(unreal_exported_asset.asset_type):
             asset_data["do_not_import_curve_with_zero"] = unreal_exported_asset.object.bfu_do_not_import_curve_with_zero
 
+    asset_data.update(bfu_lod.bfu_lod_utils.get_lod_asset_data(unreal_exported_asset))
     asset_data.update(bfu_vertex_color.bfu_vertex_color_utils.get_vertex_color_asset_data(unreal_exported_asset))
     asset_data.update(bfu_material.bfu_material_utils.get_material_asset_data(unreal_exported_asset))
     asset_data.update(bfu_light_map.bfu_light_map_utils.get_light_map_asset_data(unreal_exported_asset))
