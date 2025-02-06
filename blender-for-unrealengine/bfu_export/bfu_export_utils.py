@@ -664,8 +664,8 @@ def ExportAdditionalParameter(dirpath, filename, unreal_exported_asset):
     absdirpath = bpy.path.abspath(dirpath)
     result = check_and_make_export_path(absdirpath, filename)
     if result:
-        AdditionalTrack = bfu_export_text_files.bfu_export_text_files_asset_additional_data.WriteSingleMeshAdditionalParameter(unreal_exported_asset)
-        return bfu_export_text_files.bfu_export_text_files_utils.ExportSingleJson(
+        AdditionalTrack = bfu_export_text_files.bfu_export_text_files_asset_additional_data.write_single_asset_additional_data(unreal_exported_asset)
+        return bfu_export_text_files.bfu_export_text_files_utils.export_single_json_file(
             AdditionalTrack,
             absdirpath,
             filename

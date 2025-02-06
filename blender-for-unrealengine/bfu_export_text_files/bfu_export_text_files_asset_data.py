@@ -29,7 +29,7 @@ from .. import bfu_light_map
 from .. import bfu_assets_references
 from .. import bfu_vertex_color
 
-def WriteImportAssetScript():
+def write_main_assets_data():
     # Generate a script for import assets in Ue4
     scene = bpy.context.scene
 

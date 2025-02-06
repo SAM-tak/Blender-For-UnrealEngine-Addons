@@ -22,7 +22,7 @@ from .. import languages
 from .. import bfu_export_logs
 
 
-def WriteImportSequencerTracks():
+def write_sequencer_tracks_data():
     scene = bpy.context.scene
 
     data = {}
@@ -52,7 +52,7 @@ def WriteImportSequencerTracks():
             camera_data["additional_tracks_path"] = asset.GetFileByType("AdditionalTrack").GetAbsolutePath()
             data['cameras'].append(camera_data)
 
-    def getMarkerSceneSections():
+    def get_marker_scene_sections():
         scene = bpy.context.scene
         markersOrderly = []
         firstMarkersFrame = scene.frame_start
@@ -85,7 +85,7 @@ def WriteImportSequencerTracks():
         return sectionCuts
 
     data['marker_sections'] = []
-    for section in getMarkerSceneSections():
+    for section in get_marker_scene_sections():
         marker_sections = {}
         marker_sections["start_time"] = section[0]
         marker_sections["end_time"] = section[1]

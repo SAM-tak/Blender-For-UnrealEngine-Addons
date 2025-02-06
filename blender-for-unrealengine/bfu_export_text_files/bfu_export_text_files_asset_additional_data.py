@@ -31,7 +31,7 @@ from .. import bfu_skeletal_mesh
 from .. import bfu_vertex_color
 from .. import bfu_material
 
-def WriteSingleMeshAdditionalParameter(unreal_exported_asset: bfu_export_logs.bfu_asset_export_logs.BFU_OT_UnrealExportedAssetLog):
+def write_single_asset_additional_data(unreal_exported_asset: bfu_export_logs.bfu_asset_export_logs.BFU_OT_UnrealExportedAssetLog):
 
     scene = bpy.context.scene
     addon_prefs = bfu_basics.GetAddonPrefs()

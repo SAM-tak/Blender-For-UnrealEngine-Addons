@@ -14,7 +14,7 @@ def ExportSingleAdditionalTrackCamera(dirpath, filename, obj: bpy.types.Object, 
     absdirpath = bpy.path.abspath(dirpath)
     bfu_basics.verifi_dirs(absdirpath)
     AdditionalTrack = bfu_camera_write_text.WriteCameraAnimationTracks(obj, pre_bake_camera=pre_bake_camera)
-    return bfu_export_text_files.bfu_export_text_files_utils.ExportSingleJson(
+    return bfu_export_text_files.bfu_export_text_files_utils.export_single_json_file(
         AdditionalTrack,
         absdirpath,
         filename

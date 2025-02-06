@@ -25,47 +25,7 @@ from .. import bpl
 from .. import bbpl
 from .. import languages
 from .. import bfu_basics
-from .. import bfu_utils
-from .. import bfu_export_logs
 
-
-
-def WriteImportPythonHeadComment(useSequencer=False):
-
-    scene = bpy.context.scene
-
-    # Comment
-    ImportScript = (
-        "#This script was generated with the addons Blender for UnrealEngine" +
-        " : https://github.com/xavier150/Blender-For-UnrealEngine-Addons" +
-        "\n"
-        )
-    if useSequencer:
-        ImportScript += (
-            "#It will import into Unreal Engine all the assets of type" +
-            " StaticMesh, SkeletalMesh, Animation and Pose" +
-            "\n")
-    else:
-        ImportScript += (
-            "#This script will import in unreal" +
-            " all camera in target sequencer" +
-            "\n")
-
-    ImportScript += (
-        "#The script must be used in Unreal Engine Editor" +
-        " with Python plugins : " +
-        "https://docs.unrealengine.com/en-US/Engine/" +
-        "Editor/ScriptingAndAutomation/Python" +
-        "\n"
-        )
-
-    if useSequencer:
-        ImportScript += "#Use this command : " + bfu_utils.GetImportSequencerScriptCommand() + "\n"
-    else:
-        ImportScript += "#Use this command : " + bfu_utils.GetImportAssetScriptCommand() + "\n"
-    ImportScript += "\n"
-    ImportScript += "\n"
-    return ImportScript
 
 def add_generated_json_header(json_data, text: str):
 
@@ -105,7 +65,7 @@ def add_generated_json_meta_data(json_data):
         'import_modiule_path': import_modiule_path,
     }
 
-def ExportSingleText(text, dirpath, filename):
+def export_single_text_file(text, dirpath, filename):
     # Export single text
 
     counter = bpl.utils.CounterTimer()
@@ -121,7 +81,7 @@ def ExportSingleText(text, dirpath, filename):
     # This return [AssetName , AssetType , ExportPath, ExportTime]
     return([filename, "TextFile", absdirpath, exportTime])
 
-def ExportSingleJson(json_data, dirpath, filename):
+def export_single_json_file(json_data, dirpath, filename):
     # Export single Json
 
     counter = bpl.utils.CounterTimer()
