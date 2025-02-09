@@ -47,7 +47,7 @@ def IsValidActionForExport(scene, obj, animType):
     if animType == "Action":
         if scene.bfu_use_anin_export:
             if obj.bfu_skeleton_export_procedure == 'auto-rig-pro':
-                if bfu_basics.CheckPluginIsActivated('auto_rig_pro-master'):
+                if bbpl.basics.check_plugin_is_activated('auto_rig_pro-master'):
                     return True
             else:
                 return True
@@ -56,7 +56,7 @@ def IsValidActionForExport(scene, obj, animType):
     elif animType == "Pose":
         if scene.bfu_use_anin_export:
             if obj.bfu_skeleton_export_procedure == 'auto-rig-pro':
-                if bfu_basics.CheckPluginIsActivated('auto_rig_pro-master'):
+                if bbpl.basics.check_plugin_is_activated('auto_rig_pro-master'):
                     return True
             else:
                 return True

@@ -56,7 +56,7 @@ class BFU_OT_ExportForUnrealEngineButton(bpy.types.Operator):
                 else:
                     return False
 
-            if not bfu_basics.CheckPluginIsActivated("io_scene_fbx"):
+            if not bbpl.basics.check_plugin_is_activated("io_scene_fbx"):
                 self.report(
                     {'WARNING'},
                     'Add-on FBX format is not activated!' +
