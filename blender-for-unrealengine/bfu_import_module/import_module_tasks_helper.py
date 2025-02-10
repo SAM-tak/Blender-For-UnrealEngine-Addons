@@ -88,10 +88,9 @@ if support_interchange:
     def init_options_data(asset_type: str, use_interchange: bool = True):
         """Initializes task options based on asset type and interchange usage."""
         
-        if import_module_unreal_utils.alembic_importer_active():
         # Add the function only if alembic importer is active
-            if asset_type == "Alembic":
-                options = task_options_alembic_preset(use_interchange)
+        if asset_type == "Alembic" and import_module_unreal_utils.alembic_importer_active():
+            options = task_options_alembic_preset(use_interchange)
         
         elif asset_type == "StaticMesh":
             options = task_options_static_mesh_preset(use_interchange)
@@ -110,10 +109,9 @@ else:
     def init_options_data(asset_type: str, use_interchange: bool = True):
         """Initializes task options based on asset type and interchange usage."""
         
-        if import_module_unreal_utils.alembic_importer_active():
         # Add the function only if alembic importer is active
-            if asset_type == "Alembic":
-                options = task_options_alembic_preset(use_interchange)
+        if asset_type == "Alembic" and import_module_unreal_utils.alembic_importer_active():
+            options = task_options_alembic_preset(use_interchange)
         
         elif asset_type == "StaticMesh":
             options = task_options_static_mesh_preset(use_interchange)
