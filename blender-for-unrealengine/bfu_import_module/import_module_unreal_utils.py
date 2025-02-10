@@ -89,5 +89,8 @@ def editor_scripting_utilities_active() -> bool:
             return True
     return False
 
+def alembic_importer_active() -> bool:
+    return hasattr(unreal, 'AbcImportSettings')
+
 def sequencer_scripting_active() -> bool:
     return hasattr(unreal.MovieSceneSequence, 'set_display_rate')

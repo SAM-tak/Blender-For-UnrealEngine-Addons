@@ -40,6 +40,12 @@ except ImportError:
 
 
 def ready_for_asset_import():
+    if not import_module_unreal_utils.alembic_importer_active():
+        message = 'WARNING: Alembic Importer Plugin should be activated.' + "\n"
+        message += 'Edit > Plugin > Importer > Alembic Importer.'
+        import_module_unreal_utils.show_warning_message("Alembic Importer not activated.", message)
+        return False
+
     if not import_module_unreal_utils.editor_scripting_utilities_active():
         message = 'WARNING: Editor Scripting Utilities Plugin should be activated.' + "\n"
         message += 'Edit > Plugin > Scripting > Editor Scripting Utilities.'
