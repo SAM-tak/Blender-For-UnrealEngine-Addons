@@ -7,3 +7,4 @@ Release Logs: https://github.com/xavier150/Blender-For-UnrealEngine-Addons/wiki/
 - New: New option to force Nanite build or set non Nanite.
 - Change: Better logs details + clear logs after export to avoid useless used space in blender file.
 - Fixed: In the import script origin_skeleton may produce issue when not found.
+- Fixed: Import a sequencer set the level as unsaved. (Spawned cameras was not set as transient.)

@@ -123,7 +123,7 @@ if sequencer_scripting_active:
             '''
 
             # Create camera
-            temp_camera_actor = unreal.EditorLevelLibrary().spawn_actor_from_class(camera_target_class, unreal.Vector(0, 0, 0), unreal.Rotator(0, 0, 0))
+            temp_camera_actor = unreal.EditorLevelLibrary().spawn_actor_from_class(camera_target_class, unreal.Vector(0, 0, 0), unreal.Rotator(0, 0, 0), transient=True)
             temp_camera_actor.set_actor_label(camera_name)
 
             # Add camera to sequencer
