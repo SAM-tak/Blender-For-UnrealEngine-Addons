@@ -31,6 +31,21 @@
     },
 
     "builds": {
+        "unrealengine_assets_exporter_4.4": {   
+            "generate_method": "EXTENTION_COMMAND",
+            "auto_install_range": [[4,4,0], "LATEST"],
+            "naming": "{Name}_{Version}-blender_4.4.zip",
+            "module": "blender-for-unrealengine", 
+            "pkg_id": "unrealengine_assets_exporter",
+            "exclude_paths": [
+                "fbxio/"
+            ],
+            "include_paths": [
+                "fbxio/__init__.py/",
+                "fbxio/io_scene_fbx_4_4/"
+            ],
+            "blender_version_min": [4,4,0]
+        },
         "unrealengine_assets_exporter_4.3": {   
             "generate_method": "EXTENTION_COMMAND",
             "auto_install_range": [[4,3,0], [4,3,2]],
