@@ -19,48 +19,25 @@
 import os
 import bpy
 import datetime
+import json
 
-from . import bbpl
-from . import bfu_basics
-from . import bfu_utils
+from .. import bpl
+from .. import bbpl
+from .. import languages
+from .. import bfu_basics
 
 
-def WriteImportPythonHeadComment(useSequencer=False):
+def add_generated_json_header(json_data, text: str):
 
-    scene = bpy.context.scene
+    json_data['comment'] = {
+        '1/3': languages.ti('write_text_additional_track_start'),
+        '2/3': text,
+        '3/3': languages.ti('write_text_additional_track_end'),
+    }
 
-    # Comment
-    ImportScript = (
-        "#This script was generated with the addons Blender for UnrealEngine" +
-        " : https://github.com/xavier150/Blender-For-UnrealEngine-Addons" +
-        "\n"
-        )
-    if useSequencer:
-        ImportScript += (
-            "#It will import into Unreal Engine all the assets of type" +
-            " StaticMesh, SkeletalMesh, Animation and Pose" +
-            "\n")
-    else:
-        ImportScript += (
-            "#This script will import in unreal" +
-            " all camera in target sequencer" +
-            "\n")
-
-    ImportScript += (
-        "#The script must be used in Unreal Engine Editor" +
-        " with Python plugins : " +
-        "https://docs.unrealengine.com/en-US/Engine/" +
-        "Editor/ScriptingAndAutomation/Python" +
-        "\n"
-        )
-
-    if useSequencer:
-        ImportScript += "#Use this command : " + bfu_utils.GetImportSequencerScriptCommand() + "\n"
-    else:
-        ImportScript += "#Use this command : " + bfu_utils.GetImportAssetScriptCommand() + "\n"
-    ImportScript += "\n"
-    ImportScript += "\n"
-    return ImportScript
+def add_generated_json_footer(json_data):
+    # Empty for the momment.
+    pass
 
 def add_generated_json_meta_data(json_data):
     
@@ -88,3 +65,34 @@ def add_generated_json_meta_data(json_data):
         'import_modiule_path': import_modiule_path,
     }
 
+def export_single_text_file(text, dirpath, filename):
+    # Export single text
+
+    counter = bpl.utils.CounterTimer()
+
+    absdirpath = bpy.path.abspath(dirpath)
+    bfu_basics.verifi_dirs(absdirpath)
+    fullpath = os.path.join(absdirpath, filename)
+
+    with open(fullpath, "w") as file:
+        file.write(text)
+
+    exportTime = counter.get_time()
+    # This return [AssetName , AssetType , ExportPath, ExportTime]
+    return([filename, "TextFile", absdirpath, exportTime])
+
+def export_single_json_file(json_data, dirpath, filename):
+    # Export single Json
+
+    counter = bpl.utils.CounterTimer()
+
+    absdirpath = bpy.path.abspath(dirpath)
+    bfu_basics.verifi_dirs(absdirpath)
+    fullpath = os.path.join(absdirpath, filename)
+
+    with open(fullpath, 'w') as json_file:
+        json.dump(json_data, json_file, ensure_ascii=False, sort_keys=False, indent=4)
+
+    exportTime = counter.get_time()
+    # This return [AssetName , AssetType , ExportPath, ExportTime]
+    return([filename, "TextFile", absdirpath, exportTime])

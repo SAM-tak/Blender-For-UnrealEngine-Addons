@@ -18,6 +18,7 @@
 
 
 import bpy
+from . import bfu_export_process_utils
 from .. import bpl
 from .. import bbpl
 from .. import bfu_basics
@@ -27,7 +28,9 @@ from .. import bfu_assets_manager
 from .. import bfu_cached_asset_list
 from .. import bfu_check_potential_error
 from .. import bfu_export
-from .. import bfu_write_text
+from .. import bfu_export_text_files
+from .. import bfu_export_logs
+
 
 
 class BFU_OT_ExportForUnrealEngineButton(bpy.types.Operator):
@@ -53,7 +56,7 @@ class BFU_OT_ExportForUnrealEngineButton(bpy.types.Operator):
                 else:
                     return False
 
-            if not bfu_basics.CheckPluginIsActivated("io_scene_fbx"):
+            if not bbpl.basics.check_plugin_is_activated("io_scene_fbx"):
                 self.report(
                     {'WARNING'},
                     'Add-on FBX format is not activated!' +
@@ -96,28 +99,23 @@ class BFU_OT_ExportForUnrealEngineButton(bpy.types.Operator):
         if not isReadyForExport():
             return {'FINISHED'}
 
-        scene.UnrealExportedAssetsList.clear()
+        # Clear logs before export
+        bfu_export_logs.clear_all_logs()
+
         counter = bpl.utils.CounterTimer()
         bfu_check_potential_error.bfu_check_utils.process_general_fix()
         bfu_export.bfu_export_asset.process_export(self)
-        bfu_write_text.WriteAllTextFiles()
+        bfu_export_text_files.bfu_export_text_files_process.write_all_data_files()
+        
+        
+        asset_list = str(bfu_export_logs.bfu_asset_export_logs_utils.get_exported_asset_number())
+        report_text = f"Export of {asset_list} asset(s) has been finalized in " + counter.get_str_time() + " Look in console for more info."
+        self.report({'INFO'}, report_text)
 
-        self.report(
-            {'INFO'},
-            "Export of " + str(len(scene.UnrealExportedAssetsList)) + " asset(s) has been finalized in " + counter.get_str_time() + " Look in console for more info.")
-        print(
-            "=========================" +
-            " Exported asset(s) " +
-            "=========================")
-        print("")
-        lines = bfu_write_text.WriteExportLog().splitlines()
-        for line in lines:
-            print(line)
-        print("")
-        print(
-            "=========================" +
-            " ... " +
-            "=========================")
+        bfu_export_process_utils.print_exported_asset_detail()
+
+        # Clear logs after export
+        bfu_export_logs.clear_all_logs()
 
         return {'FINISHED'}
 

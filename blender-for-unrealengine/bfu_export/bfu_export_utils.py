@@ -24,7 +24,7 @@ import mathutils
 from bpy_extras.io_utils import axis_conversion
 from . import bfu_export_get_info
 from .. import bpl
-from .. import bfu_write_text
+from .. import bfu_export_text_files
 from .. import bfu_basics
 from .. import bfu_utils
 from .. import bbpl
@@ -34,6 +34,7 @@ from .. import bfu_vertex_color
 from .. import bfu_export_procedure
 from .. import bfu_collision
 from .. import bfu_socket
+from .. import bfu_export_logs
 
 
 dup_temp_name = "BFU_Temp"  # DuplicateTemporarilyNameForUe4Export
@@ -139,6 +140,8 @@ def BakeArmatureAnimation(armature, frame_start, frame_end):
 
 
 def DuplicateSelectForExport():
+    duplicate_time_log = bfu_export_logs.bfu_process_time_logs_utils.start_time_log(f"Duplicate asset selection", 3)
+
     # Note: Need look for a optimized duplicate, This is too long
 
     class DuplicateData():
@@ -208,6 +211,7 @@ def DuplicateSelectForExport():
 
     duplicate_data.SetDuplicateSelect()
 
+    duplicate_time_log.end_time_log()
     return duplicate_data
 
 
@@ -660,8 +664,8 @@ def ExportAdditionalParameter(dirpath, filename, unreal_exported_asset):
     absdirpath = bpy.path.abspath(dirpath)
     result = check_and_make_export_path(absdirpath, filename)
     if result:
-        AdditionalTrack = bfu_write_text.WriteSingleMeshAdditionalParameter(unreal_exported_asset)
-        return bfu_write_text.ExportSingleJson(
+        AdditionalTrack = bfu_export_text_files.bfu_export_text_files_asset_additional_data.write_single_asset_additional_data(unreal_exported_asset)
+        return bfu_export_text_files.bfu_export_text_files_utils.export_single_json_file(
             AdditionalTrack,
             absdirpath,
             filename

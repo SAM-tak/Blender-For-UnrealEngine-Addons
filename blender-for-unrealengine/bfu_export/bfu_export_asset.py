@@ -38,6 +38,7 @@ from .. import bfu_static_mesh
 from .. import bfu_skeletal_mesh
 from .. import bfu_alembic_animation
 from .. import bfu_groom
+from .. import bfu_export_logs
 
 
 
@@ -46,7 +47,7 @@ def IsValidActionForExport(scene, obj, animType):
     if animType == "Action":
         if scene.bfu_use_anin_export:
             if obj.bfu_skeleton_export_procedure == 'auto-rig-pro':
-                if bfu_basics.CheckPluginIsActivated('auto_rig_pro-master'):
+                if bbpl.basics.check_plugin_is_activated('auto_rig_pro-master'):
                     return True
             else:
                 return True
@@ -55,7 +56,7 @@ def IsValidActionForExport(scene, obj, animType):
     elif animType == "Pose":
         if scene.bfu_use_anin_export:
             if obj.bfu_skeleton_export_procedure == 'auto-rig-pro':
-                if bfu_basics.CheckPluginIsActivated('auto_rig_pro-master'):
+                if bbpl.basics.check_plugin_is_activated('auto_rig_pro-master'):
                     return True
             else:
                 return True
@@ -104,6 +105,8 @@ def PrepareSceneForExport():
                 layer_collection.hide_viewport = False
 
 def process_export(op):
+    prepare_all_export_time_log = bfu_export_logs.bfu_process_time_logs_utils.start_time_log("Prepare all export")
+
     scene = bpy.context.scene
     addon_prefs = bfu_basics.GetAddonPrefs()
     export_filter = scene.bfu_export_selection_filter
@@ -139,8 +142,11 @@ def process_export(op):
     action_list = []  # Do a simple list of Action to export
     col_list = []  # Do a simple list of Collection to export
 
+    prepare_all_export_time_log.end_time_log()
+
     export_all_from_asset_list(op, final_asset_list_to_export)
 
+    post_export_time_log = bfu_export_logs.bfu_process_time_logs_utils.start_time_log("Clean after all export")
     for Asset in final_asset_list_to_export:
         if Asset.asset_type == "Action" or Asset.asset_type == "Pose":
             if Asset.obj not in action_list:
@@ -165,9 +171,11 @@ def process_export(op):
             bpy.data.actions.remove(action)
 
     bbpl.scene_utils.move_to_local_view(local_view_areas)
+    post_export_time_log.end_time_log()
 
 
 def export_all_from_asset_list(op, asset_list: bfu_cached_asset_list.AssetToExport):
+    export_time_log = bfu_export_logs.bfu_process_time_logs_utils.start_time_log("TOTAL EXPORT")
     export_collection_from_asset_list(op, asset_list)
     export_camera_from_asset_list(op, asset_list)
     export_spline_from_asset_list(op, asset_list)
@@ -177,8 +185,10 @@ def export_all_from_asset_list(op, asset_list: bfu_cached_asset_list.AssetToExpo
     export_groom_from_asset_list(op, asset_list)
     export_animation_from_asset_list(op, asset_list)
     export_nonlinear_animation_from_asset_list(op, asset_list)
+    export_time_log.end_time_log()
 
 def export_collection_from_asset_list(op, asset_list: bfu_cached_asset_list.AssetToExport):
+
     scene = bpy.context.scene
     addon_prefs = bfu_basics.GetAddonPrefs()
     print("Start Export collection(s)")
@@ -238,7 +248,6 @@ def export_camera_from_asset_list(op, asset_list: bfu_cached_asset_list.AssetToE
         # Resets previous start/end frame
         scene.frame_start = UserStartFrame
         scene.frame_end = UserEndFrame
-        #UpdateExportProgress()
 
 def export_spline_from_asset_list(op, asset_list: bfu_cached_asset_list.AssetToExport):
     scene = bpy.context.scene
@@ -285,6 +294,7 @@ def export_static_mesh_from_asset_list(op, asset_list: [bfu_cached_asset_list.As
             if obj.bfu_export_type == "export_recursive":
                 if bfu_static_mesh.bfu_static_mesh_utils.is_static_mesh(obj) and IsValidObjectForExport(scene, obj):
 
+                    export_time_log = bfu_export_logs.bfu_process_time_logs_utils.start_time_log(f"Export '{obj.name}' as Static Mesh.", 1)
                     # Save current start/end frame
                     UserStartFrame = scene.frame_start
                     UserEndFrame = scene.frame_end
@@ -293,7 +303,8 @@ def export_static_mesh_from_asset_list(op, asset_list: [bfu_cached_asset_list.As
                     # Resets previous start/end frame
                     scene.frame_start = UserStartFrame
                     scene.frame_end = UserEndFrame
-                    #UpdateExportProgress()
+
+                    export_time_log.end_time_log()
 
 def export_skeletal_mesh_from_asset_list(op, asset_list: bfu_cached_asset_list.AssetToExport):
     scene = bpy.context.scene
@@ -315,7 +326,6 @@ def export_skeletal_mesh_from_asset_list(op, asset_list: bfu_cached_asset_list.A
                     # Resets previous start/end frame
                     scene.frame_start = UserStartFrame
                     scene.frame_end = UserEndFrame
-                    #UpdateExportProgress()
 
 def export_alembic_from_asset_list(op, asset_list: bfu_cached_asset_list.AssetToExport):
     scene = bpy.context.scene
@@ -336,7 +346,6 @@ def export_alembic_from_asset_list(op, asset_list: bfu_cached_asset_list.AssetTo
                     # Resets previous start/end frame
                     scene.frame_start = UserStartFrame
                     scene.frame_end = UserEndFrame
-                    #UpdateExportProgress()
 
 def export_groom_from_asset_list(op, asset_list: bfu_cached_asset_list.AssetToExport):
     scene = bpy.context.scene
@@ -356,7 +365,6 @@ def export_groom_from_asset_list(op, asset_list: bfu_cached_asset_list.AssetToEx
                     # Resets previous start/end frame
                     scene.frame_start = UserStartFrame
                     scene.frame_end = UserEndFrame
-                    #UpdateExportProgress()
 
 def export_animation_from_asset_list(op, asset_list: bfu_cached_asset_list.AssetToExport):
     scene = bpy.context.scene
@@ -387,7 +395,7 @@ def export_animation_from_asset_list(op, asset_list: bfu_cached_asset_list.Asset
                                     # Resets previous start/end frame
                                     scene.frame_start = UserStartFrame
                                     scene.frame_end = UserEndFrame
-                                    #UpdateExportProgress()
+
                     if action_curve_scale:
                         action_curve_scale.ResetScaleAfterExport()
 

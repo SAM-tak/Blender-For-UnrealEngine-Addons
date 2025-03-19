@@ -97,6 +97,7 @@ class FBXExporterGenerate:
         new_files.append(self.create_init_file(dest_folder))
 
         for new_file in new_files:
+            print("Process file:", new_file)
             edit_files.add_header_to_file(new_file)
             if new_file.endswith('export_fbx_bin.py'):
                 edit_export_fbx_bin.update_export_fbx_bin(new_file, self.version, self.fbx_addon_version)
@@ -180,6 +181,9 @@ def run_all_generate():
 
     # generated var needs to be ordered from new to older.
     generated = [] 
+
+    generate_4_4 = FBXExporterGenerate((4, 4, 0), r"Blender_v4.4", export_fbx_files_with_threading, r"scripts/addons_core/io_scene_fbx/")
+    generated.append(generate_4_4.run_generate())
 
     generate_4_3 = FBXExporterGenerate((4, 3, 0), r"Blender_v4.3", export_fbx_files_with_threading, r"scripts/addons_core/io_scene_fbx/")
     generated.append(generate_4_3.run_generate())

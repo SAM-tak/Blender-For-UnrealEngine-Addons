@@ -43,6 +43,7 @@ from .. import bfu_anim_nla_adv
 from .. import bfu_groom
 from .. import bfu_uv_map
 from .. import bfu_light_map
+from .. import bfu_nanite
 from .. import bfu_assets_references
 from .. import bfu_collision
 
@@ -92,6 +93,7 @@ class BFU_PT_BlenderForUnrealObject(bpy.types.Panel):
             preset_values += bfu_vertex_color.bfu_vertex_color_props.get_preset_values()
             preset_values += bfu_lod.bfu_lod_props.get_preset_values()
             preset_values += bfu_uv_map.bfu_uv_map_props.get_preset_values()
+            preset_values += bfu_nanite.bfu_nanite_props.get_preset_values()
             preset_values += bfu_light_map.bfu_light_map_props.get_preset_values()
             preset_values += bfu_assets_references.bfu_asset_ref_props.get_preset_values()
             preset_values += bfu_collision.bfu_collision_props.get_preset_values()
@@ -159,6 +161,7 @@ class BFU_PT_BlenderForUnrealObject(bpy.types.Panel):
         bfu_collision.bfu_collision_ui.draw_ui_object(layout, obj)
         bfu_uv_map.bfu_uv_map_ui.draw_obj_ui(layout, obj)
         bfu_light_map.bfu_light_map_ui.draw_obj_ui(layout, obj)
+        bfu_nanite.bfu_nanite_ui.draw_obj_ui(layout, obj)
         bfu_material.bfu_material_ui.draw_ui_object(layout, obj)
         bfu_vertex_color.bfu_vertex_color_ui.draw_ui_object(layout, obj)
         bfu_assets_references.bfu_asset_ref_ui.draw_ui(layout, obj)

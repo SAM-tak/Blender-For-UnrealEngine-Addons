@@ -47,15 +47,15 @@ def ProcessSkeletalMeshExport(op, armature, mesh_parts, desired_name=""):
     file_name = asset_class.get_obj_file_name(armature, final_name, "")
     file_name_at = asset_class.get_obj_file_name(armature, final_name+"_AdditionalTrack", "") 
 
-    MyAsset: bfu_export_logs.BFU_OT_UnrealExportedAsset = scene.UnrealExportedAssetsList.add()
-    MyAsset.object = armature
-    MyAsset.skeleton_name = armature.name
-    MyAsset.asset_name = armature.name
-    MyAsset.asset_global_scale = armature.bfu_export_global_scale
-    MyAsset.folder_name = armature.bfu_export_folder_name
-    MyAsset.asset_type = asset_type
+    my_asset_log = bfu_export_logs.bfu_asset_export_logs_utils.create_new_asset_log()
+    my_asset_log.object = armature
+    my_asset_log.skeleton_name = armature.name
+    my_asset_log.asset_name = armature.name
+    my_asset_log.asset_global_scale = armature.bfu_export_global_scale
+    my_asset_log.folder_name = armature.bfu_export_folder_name
+    my_asset_log.asset_type = asset_type
 
-    file: bfu_export_logs.BFU_OT_FileExport = MyAsset.files.add()
+    file = my_asset_log.add_new_file()
     file.file_name = file_name
     file.file_extension = "fbx"
     file.file_path = dirpath
@@ -63,21 +63,21 @@ def ProcessSkeletalMeshExport(op, armature, mesh_parts, desired_name=""):
 
     fullpath = bfu_export_utils.check_and_make_export_path(dirpath, file.GetFileWithExtension())
     if fullpath:
-        MyAsset.StartAssetExport()
+        my_asset_log.StartAssetExport()
         ExportSingleSkeletalMesh(op, scene, fullpath, armature, mesh_parts)
 
         if not armature.bfu_export_as_lod_mesh:
             if (scene.bfu_use_text_additional_data and addon_prefs.useGeneratedScripts):
             
-                file: bfu_export_logs.BFU_OT_FileExport = MyAsset.files.add()
+                file = my_asset_log.add_new_file()
                 file.file_name = file_name_at
                 file.file_extension = "json"
                 file.file_path = dirpath
                 file.file_type = "AdditionalTrack"
-                bfu_export_utils.ExportAdditionalParameter(dirpath, file.GetFileWithExtension(), MyAsset)
+                bfu_export_utils.ExportAdditionalParameter(dirpath, file.GetFileWithExtension(), my_asset_log)
 
-        MyAsset.EndAssetExport(True)
-    return MyAsset
+        my_asset_log.EndAssetExport(True)
+    return my_asset_log
 
 
 def ExportSingleSkeletalMesh(

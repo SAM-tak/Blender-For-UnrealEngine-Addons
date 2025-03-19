@@ -176,9 +176,9 @@ class BFU_OT_OpenPotentialErrorPopup(bpy.types.Operator):
     def draw(self, context: bpy.types.Context):
 
         layout = self.layout
-        if len(bpy.context.scene.potentialErrorList) > 0:
+        if len(bpy.context.scene.bfu_export_potential_errors) > 0:
             popup_title = (
-                str(len(bpy.context.scene.potentialErrorList)) +
+                str(len(bpy.context.scene.bfu_export_potential_errors)) +
                 " potential error(s) found!")
         else:
             popup_title = "No potential error to correct!"
@@ -192,8 +192,8 @@ class BFU_OT_OpenPotentialErrorPopup(bpy.types.Operator):
         layout.separator()
         row = layout.row()
         col = row.column()
-        for x in range(len(bpy.context.scene.potentialErrorList)):
-            error = bpy.context.scene.potentialErrorList[x]
+        for x in range(len(bpy.context.scene.bfu_export_potential_errors)):
+            error = bpy.context.scene.bfu_export_potential_errors[x]
 
             myLine = col.box().split(factor=0.85)
             # ----

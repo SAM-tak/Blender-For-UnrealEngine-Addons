@@ -53,14 +53,16 @@ class ImportTaks():
     def set_task_option(self, new_task_option):
         self.task_option = new_task_option
 
-    def get_task(self):
+    def get_task(self) -> unreal.AssetImportTask:
         return self.task
     
     def get_fbx_import_ui(self) -> unreal.FbxImportUI:
         return self.task_option
     
-    def get_abc_import_settings(self) -> unreal.AbcImportSettings:
-        return self.task_option
+    if import_module_unreal_utils.alembic_importer_active():
+        # Add the function only if alembic importer is active
+        def get_abc_import_settings(self) -> unreal.AbcImportSettings:
+            return self.task_option
 
     def get_static_mesh_import_data(self) -> unreal.FbxStaticMeshImportData:
         return self.task_option.static_mesh_import_data

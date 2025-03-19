@@ -58,6 +58,7 @@ from . import bfu_vertex_color
 from . import bfu_lod
 from . import bfu_uv_map
 from . import bfu_light_map
+from . import bfu_nanite
 from . import bfu_assets_references
 from . import bfu_custom_property
 from . import bfu_addon_parts
@@ -69,10 +70,7 @@ from . import bfu_addon_pref
 from . import bfu_export_logs
 from . import bfu_ui
 from . import bfu_check_potential_error
-from . import bfu_write_text
-from . import bfu_write_utils
-from . import bfu_write_import_asset_script
-from . import bfu_write_import_sequencer_script
+from . import bfu_export_text_files
 from . import bfu_basics
 from . import bfu_utils
 from . import bfu_unreal_utils
@@ -136,6 +134,8 @@ if "bfu_uv_map" in locals():
     importlib.reload(bfu_uv_map)
 if "bfu_light_map" in locals():
     importlib.reload(bfu_light_map)
+if "bfu_nanite" in locals():
+    importlib.reload(bfu_nanite)
 if "bfu_assets_references" in locals():
     importlib.reload(bfu_assets_references)
 if "bfu_custom_property" in locals():
@@ -158,14 +158,8 @@ if "bfu_ui" in locals():
     importlib.reload(bfu_ui)
 if "bfu_check_potential_error" in locals():
     importlib.reload(bfu_check_potential_error)
-if "bfu_write_text" in locals():
-    importlib.reload(bfu_write_text)
-if "bfu_write_utils" in locals():
-    importlib.reload(bfu_write_utils)
-if "bfu_write_import_asset_script" in locals():
-    importlib.reload(bfu_write_import_asset_script)
-if "bfu_write_import_sequencer_script" in locals():
-    importlib.reload(bfu_write_import_sequencer_script)
+if "bfu_export_text_files" in locals():
+    importlib.reload(bfu_export_text_files)
 if "bfu_basics" in locals():
     importlib.reload(bfu_basics)
 if "bfu_utils" in locals():
@@ -222,6 +216,7 @@ def register():
     bfu_lod.register()
     bfu_uv_map.register()
     bfu_light_map.register()
+    bfu_nanite.register()
     bfu_assets_references.register()
     bfu_custom_property.register()
     bfu_addon_parts.register()
@@ -237,9 +232,6 @@ def register():
     bfu_cached_asset_list.register()
 
 def unregister():
-    for cls in reversed(classes):
-        bpy.utils.unregister_class(cls)
-
     bfu_cached_asset_list.unregister()
     bfu_backward_compatibility.unregister()
     bfu_check_potential_error.unregister()
@@ -253,6 +245,7 @@ def unregister():
     bfu_addon_parts.unregister()
     bfu_custom_property.unregister()
     bfu_assets_references.unregister()
+    bfu_nanite.unregister()
     bfu_light_map.unregister()
     bfu_uv_map.unregister()
     bfu_lod.unregister()
@@ -278,3 +271,6 @@ def unregister():
     bfu_propertys.unregister()
     bfu_assets_manager.unregister()
     bbpl.unregister()
+
+    for cls in reversed(classes):
+        bpy.utils.unregister_class(cls)

@@ -24,13 +24,13 @@ def add_header_to_file(file_path):
     )
 
     try:
-        with open(file_path, 'r') as file:
-            original_content = file.read()
+        with open(file_path, 'r', encoding='utf-8') as f:
+            original_content = f.read()
     except FileNotFoundError:
         original_content = ""  # Si le fichier n'existe pas, le contenu sera vide
 
-    with open(file_path, 'w') as file:
-        file.write(header + original_content)
+    with open(file_path, 'w', encoding='utf-8') as f:
+        f.write(header + original_content)
 
 def lines_exist(file_path, search_string):
     with open(file_path, 'r+', encoding='utf-8') as f:

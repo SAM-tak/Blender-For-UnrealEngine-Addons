@@ -86,7 +86,7 @@ class BFU_SkeletalAnimation(bfu_assets_manager.bfu_asset_manager_type.BFU_BaseAs
     def can_export_obj_asset(self, obj):
         if self.can_export_asset():
             if obj.bfu_skeleton_export_procedure == 'auto-rig-pro':
-                if bfu_basics.CheckPluginIsActivated('auto_rig_pro-master'):
+                if bbpl.basics.check_plugin_is_activated('auto_rig_pro-master'):
                     return True
             else:
                 return True

@@ -17,21 +17,17 @@
 # ======================= END GPL LICENSE BLOCK =============================
 
 import bpy
-from . import languages
-from . import bfu_write_utils
+from . import bfu_export_text_files_utils
+from .. import languages
+from .. import bfu_export_logs
 
 
-def WriteImportSequencerTracks():
+def write_sequencer_tracks_data():
     scene = bpy.context.scene
 
     data = {}
-    data['comment'] = {
-        '1/3': languages.ti('write_text_additional_track_start'),
-        '2/3': languages.ti('write_text_additional_track_all'),
-        '3/3': languages.ti('write_text_additional_track_end'),
-    }
-
-    bfu_write_utils.add_generated_json_meta_data(data)
+    bfu_export_text_files_utils.add_generated_json_header(data, languages.ti('write_text_additional_track_all'))
+    bfu_export_text_files_utils.add_generated_json_meta_data(data)
 
     data['spawnable_camera'] = True  # Default but open for change
     data['sequencer_frame_start'] = scene.frame_start
@@ -47,7 +43,7 @@ def WriteImportSequencerTracks():
 
     # Import camera
     data['cameras'] = []
-    for asset in scene.UnrealExportedAssetsList:
+    for asset in bfu_export_logs.bfu_asset_export_logs_utils.get_exported_assets_logs():
         if (asset.asset_type == "Camera"):
             camera = asset.object
 
@@ -56,7 +52,7 @@ def WriteImportSequencerTracks():
             camera_data["additional_tracks_path"] = asset.GetFileByType("AdditionalTrack").GetAbsolutePath()
             data['cameras'].append(camera_data)
 
-    def getMarkerSceneSections():
+    def get_marker_scene_sections():
         scene = bpy.context.scene
         markersOrderly = []
         firstMarkersFrame = scene.frame_start
@@ -89,7 +85,7 @@ def WriteImportSequencerTracks():
         return sectionCuts
 
     data['marker_sections'] = []
-    for section in getMarkerSceneSections():
+    for section in get_marker_scene_sections():
         marker_sections = {}
         marker_sections["start_time"] = section[0]
         marker_sections["end_time"] = section[1]
@@ -106,4 +102,5 @@ def WriteImportSequencerTracks():
 
         data['marker_sections'].append(marker_sections)
 
+    bfu_export_text_files_utils.add_generated_json_footer(data)
     return data

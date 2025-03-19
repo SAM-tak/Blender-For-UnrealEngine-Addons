@@ -27,12 +27,6 @@ import addon_utils
 def GetAddonPrefs():
     return bpy.context.preferences.addons[__package__].preferences
 
-
-def CheckPluginIsActivated(PluginName):
-    is_enabled, is_loaded = addon_utils.check(PluginName)
-    return is_enabled and is_loaded
-
-
 def RemoveFolderTree(folder):
     dirpath = Path(folder)
     if dirpath.exists() and dirpath.is_dir():

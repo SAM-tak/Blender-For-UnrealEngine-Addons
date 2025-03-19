@@ -143,6 +143,9 @@ def update_old_variables():
         update_variable(scene, ["text_ImportAssetScript"], "bfu_use_text_import_asset_script")
         update_variable(scene, ["text_ImportSequenceScript"], "bfu_use_text_import_sequence_script")
         update_variable(scene, ["text_AdditionalData"], "bfu_use_text_additional_data")
+        update_variable(scene, ["UnrealExportedAssetsList"], "bfu_unreal_exported_assets_logs")
+        update_variable(scene, ["potentialErrorList"], "bfu_export_potential_errors")
+        
 
 
 def enum_callback(data, old_var_name, new_var_name):

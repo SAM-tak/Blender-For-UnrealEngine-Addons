@@ -40,19 +40,19 @@ def ProcessSplineExport(op, obj, pre_bake_spline: bfu_spline.bfu_spline_data.BFU
     file_name = asset_class.get_obj_file_name(obj, obj.name, "")
     file_name_at = asset_class.get_obj_file_name(obj, obj.name+"_AdditionalTrack", "") 
 
-    MyAsset: bfu_export_logs.BFU_OT_UnrealExportedAsset = scene.UnrealExportedAssetsList.add()
-    MyAsset.object = obj
-    MyAsset.asset_name = obj.name
-    MyAsset.asset_global_scale = obj.bfu_export_global_scale
-    MyAsset.folder_name = obj.bfu_export_folder_name
-    MyAsset.asset_type = asset_type
-    MyAsset.animation_start_frame = scene.frame_start
-    MyAsset.animation_end_frame = scene.frame_end+1
-    file: bfu_export_logs.BFU_OT_FileExport = MyAsset.files.add()
+    my_asset_log = bfu_export_logs.bfu_asset_export_logs_utils.create_new_asset_log()
+    my_asset_log.object = obj
+    my_asset_log.asset_name = obj.name
+    my_asset_log.asset_global_scale = obj.bfu_export_global_scale
+    my_asset_log.folder_name = obj.bfu_export_folder_name
+    my_asset_log.asset_type = asset_type
+    my_asset_log.animation_start_frame = scene.frame_start
+    my_asset_log.animation_end_frame = scene.frame_end+1
+    file = my_asset_log.add_new_file()
 
     fullpath = bfu_export_utils.check_and_make_export_path(dirpath, file.GetFileWithExtension())
     if fullpath:
-        MyAsset.StartAssetExport()
+        my_asset_log.StartAssetExport()
 
         if obj.bfu_export_fbx_spline:
             file.file_name = file_name
@@ -69,8 +69,8 @@ def ProcessSplineExport(op, obj, pre_bake_spline: bfu_spline.bfu_spline_data.BFU
             file.file_type = "AdditionalTrack"
             bfu_spline.bfu_spline_export_utils.ExportSingleAdditionalTrackSpline(dirpath, file.GetFileWithExtension(), obj, pre_bake_spline)
 
-        MyAsset.EndAssetExport(True)
-    return MyAsset
+        my_asset_log.EndAssetExport(True)
+    return my_asset_log
 
 
 def ExportSingleFbxSpline(

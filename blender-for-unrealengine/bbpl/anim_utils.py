@@ -253,10 +253,8 @@ class ProxyCopy_StripFCurve():
             if self.data_path == "influence" and fcurve.data_path == "influence":
                 if override == True:
                     fcurve.keyframe_points.clear()
-
                 # Create the curve with use_animated_influence
                 for key in self.keyframe_points:
-                    key.print_stored_key()
                     new_key = fcurve.keyframe_points.insert(frame=key.co[0], value=key.co[1], keyframe_type=key.type)
                     key.paste_data_on(new_key)
 
@@ -289,14 +287,12 @@ class ProxyCopy_Keyframe():
     """
 
     def __init__(self, keyframe: bpy.types.Keyframe):
-        print(keyframe)
-        print(keyframe.type)
-        self.co = keyframe.co
+        self.co = keyframe.co.copy()
         self.type = keyframe.type
         self.interpolation = keyframe.interpolation
-        self.handle_left = keyframe.handle_left
+        self.handle_left = keyframe.handle_left.copy()
         self.handle_left_type = keyframe.handle_left_type
-        self.handle_right = keyframe.handle_right
+        self.handle_right = keyframe.handle_right.copy()
         self.handle_right_type = keyframe.handle_right_type
         self.select_control_point = keyframe.select_control_point
         self.select_left_handle = keyframe.select_left_handle
@@ -307,7 +303,6 @@ class ProxyCopy_Keyframe():
         print(self.co, self.type, self.interpolation)
 
     def paste_data_on(self, keyframe: bpy.types.Keyframe):
-        print(keyframe.interpolation)
         keyframe.co = self.co
         keyframe.type = self.type
         keyframe.interpolation = self.interpolation
@@ -318,7 +313,6 @@ class ProxyCopy_Keyframe():
         keyframe.select_control_point = self.select_control_point
         keyframe.select_left_handle = self.select_left_handle
         keyframe.select_right_handle = self.select_right_handle
-        print(keyframe.interpolation)
 
 
 

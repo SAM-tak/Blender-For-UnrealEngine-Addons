@@ -77,16 +77,19 @@ else:
         """Returns animation task options preset without interchange support."""
         return unreal.FbxImportUI()
 
-def task_options_alembic_preset(use_interchange: bool = True) -> unreal.AbcImportSettings:
-    """Returns Alembic task options preset."""
-    options = unreal.AbcImportSettings()
-    return options
+if import_module_unreal_utils.alembic_importer_active():
+    # Add the function only if alembic importer is active
+    def task_options_alembic_preset(use_interchange: bool = True) -> unreal.AbcImportSettings:
+        """Returns Alembic task options preset."""
+        options = unreal.AbcImportSettings()
+        return options
 
 if support_interchange:
-    def init_options_data(asset_type: str, use_interchange: bool = True) -> Union[unreal.InterchangeGenericAssetsPipeline, unreal.FbxImportUI, unreal.AbcImportSettings]:
+    def init_options_data(asset_type: str, use_interchange: bool = True):
         """Initializes task options based on asset type and interchange usage."""
         
-        if asset_type == "Alembic":
+        # Add the function only if alembic importer is active
+        if asset_type == "Alembic" and import_module_unreal_utils.alembic_importer_active():
             options = task_options_alembic_preset(use_interchange)
         
         elif asset_type == "StaticMesh":
@@ -103,10 +106,11 @@ if support_interchange:
         
         return options
 else:
-    def init_options_data(asset_type: str, use_interchange: bool = True) -> Union[unreal.FbxImportUI, unreal.AbcImportSettings]:
+    def init_options_data(asset_type: str, use_interchange: bool = True):
         """Initializes task options based on asset type and interchange usage."""
         
-        if asset_type == "Alembic":
+        # Add the function only if alembic importer is active
+        if asset_type == "Alembic" and import_module_unreal_utils.alembic_importer_active():
             options = task_options_alembic_preset(use_interchange)
         
         elif asset_type == "StaticMesh":

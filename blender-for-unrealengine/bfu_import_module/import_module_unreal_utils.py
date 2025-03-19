@@ -81,13 +81,16 @@ def show_warning_message(title: str, message: str) -> unreal.AppReturnType:
         print(message)
 
 def get_support_interchange() -> bool:
-    return import_module_unreal_utils.is_unreal_version_greater_or_equal(5, 0)
+    return import_module_unreal_utils.is_unreal_version_greater_or_equal(5, 1)
 
 def editor_scripting_utilities_active() -> bool:
     if is_unreal_version_greater_or_equal(4,20):
         if hasattr(unreal, 'EditorAssetLibrary'):
             return True
     return False
+
+def alembic_importer_active() -> bool:
+    return hasattr(unreal, 'AbcImportSettings')
 
 def sequencer_scripting_active() -> bool:
     return hasattr(unreal.MovieSceneSequence, 'set_display_rate')

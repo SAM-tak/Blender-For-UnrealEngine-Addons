@@ -16,7 +16,6 @@
 #
 # ======================= END GPL LICENSE BLOCK =============================
 
-from .. import bfu_write_text
 from .. import bfu_basics
 from .. import bfu_utils
 
