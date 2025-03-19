@@ -45,7 +45,7 @@ def ProcessActionExport(op, obj, action, action_curve_scale):
     my_asset_log.animation_start_frame = bfu_utils.GetDesiredActionStartEndTime(obj, action)[0]
     my_asset_log.animation_end_frame = bfu_utils.GetDesiredActionStartEndTime(obj, action)[1]
 
-    file: bfu_export_logs.BFU_OT_FileExport = my_asset_log.files.add()
+    file: bfu_export_logs.bfu_asset_export_logs.BFU_OT_FileExport = my_asset_log.files.add()
     file.file_name = bfu_naming.get_animation_file_name(obj, action, "")
     file.file_extension = "fbx"
     file.file_path = dirpath

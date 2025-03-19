@@ -47,7 +47,7 @@ def ProcessCameraExport(op, obj, pre_bake_camera: bfu_camera.bfu_camera_data.BFU
     my_asset_log.asset_type = asset_type
     my_asset_log.animation_start_frame = scene.frame_start
     my_asset_log.animation_end_frame = scene.frame_end+1
-    file: bfu_export_logs.BFU_OT_FileExport = my_asset_log.files.add()
+    file: bfu_export_logs.bfu_asset_export_logs.BFU_OT_FileExport = my_asset_log.files.add()
 
     fullpath = bfu_export_utils.check_and_make_export_path(dirpath, file.GetFileWithExtension())
     if fullpath:

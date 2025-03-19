@@ -55,7 +55,7 @@ def ProcessSkeletalMeshExport(op, armature, mesh_parts, desired_name=""):
     my_asset_log.folder_name = armature.bfu_export_folder_name
     my_asset_log.asset_type = asset_type
 
-    file: bfu_export_logs.BFU_OT_FileExport = my_asset_log.files.add()
+    file: bfu_export_logs.bfu_asset_export_logs.BFU_OT_FileExport = my_asset_log.files.add()
     file.file_name = file_name
     file.file_extension = "fbx"
     file.file_path = dirpath
@@ -69,7 +69,7 @@ def ProcessSkeletalMeshExport(op, armature, mesh_parts, desired_name=""):
         if not armature.bfu_export_as_lod_mesh:
             if (scene.bfu_use_text_additional_data and addon_prefs.useGeneratedScripts):
             
-                file: bfu_export_logs.BFU_OT_FileExport = my_asset_log.files.add()
+                file: bfu_export_logs.bfu_asset_export_logs.BFU_OT_FileExport = my_asset_log.files.add()
                 file.file_name = file_name_at
                 file.file_extension = "json"
                 file.file_path = dirpath
