@@ -45,7 +45,7 @@ def ProcessAlembicAnimationExport(obj):
     my_asset_log.animation_start_frame = scene.frame_start + obj.bfu_anim_action_start_frame_offset
     my_asset_log.animation_end_frame = scene.frame_end + obj.bfu_anim_action_end_frame_offset
 
-    file: bfu_export_logs.bfu_asset_export_logs.BFU_OT_FileExport = my_asset_log.files.add()
+    file = my_asset_log.add_new_file()
     file.file_name = file_name
     file.file_extension = "abc"
     file.file_path = dirpath

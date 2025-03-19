@@ -37,6 +37,9 @@ class BFU_OT_UnrealExportedAssetLog(bpy.types.PropertyGroup):
     animation_start_frame: bpy.props.IntProperty(default=0)
     animation_end_frame: bpy.props.IntProperty(default=0)
 
+    def add_new_file(self)-> BFU_OT_FileExport:
+        return self.files.add()
+
     def StartAssetExport(self):
         self.export_start_time = time.perf_counter()
 

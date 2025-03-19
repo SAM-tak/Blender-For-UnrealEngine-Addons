@@ -42,7 +42,7 @@ def ProcessCollectionExport(op, col: bpy.types.Collection):
     my_asset_log.asset_type = bfu_utils.GetCollectionType(col)
     my_asset_log.folder_name = col.bfu_export_folder_name
 
-    file: bfu_export_logs.bfu_asset_export_logs.BFU_OT_FileExport = my_asset_log.files.add()
+    file = my_asset_log.add_new_file()
     file.file_name = bfu_naming.get_collection_file_name(col, col.name, "")
     file.file_extension = "fbx"
     file.file_path = dirpath
@@ -55,7 +55,7 @@ def ProcessCollectionExport(op, col: bpy.types.Collection):
 
         if (scene.bfu_use_text_additional_data and addon_prefs.useGeneratedScripts):
             
-            file: bfu_export_logs.bfu_asset_export_logs.BFU_OT_FileExport = my_asset_log.files.add()
+            file = my_asset_log.add_new_file()
             file.file_name = bfu_naming.get_collection_file_name(col, col.name+"_AdditionalTrack", "")
             file.file_extension = "json"
             file.file_path = dirpath
