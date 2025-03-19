@@ -5,18 +5,25 @@ from .. import bpl
 
 class BFU_OT_ExportProcessTimeLog(bpy.types.PropertyGroup):
 
+    process_id: bpy.props.StringProperty()
     process_info: bpy.props.StringProperty()
     start_time: bpy.props.FloatProperty(default=0.0)
     end_time: bpy.props.FloatProperty(default=0.0)
     sub_step: bpy.props.IntProperty(default=0)
     finished_success: bpy.props.BoolProperty(default=False)
 
-    def start_process(self, process_info, sub_step):
+    def start_process(self, process_id, process_info, sub_step):
+        if not isinstance(process_id, str):
+            raise TypeError("process_id is not a string!")
+        if not process_id:
+            raise ValueError("process_id is empty or None!")
+
         if not isinstance(process_info, str):
             raise TypeError("process_info is not a string!")
         if not process_info:
             raise ValueError("process_info is empty or None!")
 
+        self.process_id = process_id
         self.process_info = process_info
         self.sub_step = sub_step
         self.start_time = time.perf_counter()
