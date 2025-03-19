@@ -7,10 +7,7 @@ class BFU_OT_FileExport(bpy.types.PropertyGroup):
     file_name: bpy.props.StringProperty()
     file_extension: bpy.props.StringProperty()
     file_path: bpy.props.StringProperty()
-    file_type: bpy.props.StringProperty()  # FBX, AdditionalTrack
-
-    def __init__(self, name):
-        pass
+    file_type: bpy.props.StringProperty()
 
     def GetFileWithExtension(self):
         return self.file_name + "." + self.file_extension
@@ -52,7 +49,7 @@ class BFU_OT_UnrealExportedAssetLog(bpy.types.PropertyGroup):
 
     def GetFileByType(self, file_type: str):
         for file in self.files:
-            file: bfu_export_logs.BFU_OT_FileExport
+            file: bfu_export_logs.bfu_asset_export_logs.BFU_OT_FileExport
             if file.file_type == file_type:
                 return file
 
