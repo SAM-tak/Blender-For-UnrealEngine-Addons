@@ -55,6 +55,7 @@ You simply need to paste it into Unreal Engine, for example, the cameras, spline
 - [Camera Axis](https://github.com/xavier150/Blender-For-UnrealEngine-Addons/wiki/Camera-Axis)
 - [Curves and Splines](https://github.com/xavier150/Blender-For-UnrealEngine-Addons/wiki/Curve-and-Spline)
 - [Animations](https://github.com/xavier150/Blender-For-UnrealEngine-Addons/wiki/Animations)
+- [Morph Targets (Shape keys)](https://github.com/xavier150/Blender-For-UnrealEngine-Addons/wiki/Morph-Targets)
 - [Materials](https://github.com/xavier150/Blender-For-UnrealEngine-Addons/wiki/Material)
 - [Vertex Colors](https://github.com/xavier150/Blender-For-UnrealEngine-Addons/wiki/Vertex-Color)
 - [UV Maps](https://github.com/xavier150/Blender-For-UnrealEngine-Addons/wiki/UV-Maps)
