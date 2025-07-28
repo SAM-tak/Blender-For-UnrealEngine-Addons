@@ -19,7 +19,7 @@
 
 import bpy
 from . import bfu_export_single_alembic_animation
-from . import bfu_export_single_fbx_action
+from . import bfu_export_fbx_actions
 from . import bfu_export_single_camera
 from . import bfu_export_single_spline
 from . import bfu_export_single_fbx_nla_anim
@@ -283,7 +283,7 @@ def export_spline_from_asset_list(op, asset_list: bfu_cached_asset_list.AssetToE
         bfu_export_single_spline.ProcessSplineExport(op, obj, spline_tracks)
 
 
-def export_static_mesh_from_asset_list(op, asset_list: [bfu_cached_asset_list.AssetToExport]):
+def export_static_mesh_from_asset_list(op, asset_list: bfu_cached_asset_list.AssetToExport):
     scene = bpy.context.scene
 
     print("Start Export StaticMesh(s)")
@@ -390,7 +390,7 @@ def export_animation_from_asset_list(op, asset_list: bfu_cached_asset_list.Asset
                                     # Save current start/end frame
                                     UserStartFrame = scene.frame_start
                                     UserEndFrame = scene.frame_end
-                                    action_curve_scale = bfu_export_single_fbx_action.ProcessActionExport(op, obj, action, action_curve_scale)
+                                    action_curve_scale = bfu_export_fbx_actions.ProcessActionExport(op, obj, action, action_curve_scale)
 
                                     # Resets previous start/end frame
                                     scene.frame_start = UserStartFrame

@@ -16,7 +16,6 @@
 #
 # ======================= END GPL LICENSE BLOCK =============================
 
-import os
 import bpy
 from . import bfu_fbx_export
 from . import bfu_export_utils
